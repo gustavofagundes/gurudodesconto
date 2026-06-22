@@ -35,28 +35,29 @@ No **hPanel** da Hostinger:
 1. Use FileZilla com credenciais FTP da Hostinger
 2. Envie todo o conteúdo de `public_html/` para a raiz do domínio
 
-### 3. Configurar wp-config.php (IMPORTANTE — evita erro de conexão)
+### 3. Configurar variáveis de ambiente (IMPORTANTE — evita erro de conexão)
 
-O `wp-config.php` detecta automaticamente:
-- **Docker local** → usa as credenciais do `docker-compose.yml`
-- **Hostinger** → precisa do arquivo `wp-config-db.php`
+O `wp-config.php` lê as credenciais do banco do arquivo **`.env`** ou das variáveis do sistema.
 
 **Na Hostinger:**
 
 1. No hPanel: **Websites → Dashboard → Databases → Management**
 2. Anote: nome do banco, usuário, senha (host geralmente é `localhost`)
 3. No **Gerenciador de Arquivos** → raiz do site (`public_html`)
-4. Copie `wp-config-db.php.example` para `wp-config-db.php`
-5. Edite `wp-config-db.php` com os dados reais:
+4. Copie `.env.example` para `.env`
+5. Edite `.env` com os dados reais:
 
-```php
-define( 'DB_NAME', 'u123456789_seu_banco' );
-define( 'DB_USER', 'u123456789_seu_usuario' );
-define( 'DB_PASSWORD', 'sua_senha' );
-define( 'DB_HOST', 'localhost' );
+```env
+DB_NAME=u123456789_seu_banco
+DB_USER=u123456789_seu_usuario
+DB_PASSWORD=sua_senha
+DB_HOST=localhost
+DB_TABLE_PREFIX=wp_
 ```
 
 6. Salve e recarregue o site
+
+> **Segurança:** o `.env` não vai para o Git. Nunca commite senhas.
 
 Guia oficial Hostinger: [Como corrigir "Error establishing a database connection"](https://www.hostinger.com/tutorials/how-to-fix-error-establishing-a-database-connection-in-wordpress)
 

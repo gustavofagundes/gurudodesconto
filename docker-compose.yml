@@ -20,11 +20,14 @@ services:
     restart: unless-stopped
     ports:
       - "8080:80"
+    env_file:
+      - .env
     environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_HOST: ${DB_HOST:-db}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_TABLE_PREFIX: ${DB_TABLE_PREFIX:-wp_}
     volumes:
       - .:/var/www/html
     depends_on:

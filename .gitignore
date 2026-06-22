@@ -1,7 +1,6 @@
 # WordPress
 public_html/wp-config.php
 wp-config.php
-wp-config-db.php
 
 # Uploads e cache
 public_html/wp-content/uploads/
@@ -22,3 +21,4 @@ Thumbs.db
 # Env
 .env
 .env.*
+!.env.example

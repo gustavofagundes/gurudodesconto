@@ -23,6 +23,40 @@
 // IMPORTANT: this file needs to stay in-sync with https://github.com/WordPress/WordPress/blob/master/wp-config-sample.php
 // (it gets parsed by the upstream wizard in https://github.com/WordPress/WordPress/blob/f27cb65e1ef25d11b535695a660e7282b98eb742/wp-admin/setup-config.php#L356-L392)
 
+// Carrega variáveis do arquivo .env (local / Hostinger) se existir
+if ( file_exists( __DIR__ . '/.env' ) ) {
+	foreach ( file( __DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ) as $line ) {
+		$line = trim( $line );
+		if ( $line === '' || str_starts_with( $line, '#' ) || ! str_contains( $line, '=' ) ) {
+			continue;
+		}
+		list( $name, $value ) = explode( '=', $line, 2 );
+		$name  = trim( $name );
+		$value = trim( $value, " \t\n\r\0\x0B\"'" );
+		if ( getenv( $name ) === false ) {
+			putenv( "$name=$value" );
+			$_ENV[ $name ]    = $value;
+			$_SERVER[ $name ] = $value;
+		}
+	}
+}
+
+// Lê variável de ambiente (suporta VAR e VAR_FILE do Docker)
+if ( ! function_exists( 'guru_env' ) ) {
+	function guru_env( $keys, $default = '' ) {
+		foreach ( (array) $keys as $key ) {
+			if ( $file = getenv( $key . '_FILE' ) ) {
+				return rtrim( file_get_contents( $file ), "\r\n" );
+			}
+			$val = getenv( $key );
+			if ( $val !== false && $val !== '' ) {
+				return $val;
+			}
+		}
+		return $default;
+	}
+}
+
 // a helper function to lookup "env_FILE", "env", then fallback
 if (!function_exists('getenv_docker')) {
 	// https://github.com/docker-library/wordpress/issues/588 (WP-CLI will load this file 2x)
@@ -39,22 +73,12 @@ if (!function_exists('getenv_docker')) {
 	}
 }
 
-// ** Database settings - You can get this info from your web host ** //
-// Docker: usa variáveis WORDPRESS_DB_* do docker-compose.yml
-// Hostinger: crie o arquivo wp-config-db.php (veja wp-config-db.php.example)
-if ( getenv( 'WORDPRESS_DB_HOST' ) !== false ) {
-	define( 'DB_NAME', getenv_docker( 'WORDPRESS_DB_NAME', 'wordpress' ) );
-	define( 'DB_USER', getenv_docker( 'WORDPRESS_DB_USER', 'wordpress' ) );
-	define( 'DB_PASSWORD', getenv_docker( 'WORDPRESS_DB_PASSWORD', 'wordpress' ) );
-	define( 'DB_HOST', getenv_docker( 'WORDPRESS_DB_HOST', 'db' ) );
-} elseif ( file_exists( __DIR__ . '/wp-config-db.php' ) ) {
-	require __DIR__ . '/wp-config-db.php';
-} else {
-	define( 'DB_NAME', 'PREENCHA_NO_HPANEL' );
-	define( 'DB_USER', 'PREENCHA_NO_HPANEL' );
-	define( 'DB_PASSWORD', 'PREENCHA_NO_HPANEL' );
-	define( 'DB_HOST', 'localhost' );
-}
+// ** Database settings — variáveis de ambiente ** //
+// Aceita DB_* (padrão) ou WORDPRESS_DB_* (Docker)
+define( 'DB_NAME',     guru_env( array( 'DB_NAME', 'WORDPRESS_DB_NAME' ), '' ) );
+define( 'DB_USER',     guru_env( array( 'DB_USER', 'WORDPRESS_DB_USER' ), '' ) );
+define( 'DB_PASSWORD', guru_env( array( 'DB_PASSWORD', 'WORDPRESS_DB_PASSWORD' ), '' ) );
+define( 'DB_HOST',     guru_env( array( 'DB_HOST', 'WORDPRESS_DB_HOST' ), 'localhost' ) );
 
 /**#@+
  * Authentication unique keys and salts.
@@ -91,7 +115,7 @@ define( 'NONCE_SALT',       getenv_docker('WORDPRESS_NONCE_SALT',       '60d1534
  *
  * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/#table-prefix
  */
-$table_prefix = getenv_docker('WORDPRESS_TABLE_PREFIX', 'wp_');
+$table_prefix = guru_env( array( 'DB_TABLE_PREFIX', 'WORDPRESS_TABLE_PREFIX' ), 'wp_' );
 
 /**
  * For developers: WordPress debugging mode.

@@ -39,14 +39,17 @@ docker compose down -v
 
 ## Credenciais do banco (local)
 
-| Campo | Valor |
-|-------|-------|
-| Host | `db` (dentro do Docker) |
-| Banco | `wordpress` |
-| Usuário | `wordpress` |
-| Senha | `wordpress` |
+Definidas no arquivo **`.env`** na raiz do projeto:
 
-O Docker monta a **raiz do projeto** (onde estão os arquivos do WordPress) em `/var/www/html`.
+```env
+DB_NAME=wordpress
+DB_USER=wordpress
+DB_PASSWORD=wordpress
+DB_HOST=db
+DB_TABLE_PREFIX=wp_
+```
+
+O Docker lê o `.env` automaticamente via `docker-compose.yml`.
 
 ## Problemas comuns
 
