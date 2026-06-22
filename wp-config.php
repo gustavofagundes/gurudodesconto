@@ -146,6 +146,23 @@ define( 'WP_DEBUG', !!getenv_docker('WORDPRESS_DEBUG', '') );
 
 /* Add any custom values between this line and the "stop editing" line. */
 
+// ── Segurança ────────────────────────────────────────────────────────────────
+define( 'DISALLOW_FILE_EDIT', true );  // bloqueia editor de temas/plugins no painel
+define( 'AUTOMATIC_UPDATER_DISABLED', false ); // mantém atualizações de segurança WP
+
+// SSL obrigatório no admin (ative na Hostinger via .env: WP_FORCE_SSL_ADMIN=true)
+define( 'WP_FORCE_SSL_ADMIN', filter_var( guru_env( 'WP_FORCE_SSL_ADMIN', 'false' ), FILTER_VALIDATE_BOOLEAN ) );
+
+// Esconde erros PHP em produção (local: WORDPRESS_DEBUG=1 no .env)
+define( 'WP_DEBUG_DISPLAY', filter_var( guru_env( 'WP_DEBUG_DISPLAY', 'false' ), FILTER_VALIDATE_BOOLEAN ) );
+@ini_set( 'display_errors', WP_DEBUG_DISPLAY ? 1 : 0 ); // phpcs:ignore
+
+// Limita revisões de posts (reduz tamanho do banco)
+define( 'WP_POST_REVISIONS', (int) guru_env( 'WP_POST_REVISIONS', 5 ) );
+
+// Desabilita instalação/edição de plugins via painel em produção (opcional)
+// define( 'DISALLOW_FILE_MODS', true );
+
 // If we're behind a proxy server and using HTTPS, we need to alert WordPress of that fact
 // see also https://wordpress.org/support/article/administration-over-ssl/#using-a-reverse-proxy
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {

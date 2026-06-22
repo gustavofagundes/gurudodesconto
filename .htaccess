@@ -1,3 +1,27 @@
+# BEGIN Guru Security
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Bloqueia acesso direto a arquivos sensíveis
+RewriteRule ^\.env - [F,L]
+RewriteRule ^wp-config\.php - [F,L]
+RewriteRule ^\.git - [F,L]
+
+# Bloqueia XML-RPC (ataques brute force)
+RewriteRule ^xmlrpc\.php - [F,L]
+</IfModule>
+
+<FilesMatch "^(\.env|wp-config\.php|\.htaccess|\.gitignore)$">
+	Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+	Header set X-Content-Type-Options "nosniff"
+	Header set X-Frame-Options "SAMEORIGIN"
+	Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+# END Guru Security
+
 # BEGIN WordPress
 # The directives (lines) between "BEGIN WordPress" and "END WordPress" are
 # dynamically generated, and should only be modified via WordPress filters.
