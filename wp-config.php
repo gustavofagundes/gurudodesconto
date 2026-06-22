@@ -80,6 +80,19 @@ define( 'DB_USER',     guru_env( array( 'DB_USER', 'WORDPRESS_DB_USER' ), '' ) )
 define( 'DB_PASSWORD', guru_env( array( 'DB_PASSWORD', 'WORDPRESS_DB_PASSWORD' ), '' ) );
 define( 'DB_HOST',     guru_env( array( 'DB_HOST', 'WORDPRESS_DB_HOST' ), 'localhost' ) );
 
+if ( empty( DB_NAME ) || empty( DB_USER ) ) {
+	header( 'Content-Type: text/html; charset=utf-8' );
+	die(
+		'<h1>Configuração do banco ausente</h1>' .
+		'<p>Crie o arquivo <code>.env</code> na raiz do site (<code>public_html</code>) com:</p>' .
+		'<pre>DB_NAME=seu_banco
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_HOST=localhost</pre>' .
+		'<p>Copie de <code>.env.example</code> e preencha com os dados do hPanel → Databases → Management.</p>'
+	);
+}
+
 /**#@+
  * Authentication unique keys and salts.
  *

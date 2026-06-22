@@ -85,9 +85,37 @@ a:hover {
   padding: 0.75rem 0;
 }
 
+.site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
 .site-logo img {
-  height: 64px;
+  height: 56px;
   width: auto;
+  flex-shrink: 0;
+}
+
+.site-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  color: var(--guru-blue);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.site-logo-text strong {
+  color: var(--guru-orange);
+}
+
+.site-logo-text small {
+  font-size: 0.72rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--guru-gray);
 }
 
 .main-nav ul {
