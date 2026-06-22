@@ -35,19 +35,30 @@ No **hPanel** da Hostinger:
 1. Use FileZilla com credenciais FTP da Hostinger
 2. Envie todo o conteúdo de `public_html/` para a raiz do domínio
 
-### 3. Configurar wp-config.php
+### 3. Configurar wp-config.php (IMPORTANTE — evita erro de conexão)
 
-1. Renomeie `wp-config-sample.php` para `wp-config.php`
-2. Edite e preencha:
+O `wp-config.php` detecta automaticamente:
+- **Docker local** → usa as credenciais do `docker-compose.yml`
+- **Hostinger** → precisa do arquivo `wp-config-db.php`
+
+**Na Hostinger:**
+
+1. No hPanel: **Websites → Dashboard → Databases → Management**
+2. Anote: nome do banco, usuário, senha (host geralmente é `localhost`)
+3. No **Gerenciador de Arquivos** → raiz do site (`public_html`)
+4. Copie `wp-config-db.php.example` para `wp-config-db.php`
+5. Edite `wp-config-db.php` com os dados reais:
 
 ```php
-define( 'DB_NAME', 'seu_banco' );
-define( 'DB_USER', 'seu_usuario' );
+define( 'DB_NAME', 'u123456789_seu_banco' );
+define( 'DB_USER', 'u123456789_seu_usuario' );
 define( 'DB_PASSWORD', 'sua_senha' );
 define( 'DB_HOST', 'localhost' );
 ```
 
-3. Gere chaves de segurança em: https://api.wordpress.org/secret-key/1.1/salt/
+6. Salve e recarregue o site
+
+Guia oficial Hostinger: [Como corrigir "Error establishing a database connection"](https://www.hostinger.com/tutorials/how-to-fix-error-establishing-a-database-connection-in-wordpress)
 
 ### 4. Instalar WordPress
 

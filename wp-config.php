@@ -40,23 +40,21 @@ if (!function_exists('getenv_docker')) {
 }
 
 // ** Database settings - You can get this info from your web host ** //
-/** The name of the database for WordPress */
-define( 'DB_NAME', getenv_docker('DB_NAME', 'wordpress') );
-
-/** Database username */
-define( 'DB_USER', getenv_docker('DB_USER', 'example username') );
-
-/** Database password */
-define( 'DB_PASSWORD', getenv_docker('DB_PASSWORD', 'example password') );
-
-/**
- * Docker image fallback values above are sourced from the official WordPress installation wizard:
- * https://github.com/WordPress/WordPress/blob/1356f6537220ffdc32b9dad2a6cdbe2d010b7a88/wp-admin/setup-config.php#L224-L238
- * (However, using "example username" and "example password" in your database is strongly discouraged.  Please use strong, random credentials!)
- */
-
-/** Database hostname */
-define( 'DB_HOST', getenv_docker('DB_HOST', 'mysql') );
+// Docker: usa variáveis WORDPRESS_DB_* do docker-compose.yml
+// Hostinger: crie o arquivo wp-config-db.php (veja wp-config-db.php.example)
+if ( getenv( 'WORDPRESS_DB_HOST' ) !== false ) {
+	define( 'DB_NAME', getenv_docker( 'WORDPRESS_DB_NAME', 'wordpress' ) );
+	define( 'DB_USER', getenv_docker( 'WORDPRESS_DB_USER', 'wordpress' ) );
+	define( 'DB_PASSWORD', getenv_docker( 'WORDPRESS_DB_PASSWORD', 'wordpress' ) );
+	define( 'DB_HOST', getenv_docker( 'WORDPRESS_DB_HOST', 'db' ) );
+} elseif ( file_exists( __DIR__ . '/wp-config-db.php' ) ) {
+	require __DIR__ . '/wp-config-db.php';
+} else {
+	define( 'DB_NAME', 'PREENCHA_NO_HPANEL' );
+	define( 'DB_USER', 'PREENCHA_NO_HPANEL' );
+	define( 'DB_PASSWORD', 'PREENCHA_NO_HPANEL' );
+	define( 'DB_HOST', 'localhost' );
+}
 
 /**#@+
  * Authentication unique keys and salts.

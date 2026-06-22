@@ -46,7 +46,7 @@ docker compose down -v
 | Usuário | `wordpress` |
 | Senha | `wordpress` |
 
-O Docker gera o `wp-config.php` automaticamente na primeira execução.
+O Docker monta a **raiz do projeto** (onde estão os arquivos do WordPress) em `/var/www/html`.
 
 ## Problemas comuns
 
