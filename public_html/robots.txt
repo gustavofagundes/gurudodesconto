@@ -1,0 +1,10 @@
+# Guru do Desconto — robots.txt
+# O WordPress gera robots dinâmico em /robots.txt via mu-plugin.
+# Este arquivo serve como referência para hospedagens que usam arquivo estático.
+
+User-agent: *
+Allow: /
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+Sitemap: https://SEU-DOMINIO.com.br/wp-sitemap.xml

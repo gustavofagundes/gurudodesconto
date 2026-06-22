@@ -1,0 +1,22 @@
+# WordPress
+public_html/wp-config.php
+
+# Uploads e cache
+public_html/wp-content/uploads/
+public_html/wp-content/cache/
+public_html/wp-content/upgrade/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Env
+.env
+.env.*

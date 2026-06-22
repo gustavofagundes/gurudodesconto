@@ -1,0 +1,677 @@
+/*
+Theme Name: Guru do Desconto
+Theme URI: https://gurudodesconto.com.br
+Author: Guru do Desconto
+Description: Tema para reviews comparativos e promoções de afiliados — Mercado Livre, Shopee e Amazon.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.8
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+Text Domain: guru-do-desconto
+Tags: affiliate, reviews, seo, e-commerce
+*/
+
+:root {
+  --guru-orange: #f27405;
+  --guru-orange-dark: #d96304;
+  --guru-blue: #1d3557;
+  --guru-blue-light: #2a4a73;
+  --guru-yellow: #ffc107;
+  --guru-bg: #faf8f5;
+  --guru-white: #ffffff;
+  --guru-gray: #6b7280;
+  --guru-gray-light: #f3f4f6;
+  --guru-success: #25d366;
+  --guru-shadow: 0 4px 24px rgba(29, 53, 87, 0.08);
+  --guru-radius: 16px;
+  --guru-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--guru-font);
+  color: var(--guru-blue);
+  background: var(--guru-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--guru-orange);
+  text-decoration: none;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+a:hover {
+  color: var(--guru-orange-dark);
+}
+
+.container {
+  width: min(1140px, 92%);
+  margin-inline: auto;
+}
+
+/* Header */
+.site-header {
+  background: var(--guru-white);
+  box-shadow: var(--guru-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+
+.site-logo img {
+  height: 64px;
+  width: auto;
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav a {
+  color: var(--guru-blue);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.main-nav a:hover {
+  color: var(--guru-orange);
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--guru-success);
+  color: var(--guru-white) !important;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.nav-cta:hover {
+  opacity: 0.92;
+  color: var(--guru-white) !important;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 2px solid var(--guru-blue);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  color: var(--guru-blue);
+  font-size: 1.2rem;
+}
+
+/* Hero */
+.hero {
+  padding: 3.5rem 0 4rem;
+  background: linear-gradient(135deg, #fff8f0 0%, #eef4fb 100%);
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: var(--guru-yellow);
+  color: var(--guru-blue);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  margin: 0 0 1rem;
+  color: var(--guru-blue);
+}
+
+.hero h1 span {
+  color: var(--guru-orange);
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: var(--guru-gray);
+  margin: 0 0 1.75rem;
+  max-width: 520px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-whatsapp {
+  background: var(--guru-success);
+  color: var(--guru-white);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+}
+
+.btn-whatsapp:hover {
+  color: var(--guru-white);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--guru-blue);
+  border: 2px solid var(--guru-blue);
+}
+
+.btn-outline:hover {
+  background: var(--guru-blue);
+  color: var(--guru-white);
+}
+
+.hero-image {
+  text-align: center;
+}
+
+.hero-image img {
+  max-height: 380px;
+  margin-inline: auto;
+  filter: drop-shadow(0 16px 32px rgba(29, 53, 87, 0.15));
+}
+
+/* Sections */
+.section {
+  padding: 4rem 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.section-header h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0 0 0.5rem;
+  color: var(--guru-blue);
+}
+
+.section-header p {
+  color: var(--guru-gray);
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+/* Marketplaces */
+.marketplaces {
+  background: var(--guru-white);
+}
+
+.marketplace-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.marketplace-card {
+  background: var(--guru-bg);
+  border-radius: var(--guru-radius);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.marketplace-card:hover {
+  border-color: var(--guru-orange);
+  transform: translateY(-4px);
+}
+
+.marketplace-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.marketplace-card.ml .marketplace-icon { background: #ffe600; color: #2d3277; }
+.marketplace-card.shopee .marketplace-icon { background: #ee4d2d; color: #fff; }
+.marketplace-card.amazon .marketplace-icon { background: #ff9900; color: #232f3e; }
+
+.marketplace-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.marketplace-card p {
+  color: var(--guru-gray);
+  font-size: 0.95rem;
+  margin: 0 0 1rem;
+}
+
+/* Reviews grid */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.review-card {
+  background: var(--guru-white);
+  border-radius: var(--guru-radius);
+  overflow: hidden;
+  box-shadow: var(--guru-shadow);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+}
+
+.review-card-image {
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: var(--guru-gray-light);
+}
+
+.review-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.review-card-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.6rem;
+  width: fit-content;
+}
+
+.badge-ml { background: #ffe600; color: #2d3277; }
+.badge-shopee { background: #ee4d2d; color: #fff; }
+.badge-amazon { background: #ff9900; color: #232f3e; }
+
+.review-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.review-card h3 a {
+  color: var(--guru-blue);
+}
+
+.review-card h3 a:hover {
+  color: var(--guru-orange);
+}
+
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.stars {
+  color: var(--guru-yellow);
+  letter-spacing: 1px;
+}
+
+.review-price {
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.price-current {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--guru-orange);
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: var(--guru-gray);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.discount-tag {
+  background: var(--guru-orange);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.btn-affiliate {
+  display: block;
+  text-align: center;
+  background: var(--guru-orange);
+  color: var(--guru-white);
+  padding: 0.7rem;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-top: 0.75rem;
+}
+
+.btn-affiliate:hover {
+  background: var(--guru-orange-dark);
+  color: var(--guru-white);
+}
+
+/* WhatsApp CTA band */
+.whatsapp-band {
+  background: linear-gradient(135deg, var(--guru-success), #1ebe57);
+  color: var(--guru-white);
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.whatsapp-band h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.whatsapp-band p {
+  margin: 0 0 1.5rem;
+  opacity: 0.95;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+.site-footer {
+  background: var(--guru-blue);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 3rem 0 1.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-brand img {
+  height: 56px;
+  margin-bottom: 0.75rem;
+}
+
+.footer-brand p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.footer-col h4 {
+  color: var(--guru-white);
+  margin: 0 0 1rem;
+  font-size: 1rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-col li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-col a {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-col a:hover {
+  color: var(--guru-yellow);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* Single review */
+.review-single {
+  padding: 2.5rem 0 4rem;
+}
+
+.review-single-header {
+  margin-bottom: 2rem;
+}
+
+.review-single-header h1 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin: 0.5rem 0 1rem;
+}
+
+.review-content {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.review-prose {
+  background: var(--guru-white);
+  padding: 2rem;
+  border-radius: var(--guru-radius);
+  box-shadow: var(--guru-shadow);
+}
+
+.review-prose h2,
+.review-prose h3 {
+  color: var(--guru-blue);
+  margin-top: 1.5rem;
+}
+
+.review-sidebar {
+  position: sticky;
+  top: 90px;
+}
+
+.buy-box {
+  background: var(--guru-white);
+  border-radius: var(--guru-radius);
+  box-shadow: var(--guru-shadow);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.buy-box img {
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.buy-box .btn-affiliate {
+  font-size: 1.05rem;
+  padding: 0.9rem;
+}
+
+.affiliate-disclaimer {
+  font-size: 0.8rem;
+  color: var(--guru-gray);
+  margin-top: 1rem;
+  line-height: 1.5;
+}
+
+/* Archive */
+.archive-header {
+  padding: 2.5rem 0 1rem;
+  text-align: center;
+}
+
+.archive-filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.filter-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 2px solid var(--guru-blue);
+  background: transparent;
+  color: var(--guru-blue);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+  background: var(--guru-blue);
+  color: var(--guru-white);
+}
+
+/* Floating WhatsApp */
+.floating-whatsapp {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  background: var(--guru-success);
+  color: var(--guru-white);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  transition: transform 0.2s;
+}
+
+.floating-whatsapp:hover {
+  transform: scale(1.08);
+  color: var(--guru-white);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-grid,
+  .review-content,
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .main-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--guru-white);
+    box-shadow: var(--guru-shadow);
+    padding: 1rem;
+  }
+
+  .main-nav.open {
+    display: block;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .header-inner {
+    position: relative;
+    flex-wrap: wrap;
+  }
+
+  .review-sidebar {
+    position: static;
+  }
+}
