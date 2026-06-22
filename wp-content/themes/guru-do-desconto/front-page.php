@@ -38,6 +38,8 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 
 <?php get_template_part( 'template-parts/whatsapp', 'faq' ); ?>
 
+<?php guru_render_adsense_unit( 'home_mid' ); ?>
+
 <section class="section marketplaces" id="promocoes">
 	<div class="container">
 		<div class="section-header">

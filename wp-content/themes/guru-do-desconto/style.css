@@ -677,6 +677,27 @@ a:hover {
   color: var(--guru-white);
 }
 
+/* Google AdSense */
+.guru-ad {
+  margin: 1.5rem auto;
+  max-width: 100%;
+  text-align: center;
+  overflow: hidden;
+  min-height: 90px;
+}
+
+.guru-ad-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--guru-gray);
+  margin: 0 0 0.35rem;
+}
+
+.review-sidebar .guru-ad {
+  margin-top: 1rem;
+}
+
 /* WhatsApp SEO + FAQ */
 .whatsapp-seo {
   background: var(--guru-white);

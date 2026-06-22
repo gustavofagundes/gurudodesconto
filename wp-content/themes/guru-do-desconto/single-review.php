@@ -77,6 +77,8 @@ while ( have_posts() ) :
 						<?php esc_html_e( 'Link de afiliado. O preço pode variar. Verifique na loja antes de comprar.', 'guru-do-desconto' ); ?>
 					</p>
 				</div>
+
+				<?php guru_render_adsense_unit( 'review' ); ?>
 			</aside>
 		</div>
 	</article>

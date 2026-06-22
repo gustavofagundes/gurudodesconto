@@ -18,6 +18,7 @@ require_once GURU_THEME_DIR . '/inc/seo.php';
 require_once GURU_THEME_DIR . '/inc/meta-boxes.php';
 require_once GURU_THEME_DIR . '/inc/sample-content.php';
 require_once GURU_THEME_DIR . '/inc/fallback-menu.php';
+require_once GURU_THEME_DIR . '/inc/adsense.php';
 
 /**
  * Theme setup.

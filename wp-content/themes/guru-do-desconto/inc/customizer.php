@@ -74,5 +74,53 @@ function guru_customize_register( $wp_customize ) {
 		'section'     => 'guru_settings',
 		'type'        => 'text',
 	) );
+
+	// Google AdSense
+	$wp_customize->add_setting( 'guru_adsense_enabled', array(
+		'default'           => true,
+		'sanitize_callback' => 'wp_validate_boolean',
+	) );
+
+	$wp_customize->add_control( 'guru_adsense_enabled', array(
+		'label'   => __( 'Ativar Google AdSense', 'guru-do-desconto' ),
+		'section' => 'guru_settings',
+		'type'    => 'checkbox',
+	) );
+
+	$wp_customize->add_setting( 'guru_adsense_client', array(
+		'default'           => 'ca-pub-2824875854264000',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_adsense_client', array(
+		'label'       => __( 'AdSense — ID do editor (ca-pub-...)', 'guru-do-desconto' ),
+		'description' => __( 'Ex.: ca-pub-2824875854264000', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_adsense_slot_home_mid', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_adsense_slot_home_mid', array(
+		'label'       => __( 'AdSense — Slot da home (opcional)', 'guru-do-desconto' ),
+		'description' => __( 'ID numérico do bloco de anúncio na home. Deixe vazio para usar só Auto ads.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_adsense_slot_review', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_adsense_slot_review', array(
+		'label'       => __( 'AdSense — Slot dos reviews (opcional)', 'guru-do-desconto' ),
+		'description' => __( 'ID numérico do bloco em páginas de review.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
 }
 add_action( 'customize_register', 'guru_customize_register' );
