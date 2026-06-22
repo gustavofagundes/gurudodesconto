@@ -4,9 +4,8 @@
 	<div class="container">
 		<div class="footer-grid">
 			<div class="footer-brand">
-				<img src="<?php echo esc_url( GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png' ); ?>"
-				     alt="<?php bloginfo( 'name' ); ?>" width="180" height="56">
-				<p><?php echo esc_html( get_theme_mod( 'guru_site_description', 'Reviews comparativos e as melhores promoções do Mercado Livre, Shopee e Amazon.' ) ); ?></p>
+				<?php get_template_part( 'template-parts/brand', 'logo', array( 'context' => 'footer' ) ); ?>
+				<p><?php echo esc_html( get_theme_mod( 'guru_site_description', guru_default_seo_description() ) ); ?></p>
 			</div>
 
 			<div class="footer-col">

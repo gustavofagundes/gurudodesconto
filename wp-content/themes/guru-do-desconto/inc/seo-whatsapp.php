@@ -82,6 +82,16 @@ function guru_whatsapp_faq_items() {
  * Cria ou recupera a landing page /grupo-promocoes-whatsapp/.
  */
 function guru_ensure_whatsapp_seo_page() {
+	$page_id = (int) get_option( 'guru_whatsapp_page_id', 0 );
+	if ( $page_id && 'publish' === get_post_status( $page_id ) ) {
+		return $page_id;
+	}
+
+	// Delega ao mu-plugin se disponível.
+	if ( function_exists( 'guru_mu_ensure_whatsapp_page' ) ) {
+		return guru_mu_ensure_whatsapp_page();
+	}
+
 	$slug     = 'grupo-promocoes-whatsapp';
 	$existing = get_page_by_path( $slug, OBJECT, 'page' );
 
@@ -128,7 +138,6 @@ function guru_ensure_whatsapp_seo_page() {
 	return 0;
 }
 add_action( 'after_switch_theme', 'guru_ensure_whatsapp_seo_page' );
-add_action( 'init', 'guru_ensure_whatsapp_seo_page', 20 );
 
 /**
  * Schema FAQPage na home e landing do WhatsApp.

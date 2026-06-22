@@ -85,10 +85,85 @@ a:hover {
   padding: 0.75rem 0;
 }
 
-.site-logo img {
-  height: 64px;
+/* Brand logo — mascote + texto */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  line-height: 1.1;
+}
+
+.brand-logo__icon {
   width: auto;
+  height: 58px;
+  flex-shrink: 0;
   display: block;
+}
+
+.brand-logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.brand-logo__guru {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--guru-orange);
+  letter-spacing: -0.02em;
+}
+
+.brand-logo__name {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--guru-blue);
+  letter-spacing: -0.02em;
+}
+
+.brand-logo__tagline {
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--guru-gray);
+  margin-top: 0.1rem;
+}
+
+/* Header */
+.brand-logo--header .brand-logo__icon {
+  height: 62px;
+}
+
+/* Footer — texto claro sobre fundo azul */
+.brand-logo--footer {
+  margin-bottom: 0.85rem;
+}
+
+.brand-logo--footer .brand-logo__name {
+  color: var(--guru-white);
+}
+
+.brand-logo--footer .brand-logo__tagline {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.brand-logo--footer .brand-logo__icon {
+  height: 54px;
+}
+
+@media (max-width: 480px) {
+  .brand-logo__guru,
+  .brand-logo__name {
+    font-size: 1.2rem;
+  }
+
+  .brand-logo__icon {
+    height: 48px;
+  }
+
+  .brand-logo--header .brand-logo__icon {
+    height: 52px;
+  }
 }
 
 .main-nav ul {
@@ -468,11 +543,6 @@ a:hover {
   grid-template-columns: 2fr 1fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
-}
-
-.footer-brand img {
-  height: 56px;
-  margin-bottom: 0.75rem;
 }
 
 .footer-brand p {

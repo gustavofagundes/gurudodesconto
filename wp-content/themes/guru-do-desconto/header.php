@@ -11,11 +11,7 @@
 
 <header class="site-header" role="banner">
 	<div class="container header-inner">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo" aria-label="<?php bloginfo( 'name' ); ?> — Início">
-			<img src="<?php echo esc_url( GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png' ); ?>"
-			     alt="<?php bloginfo( 'name' ); ?> — Economia e Alegria"
-			     width="200" height="64">
-		</a>
+		<?php get_template_part( 'template-parts/brand', 'logo', array( 'context' => 'header' ) ); ?>
 
 		<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Abrir menu', 'guru-do-desconto' ); ?>" aria-expanded="false">☰</button>
 
