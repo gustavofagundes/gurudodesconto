@@ -8,6 +8,18 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Pretty permalinks são obrigatórios para REST API (/wp-json/) e Google Site Kit.
+ */
+function guru_setup_permalinks() {
+	if ( get_option( 'permalink_structure' ) ) {
+		return;
+	}
+	update_option( 'permalink_structure', '/%postname%/' );
+	flush_rewrite_rules();
+}
+add_action( 'after_switch_theme', 'guru_setup_permalinks' );
+
+/**
  * Create default pages, menus and sample reviews.
  */
 function guru_create_sample_content() {

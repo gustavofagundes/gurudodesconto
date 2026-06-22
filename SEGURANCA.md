@@ -61,3 +61,15 @@
 2. Restaure backup limpo no hPanel
 3. Escaneie com Wordfence
 4. Regenere salts em https://api.wordpress.org/secret-key/1.1/salt/ e cole no `wp-config.php`
+
+## Google Site Kit — "not a valid JSON response"
+
+Causa comum: REST API (`/wp-json/`) retornando HTML em vez de JSON.
+
+**Correção:**
+1. **Configurações → Links permanentes** → escolha **Nome do post** → **Salvar**
+2. Confirme que `.htaccess` contém as regras de rewrite do WordPress (veja raiz do projeto)
+3. Teste no navegador: `https://seudominio.com.br/wp-json/` — deve mostrar JSON
+4. No Site Kit: **Configurações → Reconectar** os serviços Google
+
+A mensagem *"Search Console is gathering data"* é normal nas primeiras 48h.

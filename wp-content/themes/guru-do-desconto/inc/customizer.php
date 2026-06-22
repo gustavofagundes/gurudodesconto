@@ -17,7 +17,7 @@ function guru_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_setting( 'guru_whatsapp_link', array(
-		'default'           => 'https://chat.whatsapp.com/SEU_LINK_AQUI',
+		'default'           => 'https://chat.whatsapp.com/I5Ln1bvpIP89FpaxRO4VJG?mode=gi_t',
 		'sanitize_callback' => 'esc_url_raw',
 		'transport'         => 'refresh',
 	) );

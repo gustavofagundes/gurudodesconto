@@ -12,7 +12,16 @@ defined( 'ABSPATH' ) || exit;
  * Headers de segurança HTTP.
  */
 function guru_security_headers() {
-	if ( headers_sent() || is_admin() ) {
+	if ( headers_sent() ) {
+		return;
+	}
+
+	// Não altera headers da REST API (Site Kit, Gutenberg, etc.)
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return;
+	}
+
+	if ( is_admin() ) {
 		return;
 	}
 

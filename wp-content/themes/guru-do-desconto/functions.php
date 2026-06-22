@@ -71,7 +71,7 @@ add_action( 'wp_enqueue_scripts', 'guru_enqueue_assets' );
  * Get WhatsApp group link from customizer.
  */
 function guru_whatsapp_link() {
-	return esc_url( get_theme_mod( 'guru_whatsapp_link', 'https://chat.whatsapp.com/SEU_LINK_AQUI' ) );
+	return esc_url( get_theme_mod( 'guru_whatsapp_link', 'https://chat.whatsapp.com/I5Ln1bvpIP89FpaxRO4VJG?mode=gi_t' ) );
 }
 
 /**
