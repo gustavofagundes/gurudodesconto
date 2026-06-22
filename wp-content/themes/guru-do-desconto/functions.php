@@ -13,6 +13,7 @@ define( 'GURU_THEME_URI', get_template_directory_uri() );
 
 require_once GURU_THEME_DIR . '/inc/custom-post-types.php';
 require_once GURU_THEME_DIR . '/inc/customizer.php';
+require_once GURU_THEME_DIR . '/inc/seo-whatsapp.php';
 require_once GURU_THEME_DIR . '/inc/seo.php';
 require_once GURU_THEME_DIR . '/inc/meta-boxes.php';
 require_once GURU_THEME_DIR . '/inc/sample-content.php';

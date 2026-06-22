@@ -14,7 +14,13 @@
 				<ul>
 					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Início', 'guru-do-desconto' ); ?></a></li>
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'review' ) ); ?>"><?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?></a></li>
-					<li><a href="<?php echo esc_url( guru_whatsapp_link() ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Grupo WhatsApp', 'guru-do-desconto' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/#grupo-whatsapp' ) ); ?>"><?php esc_html_e( 'Grupo WhatsApp', 'guru-do-desconto' ); ?></a></li>
+					<?php
+					$wa_page_id = (int) get_option( 'guru_whatsapp_page_id', 0 );
+					if ( $wa_page_id ) :
+						?>
+					<li><a href="<?php echo esc_url( get_permalink( $wa_page_id ) ); ?>"><?php esc_html_e( 'Grupo de Promoções', 'guru-do-desconto' ); ?></a></li>
+					<?php endif; ?>
 				</ul>
 			</div>
 

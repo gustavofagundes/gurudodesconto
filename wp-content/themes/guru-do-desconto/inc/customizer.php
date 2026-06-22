@@ -41,7 +41,7 @@ function guru_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_setting( 'guru_site_description', array(
-		'default'           => 'Reviews comparativos e as melhores promoções do Mercado Livre, Shopee e Amazon.',
+		'default'           => 'Grupo de promoções no WhatsApp com ofertas do Mercado Livre, Shopee e Amazon. Cupons, descontos e reviews do Guru do Desconto.',
 		'sanitize_callback' => 'sanitize_textarea_field',
 	) );
 

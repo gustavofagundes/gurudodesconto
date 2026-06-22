@@ -18,8 +18,10 @@ function guru_meta_description() {
 		}
 	} elseif ( is_post_type_archive( 'review' ) ) {
 		$desc = __( 'Reviews comparativos e análises honestas de produtos com promoções no Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' );
+	} elseif ( is_front_page() || guru_is_whatsapp_landing_page() ) {
+		$desc = guru_default_seo_description();
 	} else {
-		$desc = get_theme_mod( 'guru_site_description', 'Reviews comparativos e as melhores promoções do Mercado Livre, Shopee e Amazon.' );
+		$desc = get_theme_mod( 'guru_site_description', guru_default_seo_description() );
 	}
 
 	if ( $desc ) {
@@ -33,7 +35,9 @@ add_action( 'wp_head', 'guru_meta_description', 2 );
  */
 function guru_social_meta() {
 	$title = wp_get_document_title();
-	$desc  = get_theme_mod( 'guru_site_description' );
+	$desc  = is_front_page() || guru_is_whatsapp_landing_page()
+		? guru_default_seo_description()
+		: get_theme_mod( 'guru_site_description', guru_default_seo_description() );
 	$url   = is_singular() ? get_permalink() : home_url( '/' );
 	$image = GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png';
 
@@ -114,7 +118,14 @@ function guru_schema_organization() {
 				'name'  => get_bloginfo( 'name' ),
 				'url'   => home_url( '/' ),
 				'logo'  => GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png',
-				'description' => get_theme_mod( 'guru_site_description' ),
+				'description' => guru_default_seo_description(),
+				'knowsAbout'  => array(
+					'Grupo de promoções no WhatsApp',
+					'Cupons Mercado Livre',
+					'Ofertas Shopee',
+					'Promoções Amazon',
+					'Reviews de produtos',
+				),
 				'sameAs' => array(),
 			),
 			array(

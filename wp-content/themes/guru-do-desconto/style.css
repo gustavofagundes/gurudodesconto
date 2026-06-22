@@ -85,37 +85,10 @@ a:hover {
   padding: 0.75rem 0;
 }
 
-.site-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  text-decoration: none;
-}
-
 .site-logo img {
-  height: 56px;
+  height: 64px;
   width: auto;
-  flex-shrink: 0;
-}
-
-.site-logo-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-  color: var(--guru-blue);
-  font-weight: 700;
-  font-size: 1.05rem;
-}
-
-.site-logo-text strong {
-  color: var(--guru-orange);
-}
-
-.site-logo-text small {
-  font-size: 0.72rem;
-  font-weight: 500;
-  font-style: italic;
-  color: var(--guru-gray);
+  display: block;
 }
 
 .main-nav ul {
@@ -632,6 +605,69 @@ a:hover {
 .filter-btn:hover {
   background: var(--guru-blue);
   color: var(--guru-white);
+}
+
+/* WhatsApp SEO + FAQ */
+.whatsapp-seo {
+  background: var(--guru-white);
+}
+
+.whatsapp-seo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.whatsapp-seo-content ul {
+  margin: 1rem 0 1.5rem;
+  padding-left: 1.25rem;
+  color: var(--guru-gray);
+}
+
+.whatsapp-seo-content li {
+  margin-bottom: 0.4rem;
+}
+
+.faq-list h3 {
+  margin: 0 0 1rem;
+  color: var(--guru-blue);
+}
+
+.faq-item {
+  background: var(--guru-bg);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(29, 53, 87, 0.08);
+}
+
+.faq-item summary {
+  padding: 1rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--guru-blue);
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-answer {
+  padding: 0 1.1rem 1rem;
+  color: var(--guru-gray);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.faq-answer p {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .whatsapp-seo-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Floating WhatsApp */

@@ -72,12 +72,14 @@ Guia oficial Hostinger: [Como corrigir "Error establishing a database connection
 1. **Aparência → Temas** → ative **Guru do Desconto**
 2. O tema cria automaticamente a página inicial, 3 reviews de exemplo e as categorias de marketplace
 
-### 6. Configurar WhatsApp e SEO
+### 6. Configurar WhatsApp e Google Site Kit
 
-1. **Aparência → Personalizar → Guru do Desconto**
-2. Cole o **link do grupo WhatsApp** (`https://chat.whatsapp.com/...`)
-3. Adicione o **Google Analytics ID** (GA4: `G-XXXXXXXX`)
-4. Adicione o código do **Google Search Console**
+1. **Aparência → Personalizar → Guru do Desconto** → cole o **link do grupo WhatsApp**
+2. **Plugins** → confirme que **Site Kit by Google** está ativo (`wp-content/plugins/google-site-kit/`)
+3. Menu **Site Kit** → **Iniciar configuração** → conecte conta Google
+4. Conecte **Search Console** e **Google Analytics (GA4)** pelo assistente do Site Kit
+
+> Erro *"not a valid JSON response"*? Vá em **Configurações → Links permanentes → Nome do post → Salvar**.
 
 ### 7. SSL e URLs
 
@@ -85,11 +87,12 @@ Guia oficial Hostinger: [Como corrigir "Error establishing a database connection
 2. **Configurações → Gerais** → URLs com `https://`
 3. Instale **Really Simple SSL** (recomendado)
 
-### 8. Google Search Console
+### 8. Google Search Console (via Site Kit)
 
-1. https://search.google.com/search-console
-2. Verifique via meta tag (código no Personalizar)
-3. Envie o sitemap: `https://seudominio.com.br/wp-sitemap.xml`
+O Site Kit conecta o Search Console automaticamente. Depois:
+
+1. No Site Kit → verifique se o Search Console está conectado
+2. Confirme o sitemap: `https://seudominio.com.br/wp-sitemap.xml`
 
 ## Adicionar reviews com link de afiliado
 
@@ -108,9 +111,8 @@ Guia oficial Hostinger: [Como corrigir "Error establishing a database connection
 - Links afiliados com `nofollow sponsored`
 - GZIP, cache e preload de imagens
 
-## Plugins recomendados
+## Plugins incluídos
 
-- **Rank Math SEO** ou **Yoast SEO**
-- **LiteSpeed Cache** (Hostinger LiteSpeed)
-- **Smush** (imagens)
-- **Really Simple SSL**
+- **Site Kit by Google** — Analytics, Search Console, AdSense (já no projeto)
+- **LiteSpeed Cache** (Hostinger LiteSpeed) — recomendado na produção
+- **Really Simple SSL** — recomendado na produção

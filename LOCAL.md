@@ -25,6 +25,16 @@ Aguarde ~30 segundos e acesse: **http://localhost:8080**
 5. **Aparência → Temas** → ative **Guru do Desconto**
 6. **Aparência → Personalizar → Guru do Desconto** → cole o link do WhatsApp
 
+## Google Site Kit
+
+O plugin **Site Kit by Google** já está incluído em `wp-content/plugins/google-site-kit/`.
+
+1. Acesse **http://localhost:8080/wp-admin**
+2. Menu lateral: **Site Kit** → **Start setup**
+3. Faça login com sua conta Google e conecte Search Console + Analytics
+
+> Se aparecer *"not a valid JSON response"*, vá em **Configurações → Links permanentes → Nome do post → Salvar**.
+
 ## Parar o ambiente
 
 ```bash
