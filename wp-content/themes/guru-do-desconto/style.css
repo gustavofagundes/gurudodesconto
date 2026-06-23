@@ -109,32 +109,27 @@ a:hover {
 .brand-logo__img {
   display: block;
   width: auto;
-  height: 56px;
-  max-width: 240px;
+  height: 64px;
+  max-width: 320px;
   object-fit: contain;
 }
 
 .brand-logo--header .brand-logo__img {
-  height: 58px;
+  height: 68px;
 }
 
 .brand-logo--footer {
   margin-bottom: 0.85rem;
-  background: var(--guru-white);
-  border-radius: 12px;
-  padding: 0.45rem 0.75rem;
-  display: inline-flex;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .brand-logo--footer .brand-logo__img {
-  height: 54px;
+  height: 60px;
 }
 
 @media (max-width: 600px) {
   .brand-logo__img {
-    height: 48px;
-    max-width: 200px;
+    height: 52px;
+    max-width: 260px;
   }
 
   .header-inner {
