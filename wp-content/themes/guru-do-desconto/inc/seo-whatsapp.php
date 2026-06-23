@@ -140,6 +140,56 @@ function guru_ensure_whatsapp_seo_page() {
 add_action( 'after_switch_theme', 'guru_ensure_whatsapp_seo_page' );
 
 /**
+ * Schema WebPage com author — páginas estáticas e landing WhatsApp.
+ */
+function guru_schema_webpage() {
+	if ( ! is_page() || is_front_page() ) {
+		return;
+	}
+
+	$schema = array(
+		'@context'    => 'https://schema.org',
+		'@type'       => 'WebPage',
+		'name'        => get_the_title(),
+		'url'         => get_permalink(),
+		'description' => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 30 ) ),
+		'inLanguage'  => 'pt-BR',
+		'author'      => guru_schema_author(),
+		'publisher'   => guru_schema_publisher(),
+		'datePublished' => get_the_date( 'c' ),
+		'dateModified'  => get_the_modified_date( 'c' ),
+	);
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'guru_schema_webpage', 10 );
+
+/**
+ * Schema WebPage — landing grupo WhatsApp.
+ */
+function guru_schema_whatsapp_landing() {
+	if ( ! guru_is_whatsapp_landing_page() ) {
+		return;
+	}
+
+	$schema = array(
+		'@context'      => 'https://schema.org',
+		'@type'         => 'WebPage',
+		'name'          => get_the_title(),
+		'url'           => get_permalink(),
+		'description'   => guru_default_seo_description(),
+		'inLanguage'    => 'pt-BR',
+		'author'        => guru_schema_author(),
+		'publisher'     => guru_schema_publisher(),
+		'datePublished' => get_the_date( 'c' ),
+		'dateModified'  => get_the_modified_date( 'c' ),
+	);
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'guru_schema_whatsapp_landing', 10 );
+
+/**
  * Schema FAQPage na home e landing do WhatsApp.
  */
 function guru_schema_whatsapp_faq() {
@@ -188,6 +238,8 @@ function guru_schema_home_whatsapp() {
 				'name'        => __( 'Grupo de Promoções no WhatsApp — Guru do Desconto', 'guru-do-desconto' ),
 				'description' => guru_default_seo_description(),
 				'inLanguage'  => 'pt-BR',
+				'author'      => guru_schema_author(),
+				'publisher'   => guru_schema_publisher(),
 				'isPartOf'    => array( '@id' => home_url( '/#website' ) ),
 			),
 			array(

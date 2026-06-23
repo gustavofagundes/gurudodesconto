@@ -8,6 +8,32 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Entidade Organization — autor/editorial do site.
+ */
+function guru_schema_author() {
+	return array(
+		'@type' => 'Organization',
+		'name'  => get_bloginfo( 'name' ),
+		'url'   => home_url( '/' ),
+	);
+}
+
+/**
+ * Entidade publisher para Article/Review.
+ */
+function guru_schema_publisher() {
+	return array(
+		'@type' => 'Organization',
+		'name'  => get_bloginfo( 'name' ),
+		'url'   => home_url( '/' ),
+		'logo'  => array(
+			'@type' => 'ImageObject',
+			'url'   => GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png',
+		),
+	);
+}
+
+/**
  * Output meta description.
  */
 function guru_meta_description() {
@@ -115,6 +141,7 @@ function guru_schema_organization() {
 		'@graph'   => array(
 			array(
 				'@type' => 'Organization',
+				'@id'   => home_url( '/#organization' ),
 				'name'  => get_bloginfo( 'name' ),
 				'url'   => home_url( '/' ),
 				'logo'  => GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png',
@@ -130,8 +157,10 @@ function guru_schema_organization() {
 			),
 			array(
 				'@type'           => 'WebSite',
+				'@id'             => home_url( '/#website' ),
 				'name'            => get_bloginfo( 'name' ),
 				'url'             => home_url( '/' ),
+				'publisher'       => array( '@id' => home_url( '/#organization' ) ),
 				'potentialAction' => array(
 					'@type'       => 'SearchAction',
 					'target'      => home_url( '/?s={search_term_string}' ),
@@ -159,43 +188,56 @@ function guru_schema_review() {
 	$rating        = get_post_meta( $id, '_guru_rating', true );
 	$marketplaces  = get_the_terms( $id, 'marketplace' );
 	$brand         = $marketplaces && ! is_wp_error( $marketplaces ) ? $marketplaces[0]->name : 'Marketplace';
+	$permalink     = get_permalink();
+	$author        = guru_schema_author();
+	$publisher     = guru_schema_publisher();
+	$review_rating = array(
+		'@type'       => 'Rating',
+		'ratingValue' => $rating ?: '4',
+		'bestRating'  => '5',
+	);
 
 	$schema = array(
 		'@context' => 'https://schema.org',
 		'@graph'   => array(
 			array(
-				'@type'    => 'Product',
-				'name'     => get_the_title(),
-				'image'    => get_the_post_thumbnail_url( null, 'large' ),
+				'@type'           => 'Article',
+				'@id'             => $permalink . '#article',
+				'headline'        => get_the_title(),
+				'description'     => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
+				'url'             => $permalink,
+				'datePublished'   => get_the_date( 'c' ),
+				'dateModified'    => get_the_modified_date( 'c' ),
+				'author'          => $author,
+				'publisher'       => $publisher,
+				'image'           => get_the_post_thumbnail_url( null, 'large' ),
+				'inLanguage'      => 'pt-BR',
+				'mainEntityOfPage' => $permalink,
+			),
+			array(
+				'@type'       => 'Product',
+				'@id'         => $permalink . '#product',
+				'name'        => get_the_title(),
+				'image'       => get_the_post_thumbnail_url( null, 'large' ),
 				'description' => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
-				'brand'    => array(
+				'brand'       => array(
 					'@type' => 'Brand',
 					'name'  => $brand,
 				),
-				'offers'   => array(
+				'offers'      => array(
 					'@type'         => 'Offer',
-					'url'           => $affiliate ?: get_permalink(),
+					'url'           => $affiliate ?: $permalink,
 					'priceCurrency' => 'BRL',
 					'price'         => $price ?: '0',
 					'availability'  => 'https://schema.org/InStock',
 				),
-			),
-			array(
-				'@type'        => 'Review',
-				'itemReviewed' => array(
-					'@type' => 'Product',
-					'name'  => get_the_title(),
+				'review'      => array(
+					'@type'         => 'Review',
+					'author'        => $author,
+					'datePublished' => get_the_date( 'c' ),
+					'reviewBody'    => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
+					'reviewRating'  => $review_rating,
 				),
-				'author'       => array(
-					'@type' => 'Organization',
-					'name'  => get_bloginfo( 'name' ),
-				),
-				'reviewRating' => array(
-					'@type'       => 'Rating',
-					'ratingValue' => $rating ?: '4',
-					'bestRating'  => '5',
-				),
-				'datePublished' => get_the_date( 'c' ),
 			),
 			array(
 				'@type'           => 'BreadcrumbList',

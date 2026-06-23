@@ -26,6 +26,15 @@ while ( have_posts() ) :
 	?>
 
 	<article class="review-single container" itemscope itemtype="https://schema.org/Review">
+		<meta itemprop="author" content="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+		<div itemprop="author" itemscope itemtype="https://schema.org/Organization" class="screen-reader-text">
+			<meta itemprop="name" content="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+			<link itemprop="url" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+		</div>
+		<div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating" class="screen-reader-text">
+			<meta itemprop="ratingValue" content="<?php echo esc_attr( $rating ?: '4' ); ?>">
+			<meta itemprop="bestRating" content="5">
+		</div>
 		<header class="review-single-header">
 			<?php if ( $mp_slug ) : ?>
 				<span class="review-badge <?php echo esc_attr( $mp['class'] ); ?>"><?php echo esc_html( $mp['label'] ); ?></span>

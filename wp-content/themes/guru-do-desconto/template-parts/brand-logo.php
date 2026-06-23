@@ -1,6 +1,6 @@
 <?php
 /**
- * Logo da marca — mascote + texto (header e footer)
+ * Logo da marca — imagem oficial (header e footer)
  *
  * @package GuruDoDesconto
  *
@@ -9,29 +9,24 @@
 
 $context = isset( $args['context'] ) ? $args['context'] : 'header';
 $tag     = 'header' === $context ? 'a' : 'div';
-$href    = 'header' === $context ? home_url( '/' ) : '';
 $class   = 'brand-logo brand-logo--' . esc_attr( $context );
+$src     = GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png';
+$alt     = get_bloginfo( 'name' ) . ' — ' . __( 'Economia e Alegria', 'guru-do-desconto' );
 ?>
 
 <<?php echo $tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	<?php if ( 'a' === $tag ) : ?>
-		href="<?php echo esc_url( $href ); ?>"
-		aria-label="<?php bloginfo( 'name' ); ?> — <?php esc_attr_e( 'Início', 'guru-do-desconto' ); ?>"
+		href="<?php echo esc_url( home_url( '/' ) ); ?>"
+		aria-label="<?php echo esc_attr( $alt ); ?>"
 	<?php endif; ?>
 	class="<?php echo esc_attr( $class ); ?>">
 
-	<img class="brand-logo__icon"
-	     src="<?php echo esc_url( GURU_THEME_URI . '/assets/images/Guru_sem_fundo.png' ); ?>"
-	     alt=""
-	     width="72"
-	     height="72"
-	     aria-hidden="true"
-	     loading="eager">
-
-	<span class="brand-logo__text">
-		<span class="brand-logo__guru">Guru</span>
-		<span class="brand-logo__name"><?php esc_html_e( 'do Desconto', 'guru-do-desconto' ); ?></span>
-		<em class="brand-logo__tagline"><?php esc_html_e( 'Economia e Alegria', 'guru-do-desconto' ); ?></em>
-	</span>
+	<img class="brand-logo__img"
+	     src="<?php echo esc_url( $src ); ?>"
+	     alt="<?php echo esc_attr( $alt ); ?>"
+	     width="220"
+	     height="88"
+	     decoding="async"
+	     <?php echo 'header' === $context ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?>>
 
 </<?php echo $tag; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>

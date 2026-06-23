@@ -47,6 +47,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 img {
   max-width: 100%;
   height: auto;
@@ -85,84 +97,52 @@ a:hover {
   padding: 0.75rem 0;
 }
 
-/* Brand logo — mascote + texto */
+/* Brand logo */
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  text-decoration: none;
-  line-height: 1.1;
-}
-
-.brand-logo__icon {
-  width: auto;
-  height: 58px;
   flex-shrink: 0;
+  text-decoration: none;
+  line-height: 0;
+}
+
+.brand-logo__img {
   display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
-.brand-logo__text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.05rem;
+/* Header — logo compacta na barra branca */
+.brand-logo--header .brand-logo__img {
+  height: 64px;
+  max-width: 200px;
 }
 
-.brand-logo__guru {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: var(--guru-orange);
-  letter-spacing: -0.02em;
-}
-
-.brand-logo__name {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: var(--guru-blue);
-  letter-spacing: -0.02em;
-}
-
-.brand-logo__tagline {
-  font-size: 0.8rem;
-  font-weight: 500;
-  font-style: italic;
-  color: var(--guru-gray);
-  margin-top: 0.1rem;
-}
-
-/* Header */
-.brand-logo--header .brand-logo__icon {
-  height: 62px;
-}
-
-/* Footer — texto claro sobre fundo azul */
+/* Footer — cartão branco sobre fundo azul */
 .brand-logo--footer {
   margin-bottom: 0.85rem;
+  background: var(--guru-white);
+  border-radius: 14px;
+  padding: 0.5rem 0.85rem;
+  display: inline-flex;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
-.brand-logo--footer .brand-logo__name {
-  color: var(--guru-white);
+.brand-logo--footer .brand-logo__img {
+  height: 72px;
+  max-width: 210px;
 }
 
-.brand-logo--footer .brand-logo__tagline {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.brand-logo--footer .brand-logo__icon {
-  height: 54px;
-}
-
-@media (max-width: 480px) {
-  .brand-logo__guru,
-  .brand-logo__name {
-    font-size: 1.2rem;
-  }
-
-  .brand-logo__icon {
-    height: 48px;
-  }
-
-  .brand-logo--header .brand-logo__icon {
+@media (max-width: 600px) {
+  .brand-logo--header .brand-logo__img {
     height: 52px;
+    max-width: 160px;
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
   }
 }
 

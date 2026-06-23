@@ -34,13 +34,13 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 				</a>
 			</div>
 
-			<div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+			<div class="faq-list">
 				<h3><?php esc_html_e( 'Perguntas frequentes', 'guru-do-desconto' ); ?></h3>
 				<?php foreach ( guru_whatsapp_faq_items() as $item ) : ?>
-					<details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-						<summary itemprop="name"><?php echo esc_html( $item['question'] ); ?></summary>
-						<div class="faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-							<p itemprop="text"><?php echo esc_html( $item['answer'] ); ?></p>
+					<details class="faq-item">
+						<summary><?php echo esc_html( $item['question'] ); ?></summary>
+						<div class="faq-answer">
+							<p><?php echo esc_html( $item['answer'] ); ?></p>
 						</div>
 					</details>
 				<?php endforeach; ?>
