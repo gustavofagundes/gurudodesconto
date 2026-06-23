@@ -3,7 +3,7 @@
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="<?php echo esc_url( GURU_THEME_URI . '/assets/images/Guru_sem_fundo.png' ); ?>" type="image/png">
+	<link rel="icon" href="<?php echo esc_url( GURU_THEME_URI . '/assets/images/guru_logo_horizontal.png' ); ?>" type="image/png">
 	<?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>

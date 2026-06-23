@@ -97,91 +97,48 @@ a:hover {
   padding: 0.75rem 0;
 }
 
-/* Brand logo — horizontal: mascote + texto */
+/* Brand logo — imagem horizontal oficial */
 .brand-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
   flex-shrink: 0;
   text-decoration: none;
-  line-height: 1.1;
+  line-height: 0;
 }
 
-.brand-logo__icon {
+.brand-logo__img {
   display: block;
   width: auto;
-  height: 58px;
-  flex-shrink: 0;
+  height: 56px;
+  max-width: 240px;
   object-fit: contain;
 }
 
-.brand-logo__text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+.brand-logo--header .brand-logo__img {
+  height: 58px;
 }
 
-.brand-logo__title {
-  display: block;
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
-
-.brand-logo__guru {
-  color: var(--guru-orange);
-}
-
-.brand-logo__name {
-  color: var(--guru-blue);
-}
-
-.brand-logo__tagline {
-  font-size: 0.82rem;
-  font-weight: 500;
-  font-style: italic;
-  color: var(--guru-gray);
-  margin: 0;
-}
-
-/* Header */
-.brand-logo--header .brand-logo__icon {
-  height: 60px;
-}
-
-/* Footer */
 .brand-logo--footer {
   margin-bottom: 0.85rem;
+  background: var(--guru-white);
+  border-radius: 12px;
+  padding: 0.45rem 0.75rem;
+  display: inline-flex;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.brand-logo--footer .brand-logo__name {
-  color: var(--guru-white);
-}
-
-.brand-logo--footer .brand-logo__tagline {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.brand-logo--footer .brand-logo__icon {
+.brand-logo--footer .brand-logo__img {
   height: 54px;
 }
 
-@media (max-width: 520px) {
-  .brand-logo__title {
-    font-size: 1.1rem;
-  }
-
-  .brand-logo__tagline {
-    font-size: 0.72rem;
-  }
-
-  .brand-logo__icon {
+@media (max-width: 600px) {
+  .brand-logo__img {
     height: 48px;
+    max-width: 200px;
   }
 
-  .brand-logo--header .brand-logo__icon {
-    height: 50px;
+  .header-inner {
+    flex-wrap: wrap;
   }
 }
 
