@@ -2,7 +2,7 @@
 Theme Name: Guru do Desconto
 Theme URI: https://gurudodesconto.com.br
 Author: Guru do Desconto
-Description: Tema para reviews comparativos e promoções de afiliados — Mercado Livre, Shopee e Amazon.
+Description: Tema para reviews comparativos e promoções — Mercado Livre, Shopee e Amazon.
 Version: 1.0.0
 Requires at least: 6.0
 Tested up to: 6.8
@@ -97,52 +97,91 @@ a:hover {
   padding: 0.75rem 0;
 }
 
-/* Brand logo */
+/* Brand logo — horizontal: mascote + texto */
 .brand-logo {
   display: inline-flex;
   align-items: center;
+  gap: 0.7rem;
   flex-shrink: 0;
   text-decoration: none;
-  line-height: 0;
+  line-height: 1.1;
 }
 
-.brand-logo__img {
+.brand-logo__icon {
   display: block;
   width: auto;
-  height: auto;
-  max-width: 100%;
+  height: 58px;
+  flex-shrink: 0;
   object-fit: contain;
 }
 
-/* Header — logo compacta na barra branca */
-.brand-logo--header .brand-logo__img {
-  height: 64px;
-  max-width: 200px;
+.brand-logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-/* Footer — cartão branco sobre fundo azul */
+.brand-logo__title {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.brand-logo__guru {
+  color: var(--guru-orange);
+}
+
+.brand-logo__name {
+  color: var(--guru-blue);
+}
+
+.brand-logo__tagline {
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--guru-gray);
+  margin: 0;
+}
+
+/* Header */
+.brand-logo--header .brand-logo__icon {
+  height: 60px;
+}
+
+/* Footer */
 .brand-logo--footer {
   margin-bottom: 0.85rem;
-  background: var(--guru-white);
-  border-radius: 14px;
-  padding: 0.5rem 0.85rem;
-  display: inline-flex;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
-.brand-logo--footer .brand-logo__img {
-  height: 72px;
-  max-width: 210px;
+.brand-logo--footer .brand-logo__name {
+  color: var(--guru-white);
 }
 
-@media (max-width: 600px) {
-  .brand-logo--header .brand-logo__img {
-    height: 52px;
-    max-width: 160px;
+.brand-logo--footer .brand-logo__tagline {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.brand-logo--footer .brand-logo__icon {
+  height: 54px;
+}
+
+@media (max-width: 520px) {
+  .brand-logo__title {
+    font-size: 1.1rem;
   }
 
-  .header-inner {
-    flex-wrap: wrap;
+  .brand-logo__tagline {
+    font-size: 0.72rem;
+  }
+
+  .brand-logo__icon {
+    height: 48px;
+  }
+
+  .brand-logo--header .brand-logo__icon {
+    height: 50px;
   }
 }
 

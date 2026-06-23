@@ -75,7 +75,7 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 	<div class="container">
 		<div class="section-header">
 			<h2><?php esc_html_e( 'Reviews do Guru', 'guru-do-desconto' ); ?></h2>
-			<p><?php esc_html_e( 'Análises honestas para você comprar com confiança — com link de afiliado e melhor preço.', 'guru-do-desconto' ); ?></p>
+			<p><?php esc_html_e( 'Análises honestas para você comprar com confiança — com o melhor preço.', 'guru-do-desconto' ); ?></p>
 		</div>
 
 		<div class="reviews-grid">

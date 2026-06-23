@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 function guru_review_meta_boxes() {
 	add_meta_box(
 		'guru_review_details',
-		__( 'Dados do Produto (Afiliado)', 'guru-do-desconto' ),
+		__( 'Dados do Produto', 'guru-do-desconto' ),
 		'guru_review_meta_box_render',
 		'review',
 		'normal',
@@ -38,7 +38,7 @@ function guru_review_meta_box_render( $post ) {
 	wp_nonce_field( 'guru_review_save', 'guru_review_nonce' );
 
 	$fields = array(
-		'_guru_affiliate_link' => array( 'label' => __( 'Link de Afiliado', 'guru-do-desconto' ), 'type' => 'url' ),
+		'_guru_affiliate_link' => array( 'label' => __( 'Link da Promoção', 'guru-do-desconto' ), 'type' => 'url' ),
 		'_guru_price'          => array( 'label' => __( 'Preço atual (R$)', 'guru-do-desconto' ), 'type' => 'number' ),
 		'_guru_price_old'      => array( 'label' => __( 'Preço anterior (R$)', 'guru-do-desconto' ), 'type' => 'number' ),
 		'_guru_rating'         => array( 'label' => __( 'Nota (0 a 5)', 'guru-do-desconto' ), 'type' => 'number', 'step' => '0.1', 'max' => '5' ),
@@ -58,7 +58,7 @@ function guru_review_meta_box_render( $post ) {
 		);
 	}
 	echo '</tbody></table>';
-	echo '<p class="description">' . esc_html__( 'O link de afiliado será usado no botão "Ver Promoção". Use links das suas contas do Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' ) . '</p>';
+	echo '<p class="description">' . esc_html__( 'O link será usado no botão "Ver Promoção". Use links das suas contas do Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' ) . '</p>';
 }
 
 /**

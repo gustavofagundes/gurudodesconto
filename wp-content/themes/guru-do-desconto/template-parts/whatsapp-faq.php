@@ -27,7 +27,7 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 					<li><?php esc_html_e( 'Promoções Mercado Livre no WhatsApp', 'guru-do-desconto' ); ?></li>
 					<li><?php esc_html_e( 'Ofertas Shopee com desconto', 'guru-do-desconto' ); ?></li>
 					<li><?php esc_html_e( 'Cupons Amazon e Prime Day', 'guru-do-desconto' ); ?></li>
-					<li><?php esc_html_e( 'Reviews comparativos com link de afiliado', 'guru-do-desconto' ); ?></li>
+					<li><?php esc_html_e( 'Reviews comparativos com melhores preços', 'guru-do-desconto' ); ?></li>
 				</ul>
 				<a href="<?php echo esc_url( $whatsapp ); ?>" class="btn btn-whatsapp" target="_blank" rel="noopener">
 					<?php echo esc_html( $wa_msg ); ?>

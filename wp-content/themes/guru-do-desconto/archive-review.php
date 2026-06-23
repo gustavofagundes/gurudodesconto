@@ -18,7 +18,7 @@ get_header();
 		}
 		?>
 	</h1>
-	<p><?php esc_html_e( 'Análises comparativas com links de afiliado das melhores promoções.', 'guru-do-desconto' ); ?></p>
+	<p><?php esc_html_e( 'Análises comparativas das melhores promoções.', 'guru-do-desconto' ); ?></p>
 </div>
 
 <div class="container archive-filters" role="navigation" aria-label="<?php esc_attr_e( 'Filtrar por loja', 'guru-do-desconto' ); ?>">

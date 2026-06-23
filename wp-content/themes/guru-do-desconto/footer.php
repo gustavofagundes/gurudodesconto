@@ -41,7 +41,7 @@
 
 		<div class="footer-bottom">
 			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. <?php esc_html_e( 'Todos os direitos reservados.', 'guru-do-desconto' ); ?></p>
-			<p class="affiliate-disclaimer"><?php esc_html_e( 'Este site contém links de afiliados. Podemos receber comissão por compras realizadas, sem custo extra para você.', 'guru-do-desconto' ); ?></p>
+			<p class="affiliate-disclaimer"><?php esc_html_e( 'Podemos receber comissão por compras realizadas, sem custo extra para você.', 'guru-do-desconto' ); ?></p>
 		</div>
 	</div>
 </footer>

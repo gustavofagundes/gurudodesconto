@@ -83,7 +83,7 @@ while ( have_posts() ) :
 					<?php endif; ?>
 
 					<p class="affiliate-disclaimer">
-						<?php esc_html_e( 'Link de afiliado. O preço pode variar. Verifique na loja antes de comprar.', 'guru-do-desconto' ); ?>
+						<?php esc_html_e( 'O preço pode variar. Verifique na loja antes de comprar.', 'guru-do-desconto' ); ?>
 					</p>
 				</div>
 
