@@ -69,6 +69,8 @@ function guru_social_meta() {
 
 	if ( is_singular() && has_post_thumbnail() ) {
 		$image = get_the_post_thumbnail_url( null, 'large' );
+	} elseif ( is_singular( 'review' ) ) {
+		$image = guru_review_og_image( $image );
 	}
 
 	if ( is_singular() ) {
@@ -186,81 +188,140 @@ function guru_schema_review() {
 	$affiliate     = get_post_meta( $id, '_guru_affiliate_link', true );
 	$price         = get_post_meta( $id, '_guru_price', true );
 	$rating        = get_post_meta( $id, '_guru_rating', true );
+	$focus_keyword = get_post_meta( $id, '_guru_focus_keyword', true );
 	$brand         = get_bloginfo( 'name' );
 	$permalink     = get_permalink();
 	$author        = guru_schema_author();
 	$publisher     = guru_schema_publisher();
+	$image_url     = get_the_post_thumbnail_url( null, 'large' );
+	if ( ! $image_url ) {
+		$image_url = get_post_meta( $id, '_guru_featured_image_url', true );
+	}
 	$review_rating = array(
 		'@type'       => 'Rating',
 		'ratingValue' => $rating ?: '4',
 		'bestRating'  => '5',
 	);
 
-	$schema = array(
-		'@context' => 'https://schema.org',
-		'@graph'   => array(
-			array(
-				'@type'           => 'Article',
-				'@id'             => $permalink . '#article',
-				'headline'        => get_the_title(),
-				'description'     => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
-				'url'             => $permalink,
-				'datePublished'   => get_the_date( 'c' ),
-				'dateModified'    => get_the_modified_date( 'c' ),
-				'author'          => $author,
-				'publisher'       => $publisher,
-				'image'           => get_the_post_thumbnail_url( null, 'large' ),
-				'inLanguage'      => 'pt-BR',
-				'mainEntityOfPage' => $permalink,
+	$graph = array(
+		array(
+			'@type'            => 'Article',
+			'@id'              => $permalink . '#article',
+			'headline'         => get_the_title(),
+			'description'      => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
+			'url'              => $permalink,
+			'datePublished'    => get_the_date( 'c' ),
+			'dateModified'     => get_the_modified_date( 'c' ),
+			'author'           => $author,
+			'publisher'        => $publisher,
+			'image'            => $image_url ?: null,
+			'inLanguage'       => 'pt-BR',
+			'mainEntityOfPage' => $permalink,
+			'keywords'         => $focus_keyword ?: '',
+		),
+		array(
+			'@type'       => 'Product',
+			'@id'         => $permalink . '#product',
+			'name'        => get_the_title(),
+			'image'       => $image_url ?: null,
+			'description' => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
+			'brand'       => array(
+				'@type' => 'Brand',
+				'name'  => $brand,
 			),
-			array(
-				'@type'       => 'Product',
-				'@id'         => $permalink . '#product',
-				'name'        => get_the_title(),
-				'image'       => get_the_post_thumbnail_url( null, 'large' ),
-				'description' => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
-				'brand'       => array(
-					'@type' => 'Brand',
-					'name'  => $brand,
-				),
-				'offers'      => array(
-					'@type'         => 'Offer',
-					'url'           => $affiliate ?: $permalink,
-					'priceCurrency' => 'BRL',
-					'price'         => $price ?: '0',
-					'availability'  => 'https://schema.org/InStock',
-				),
-				'review'      => array(
-					'@type'         => 'Review',
-					'author'        => $author,
-					'datePublished' => get_the_date( 'c' ),
-					'reviewBody'    => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
-					'reviewRating'  => $review_rating,
-				),
+			'offers'      => array(
+				'@type'         => 'Offer',
+				'url'           => $affiliate ?: $permalink,
+				'priceCurrency' => 'BRL',
+				'price'         => $price ?: '0',
+				'availability'  => 'https://schema.org/InStock',
 			),
-			array(
-				'@type'           => 'BreadcrumbList',
-				'itemListElement' => array(
-					array(
-						'@type'    => 'ListItem',
-						'position' => 1,
-						'name'     => 'Início',
-						'item'     => home_url( '/' ),
-					),
-					array(
-						'@type'    => 'ListItem',
-						'position' => 2,
-						'name'     => 'Reviews',
-						'item'     => get_post_type_archive_link( 'review' ),
-					),
-					array(
-						'@type'    => 'ListItem',
-						'position' => 3,
-						'name'     => get_the_title(),
-					),
+			'review'      => array(
+				'@type'         => 'Review',
+				'author'        => $author,
+				'datePublished' => get_the_date( 'c' ),
+				'reviewBody'    => wp_strip_all_tags( get_the_excerpt() ?: wp_trim_words( get_the_content(), 40 ) ),
+				'reviewRating'  => $review_rating,
+			),
+		),
+		array(
+			'@type'           => 'BreadcrumbList',
+			'itemListElement' => array(
+				array(
+					'@type'    => 'ListItem',
+					'position' => 1,
+					'name'     => 'Início',
+					'item'     => home_url( '/' ),
+				),
+				array(
+					'@type'    => 'ListItem',
+					'position' => 2,
+					'name'     => 'Reviews',
+					'item'     => get_post_type_archive_link( 'review' ),
+				),
+				array(
+					'@type'    => 'ListItem',
+					'position' => 3,
+					'name'     => get_the_title(),
 				),
 			),
 		),
+	);
+
+	$item_list = guru_review_meta_json( '_guru_item_list_json' );
+	if ( $item_list ) {
+		$list_elements = array();
+		foreach ( $item_list as $item ) {
+			if ( empty( $item['name'] ) ) {
+				continue;
+			}
+			$list_elements[] = array(
+				'@type'    => 'ListItem',
+				'position' => (int) ( $item['position'] ?? 0 ),
+				'name'     => wp_strip_all_tags( $item['name'] ),
+				'url'      => ! empty( $item['url'] ) ? esc_url_raw( $item['url'] ) : $permalink,
+			);
+		}
+		if ( $list_elements ) {
+			$graph[] = array(
+				'@type'           => 'ItemList',
+				'name'            => sprintf(
+					/* translators: %s: product keyword */
+					__( 'Melhores %s comparados', 'guru-do-desconto' ),
+					$focus_keyword ?: get_the_title()
+				),
+				'itemListElement' => $list_elements,
+			);
+		}
+	}
+
+	$faq_items = guru_review_meta_json( '_guru_faq_json' );
+	if ( $faq_items ) {
+		$main_entity = array();
+		foreach ( $faq_items as $faq ) {
+			if ( empty( $faq['question'] ) || empty( $faq['answer'] ) ) {
+				continue;
+			}
+			$main_entity[] = array(
+				'@type'          => 'Question',
+				'name'           => wp_strip_all_tags( $faq['question'] ),
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => wp_strip_all_tags( $faq['answer'] ),
+				),
+			);
+		}
+		if ( $main_entity ) {
+			$graph[] = array(
+				'@type'      => 'FAQPage',
+				'mainEntity' => $main_entity,
+			);
+		}
+	}
+
+	$schema = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => $graph,
 	);
 
 	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
@@ -285,3 +346,60 @@ function guru_canonical_url() {
 	}
 }
 add_action( 'wp_head', 'guru_canonical_url', 1 );
+
+/**
+ * Título SEO customizado para reviews.
+ */
+function guru_review_document_title( $parts ) {
+	if ( ! is_singular( 'review' ) ) {
+		return $parts;
+	}
+
+	$seo_title = get_post_meta( get_the_ID(), '_guru_seo_title', true );
+	if ( $seo_title ) {
+		$parts['title'] = wp_strip_all_tags( $seo_title );
+	}
+
+	return $parts;
+}
+add_filter( 'document_title_parts', 'guru_review_document_title', 15 );
+
+/**
+ * Garante indexação de reviews publicados.
+ */
+function guru_review_robots( $robots ) {
+	if ( is_singular( 'review' ) && 'publish' === get_post_status() ) {
+		$robots['index']              = true;
+		$robots['follow']             = true;
+		$robots['max-image-preview']  = 'large';
+		$robots['max-snippet']        = '-1';
+	}
+
+	return $robots;
+}
+add_filter( 'wp_robots', 'guru_review_robots' );
+
+/**
+ * URL da imagem OG para reviews (produto vencedor).
+ */
+function guru_review_og_image( $image ) {
+	if ( ! is_singular( 'review' ) || has_post_thumbnail() ) {
+		return $image;
+	}
+
+	$featured_url = get_post_meta( get_the_ID(), '_guru_featured_image_url', true );
+	return $featured_url ? $featured_url : $image;
+}
+
+/**
+ * Decodifica JSON armazenado no meta do review.
+ */
+function guru_review_meta_json( $key ) {
+	$raw = get_post_meta( get_the_ID(), $key, true );
+	if ( ! $raw ) {
+		return array();
+	}
+
+	$decoded = json_decode( $raw, true );
+	return is_array( $decoded ) ? $decoded : array();
+}

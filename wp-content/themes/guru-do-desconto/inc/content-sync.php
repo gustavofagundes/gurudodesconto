@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const GURU_REVIEW_SYNC_VERSION = 'html-v4';
+const GURU_REVIEW_SYNC_VERSION = 'html-v5';
 
 /**
  * Diretório dos arquivos versionados no repositório.
@@ -161,21 +161,57 @@ function guru_sync_review_file( $file_path ) {
 	}
 
 	$meta_map = array(
-		'_guru_affiliate_link'   => $meta['affiliate_link'] ?? '',
-		'_guru_price'            => $meta['price'] ?? '',
-		'_guru_price_old'        => $meta['price_old'] ?? '',
-		'_guru_rating'           => $meta['rating'] ?? '',
-		'_guru_meta_description' => $meta['meta_description'] ?? '',
-		'_guru_focus_keyword'    => $meta['focus_keyphrase'] ?? ( $meta['keyword'] ?? '' ),
-		'_guru_repo_hash'        => $hash,
-		'_guru_repo_path'        => 'content/reviews/' . basename( $file_path ),
+		'_guru_affiliate_link'      => $meta['affiliate_link'] ?? '',
+		'_guru_price'               => $meta['price'] ?? '',
+		'_guru_price_old'           => $meta['price_old'] ?? '',
+		'_guru_rating'              => $meta['rating'] ?? '',
+		'_guru_meta_description'    => $meta['meta_description'] ?? '',
+		'_guru_focus_keyword'       => $meta['focus_keyphrase'] ?? ( $meta['keyword'] ?? '' ),
+		'_guru_seo_title'           => $meta['seo_title'] ?? '',
+		'_guru_featured_image_url'  => $meta['featured_image'] ?? '',
+		'_guru_faq_json'            => $meta['faq_json'] ?? '',
+		'_guru_item_list_json'      => $meta['item_list_json'] ?? '',
+		'_guru_repo_hash'           => $hash,
+		'_guru_repo_path'           => 'content/reviews/' . basename( $file_path ),
 	);
 
 	foreach ( $meta_map as $key => $value ) {
 		update_post_meta( $post_id, $key, $value );
 	}
 
+	guru_maybe_set_review_thumbnail( $post_id, $meta['featured_image'] ?? '', $meta['title'] ?? $slug );
+
 	return $post_id;
+}
+
+/**
+ * Define imagem destacada a partir de URL externa (ML).
+ *
+ * @param int    $post_id   ID do post.
+ * @param string $image_url URL da imagem.
+ * @param string $title     Título para alt text.
+ */
+function guru_maybe_set_review_thumbnail( $post_id, $image_url, $title = '' ) {
+	$image_url = esc_url_raw( $image_url );
+	if ( ! $image_url ) {
+		return;
+	}
+
+	$stored_url = get_post_meta( $post_id, '_guru_featured_image_url', true );
+	if ( has_post_thumbnail( $post_id ) && $stored_url === $image_url ) {
+		return;
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$attachment_id = media_sideload_image( $image_url, $post_id, $title, 'id' );
+	if ( is_wp_error( $attachment_id ) ) {
+		return;
+	}
+
+	set_post_thumbnail( $post_id, (int) $attachment_id );
 }
 
 /**

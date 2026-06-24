@@ -618,9 +618,16 @@ a:hover {
   text-align: left;
 }
 
-.guru-compare-table th {
-  background: var(--guru-blue-light, #f0f4f8);
+.guru-compare-table thead th {
+  background: var(--guru-blue, #1d3557);
+  color: #fff;
   font-weight: 700;
+}
+
+.guru-compare-table tbody th {
+  background: #f0f4f8;
+  color: var(--guru-blue, #1d3557);
+  font-weight: 600;
 }
 
 .guru-compare-table .btn-affiliate {
@@ -710,6 +717,43 @@ a:hover {
   padding: 0.75rem 1rem;
   background: #f0fdf4;
   border-radius: 8px;
+}
+
+.guru-toc {
+  margin: 1.25rem 0 2rem;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border: 1px solid var(--guru-border, #e5e7eb);
+  border-radius: 12px;
+}
+
+.guru-toc h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.guru-toc ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.guru-toc a {
+  color: var(--guru-blue, #1d3557);
+  text-decoration: none;
+}
+
+.guru-toc a:hover {
+  text-decoration: underline;
+}
+
+.guru-updated {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--guru-muted, #64748b);
+}
+
+.guru-faq h3 {
+  margin-top: 1.25rem;
 }
 
 .guru-product-compare .btn-affiliate {
