@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const GURU_REVIEW_SYNC_VERSION = 'html-v1';
+const GURU_REVIEW_SYNC_VERSION = 'html-v2';
 
 /**
  * Diretório dos arquivos versionados no repositório.
@@ -130,7 +130,7 @@ function guru_sync_review_file( $file_path ) {
 
 	$status = in_array( $meta['status'] ?? '', array( 'publish', 'draft', 'pending' ), true )
 		? $meta['status']
-		: 'draft';
+		: 'publish';
 
 	$post_data = array(
 		'post_type'    => 'review',
@@ -186,6 +186,38 @@ function guru_review_html_files() {
 }
 
 /**
+ * Sincroniza todos os .html em content/reviews/.
+ *
+ * @return array{synced: int, files: int, dir: string}
+ */
+function guru_run_review_sync() {
+	$dir   = guru_reviews_content_dir();
+	$files = guru_review_html_files();
+	$count = 0;
+
+	foreach ( $files as $file ) {
+		if ( guru_sync_review_file( $file ) ) {
+			++$count;
+		}
+	}
+
+	$max_mtime = 0;
+	foreach ( $files as $file ) {
+		$max_mtime = max( $max_mtime, (int) filemtime( $file ) );
+	}
+
+	update_option( 'guru_review_sync_version', GURU_REVIEW_SYNC_VERSION, false );
+	update_option( 'guru_review_sync_max_mtime', $max_mtime ?: time(), false );
+	delete_transient( 'guru_review_sync_running' );
+
+	return array(
+		'synced' => $count,
+		'files'  => count( $files ),
+		'dir'    => $dir,
+	);
+}
+
+/**
  * Sincroniza todos os .html em content/reviews/ quando os arquivos mudam.
  */
 function guru_maybe_sync_reviews_from_repo() {
@@ -215,14 +247,7 @@ function guru_maybe_sync_reviews_from_repo() {
 	}
 
 	set_transient( 'guru_review_sync_running', 1, 60 );
-
-	foreach ( $files as $file ) {
-		guru_sync_review_file( $file );
-	}
-
-	update_option( 'guru_review_sync_version', GURU_REVIEW_SYNC_VERSION, false );
-	update_option( 'guru_review_sync_max_mtime', $max_mtime, false );
-	delete_transient( 'guru_review_sync_running' );
+	guru_run_review_sync();
 }
 add_action( 'init', 'guru_maybe_sync_reviews_from_repo', 20 );
 
@@ -258,6 +283,100 @@ function guru_remove_fake_reviews_once() {
 add_action( 'init', 'guru_remove_fake_reviews_once', 21 );
 
 /**
+ * Página no admin para sincronizar reviews na Hostinger (sem WP-CLI).
+ */
+function guru_review_sync_admin_menu() {
+	add_submenu_page(
+		'edit.php?post_type=review',
+		__( 'Sincronizar do Repositório', 'guru-do-desconto' ),
+		__( 'Sincronizar', 'guru-do-desconto' ),
+		'manage_options',
+		'guru-sync-reviews',
+		'guru_review_sync_admin_page'
+	);
+}
+add_action( 'admin_menu', 'guru_review_sync_admin_menu' );
+
+/**
+ * Renderiza a página de sincronização.
+ */
+function guru_review_sync_admin_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$result  = null;
+	$message = '';
+
+	if ( isset( $_POST['guru_sync_reviews'] ) && check_admin_referer( 'guru_sync_reviews' ) ) {
+		$result  = guru_run_review_sync();
+		$message = sprintf(
+			/* translators: 1: synced count, 2: total files */
+			__( 'Sincronização concluída: %1$d de %2$d arquivo(s) importado(s).', 'guru-do-desconto' ),
+			$result['synced'],
+			$result['files']
+		);
+	}
+
+	$dir        = guru_reviews_content_dir();
+	$dir_exists = is_dir( $dir );
+	$files      = guru_review_html_files();
+	?>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Sincronizar Reviews', 'guru-do-desconto' ); ?></h1>
+
+		<?php if ( $message ) : ?>
+			<div class="notice notice-success is-dismissible"><p><?php echo esc_html( $message ); ?></p></div>
+		<?php endif; ?>
+
+		<p><?php esc_html_e( 'Os reviews são lidos de arquivos .html na pasta content/reviews/ na raiz do WordPress.', 'guru-do-desconto' ); ?></p>
+
+		<table class="widefat striped" style="max-width:720px;margin:1rem 0">
+			<tbody>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Pasta esperada', 'guru-do-desconto' ); ?></th>
+					<td><code><?php echo esc_html( $dir ); ?></code></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Pasta encontrada?', 'guru-do-desconto' ); ?></th>
+					<td><?php echo $dir_exists ? '✅ ' . esc_html__( 'Sim', 'guru-do-desconto' ) : '❌ ' . esc_html__( 'Não — envie a pasta content/reviews/ via FTP/File Manager', 'guru-do-desconto' ); ?></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Arquivos .html', 'guru-do-desconto' ); ?></th>
+					<td>
+						<?php
+						if ( $files ) {
+							echo '<ul style="margin:0">';
+							foreach ( $files as $file ) {
+								echo '<li><code>' . esc_html( basename( $file ) ) . '</code></li>';
+							}
+							echo '</ul>';
+						} else {
+							esc_html_e( 'Nenhum arquivo encontrado', 'guru-do-desconto' );
+						}
+						?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<form method="post">
+			<?php wp_nonce_field( 'guru_sync_reviews' ); ?>
+			<p>
+				<button type="submit" name="guru_sync_reviews" class="button button-primary" <?php disabled( ! $files ); ?>>
+					<?php esc_html_e( 'Sincronizar agora', 'guru-do-desconto' ); ?>
+				</button>
+			</p>
+		</form>
+
+		<p class="description">
+			<?php esc_html_e( 'Após enviar novos arquivos .html para a Hostinger, clique em "Sincronizar agora". Reviews sem status no arquivo são publicados automaticamente.', 'guru-do-desconto' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
+/**
  * WP-CLI: wp guru sync-reviews
  */
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -269,18 +388,11 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				WP_CLI::error( 'Nenhum arquivo .html encontrado em content/reviews/.' );
 			}
 
-			$count = 0;
+			$result = guru_run_review_sync();
 			foreach ( $files as $file ) {
-				$id = guru_sync_review_file( $file );
-				if ( $id ) {
-					++$count;
-					WP_CLI::log( "OK: {$file} → post #{$id}" );
-				}
+				WP_CLI::log( "OK: {$file}" );
 			}
-
-			update_option( 'guru_review_sync_version', GURU_REVIEW_SYNC_VERSION, false );
-			update_option( 'guru_review_sync_max_mtime', time(), false );
-			WP_CLI::success( "Sincronizados {$count} review(s)." );
+			WP_CLI::success( "Sincronizados {$result['synced']} review(s)." );
 		}
 	);
 }

@@ -6,6 +6,8 @@ Site WordPress para reviews de afiliados e promoções do Mercado Livre, Shopee 
 
 ```
 public_html/                    ← Raiz do site (upload na Hostinger)
+├── content/
+│   └── reviews/                  ← Arquivos .html dos reviews (OBRIGATÓRIO)
 ├── wp-content/
 │   ├── themes/guru-do-desconto/  ← Tema personalizado
 │   └── mu-plugins/guru-seo-boost.php ← SEO automático
@@ -70,7 +72,18 @@ Guia oficial Hostinger: [Como corrigir "Error establishing a database connection
 ### 5. Ativar o tema
 
 1. **Aparência → Temas** → ative **Guru do Desconto**
-2. O tema cria automaticamente a página inicial, 3 reviews de exemplo e as categorias de marketplace
+2. O tema cria automaticamente a página inicial
+
+### 5b. Publicar reviews (content/reviews/*.html)
+
+Os reviews **não** são criados manualmente no painel — vêm de arquivos HTML no repositório.
+
+1. Envie a pasta **`content/reviews/`** para a **raiz do site** (mesmo nível de `wp-config.php`), com os arquivos `.html`
+2. No painel: **Reviews → Sincronizar** → clique em **Sincronizar agora**
+3. Confira em **Reviews → Todos os Reviews** se aparecem como **Publicado**
+4. Acesse `/reviews/` no site para validar
+
+> Se aparecer "Nenhum review encontrado", a pasta `content/reviews/` provavelmente não foi enviada ou está no lugar errado.
 
 ### 6. Configurar WhatsApp e Google Site Kit
 
@@ -94,13 +107,13 @@ O Site Kit conecta o Search Console automaticamente. Depois:
 1. No Site Kit → verifique se o Search Console está conectado
 2. Confirme o sitemap: `https://seudominio.com.br/wp-sitemap.xml`
 
-## Adicionar reviews com link de afiliado
+## Adicionar reviews
 
-1. **Reviews → Adicionar Novo**
-2. Título, conteúdo e imagem destacada
-3. Marketplace: Mercado Livre, Shopee ou Amazon
-4. **Dados do Produto**: link de afiliado, preços, nota
-5. **SEO**: meta description (até 160 caracteres)
+1. Crie ou edite um arquivo em `content/reviews/meu-review.html` (com frontmatter YAML opcional no topo)
+2. Faça deploy para a Hostinger (pasta `content/reviews/` na raiz)
+3. **Reviews → Sincronizar** → **Sincronizar agora**
+
+Campos opcionais no frontmatter: `title`, `slug`, `status` (publish/draft), `meta_description`, `price`, `rating`, `affiliate_link`.
 
 ## SEO incluído
 
