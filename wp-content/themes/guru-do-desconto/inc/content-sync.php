@@ -137,6 +137,20 @@ function guru_sync_review_file( $file_path ) {
 				)
 			);
 		}
+
+		// Meta pode estar desatualizada (ex.: featured_image errada) mesmo com mesmo hash.
+		$stale_meta = array(
+			'_guru_affiliate_link'     => $meta['affiliate_link'] ?? '',
+			'_guru_price'              => $meta['price'] ?? '',
+			'_guru_price_old'          => $meta['price_old'] ?? '',
+			'_guru_rating'             => $meta['rating'] ?? '',
+			'_guru_featured_image_url' => $meta['featured_image'] ?? '',
+		);
+		foreach ( $stale_meta as $key => $value ) {
+			update_post_meta( $existing->ID, $key, $value );
+		}
+		guru_maybe_set_review_thumbnail( $existing->ID, $meta['featured_image'] ?? '', $meta['title'] ?? $slug );
+
 		return $existing->ID;
 	}
 
