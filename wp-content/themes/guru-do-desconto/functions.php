@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.9' );
+define( 'GURU_THEME_VERSION', '1.0.10' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -142,6 +142,44 @@ function guru_render_stars( $rating ) {
 	$out .= str_repeat( '☆', $empty );
 
 	return '<span class="stars" aria-label="' . esc_attr( sprintf( __( '%s de 5 estrelas', 'guru-do-desconto' ), $rating ) ) . '">' . esc_html( $out ) . '</span>';
+}
+
+/**
+ * URL da imagem do review — prioriza CDN do ML (sobrevive a deploys).
+ *
+ * @param int|null $post_id Post ID.
+ * @param string   $size    Tamanho WP (fallback local).
+ */
+function guru_get_review_image_url( $post_id = null, $size = 'large' ) {
+	$post_id = $post_id ?: get_the_ID();
+	if ( ! $post_id ) {
+		return '';
+	}
+
+	$external = get_post_meta( $post_id, '_guru_featured_image_url', true );
+	if ( $external ) {
+		return esc_url( $external );
+	}
+
+	$thumb_id = get_post_thumbnail_id( $post_id );
+	if ( $thumb_id ) {
+		$file = get_attached_file( $thumb_id );
+		if ( $file && file_exists( $file ) ) {
+			$local = wp_get_attachment_image_url( $thumb_id, $size );
+			if ( $local ) {
+				return esc_url( $local );
+			}
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Verifica se o review tem imagem exibível.
+ */
+function guru_review_has_image( $post_id = null ) {
+	return (bool) guru_get_review_image_url( $post_id );
 }
 
 /**

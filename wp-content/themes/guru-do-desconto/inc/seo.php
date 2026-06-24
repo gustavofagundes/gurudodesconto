@@ -196,10 +196,7 @@ function guru_schema_review() {
 	$permalink     = get_permalink();
 	$author        = guru_schema_author();
 	$publisher     = guru_schema_publisher();
-	$image_url     = get_the_post_thumbnail_url( null, 'large' );
-	if ( ! $image_url ) {
-		$image_url = get_post_meta( $id, '_guru_featured_image_url', true );
-	}
+	$image_url     = guru_get_review_image_url( $id, 'large' );
 	$review_rating = array(
 		'@type'       => 'Rating',
 		'ratingValue' => $rating ?: '4',
@@ -386,11 +383,11 @@ add_filter( 'wp_robots', 'guru_review_robots' );
  * URL da imagem OG para reviews (produto vencedor).
  */
 function guru_review_og_image( $image ) {
-	if ( ! is_singular( 'review' ) || has_post_thumbnail() ) {
+	if ( ! is_singular( 'review' ) ) {
 		return $image;
 	}
 
-	$featured_url = get_post_meta( get_the_ID(), '_guru_featured_image_url', true );
+	$featured_url = guru_get_review_image_url( get_the_ID(), 'large' );
 	return $featured_url ? $featured_url : $image;
 }
 

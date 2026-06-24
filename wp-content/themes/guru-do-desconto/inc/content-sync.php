@@ -198,8 +198,16 @@ function guru_maybe_set_review_thumbnail( $post_id, $image_url, $title = '' ) {
 	}
 
 	$stored_url = get_post_meta( $post_id, '_guru_featured_image_url', true );
-	if ( has_post_thumbnail( $post_id ) && $stored_url === $image_url ) {
-		return;
+	$thumb_id   = get_post_thumbnail_id( $post_id );
+
+	if ( $thumb_id ) {
+		$file = get_attached_file( $thumb_id );
+		if ( $file && file_exists( $file ) && $stored_url === $image_url ) {
+			return;
+		}
+		if ( ! $file || ! file_exists( $file ) ) {
+			delete_post_thumbnail( $post_id );
+		}
 	}
 
 	require_once ABSPATH . 'wp-admin/includes/media.php';

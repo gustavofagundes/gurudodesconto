@@ -18,9 +18,16 @@ if ( $price && $old && (float) $old > (float) $price ) {
 ?>
 
 <article class="review-card" itemscope itemtype="https://schema.org/Product">
-	<?php if ( has_post_thumbnail() ) : ?>
+	<?php
+	$image_url = guru_get_review_image_url( $id, 'review-card' );
+	if ( $image_url ) :
+		?>
 		<a href="<?php the_permalink(); ?>" class="review-card-image">
-			<?php the_post_thumbnail( 'review-card', array( 'itemprop' => 'image', 'loading' => 'lazy' ) ); ?>
+			<img src="<?php echo esc_url( $image_url ); ?>"
+			     alt="<?php echo esc_attr( get_the_title() ); ?>"
+			     width="600" height="375"
+			     loading="lazy"
+			     itemprop="image">
 		</a>
 	<?php endif; ?>
 

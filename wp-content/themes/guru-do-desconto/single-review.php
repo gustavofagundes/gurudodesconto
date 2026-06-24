@@ -49,8 +49,16 @@ while ( have_posts() ) :
 
 			<aside class="review-sidebar">
 				<div class="buy-box" itemprop="itemReviewed" itemscope itemtype="https://schema.org/Product">
-					<?php if ( has_post_thumbnail() ) : ?>
-						<?php the_post_thumbnail( 'review-single', array( 'itemprop' => 'image' ) ); ?>
+					<?php
+					$image_url = guru_get_review_image_url( $id, 'review-single' );
+					if ( $image_url ) :
+						?>
+						<img src="<?php echo esc_url( $image_url ); ?>"
+						     alt="<?php echo esc_attr( get_the_title() ); ?>"
+						     width="800" height="600"
+						     loading="lazy"
+						     itemprop="image"
+						     class="review-single-thumb">
 					<?php endif; ?>
 
 					<h3 itemprop="name"><?php the_title(); ?></h3>
