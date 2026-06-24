@@ -28,7 +28,7 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 		</div>
 
 		<div class="hero-actions" style="justify-content:center; margin: 2rem 0;">
-			<a href="<?php echo esc_url( $whatsapp ); ?>" class="btn btn-whatsapp" target="_blank" rel="noopener">
+			<a <?php echo guru_whatsapp_link_attrs( 'landing' ); ?> class="btn btn-whatsapp">
 				<?php echo esc_html( $wa_msg ); ?>
 			</a>
 		</div>

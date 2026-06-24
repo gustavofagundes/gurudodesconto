@@ -130,14 +130,61 @@ O Site Kit conecta o Search Console automaticamente. Depois:
 
 ## SEO incluído
 
-- Schema.org (Organization, Product, Review)
+- Schema.org (Organization, Product, Review, FAQPage, ItemList)
 - Open Graph e Twitter Cards
 - Sitemap XML com reviews
 - Meta descriptions por página
 - Links afiliados com `nofollow sponsored`
 - GZIP, cache e preload de imagens
 
-## Plugins incluídos
+## Rastreamento e conversões (UTM, GA4, Meta)
+
+### UTMs em links de afiliado
+
+Todos os botões `.btn-affiliate` recebem automaticamente:
+
+| Parâmetro | Padrão | Exemplo com Google Ads |
+|-----------|--------|------------------------|
+| `utm_source` | `gurudodesconto` | `google` (se o visitante veio de anúncio) |
+| `utm_medium` | `review` | `cpc` |
+| `utm_campaign` | `review_{slug}` | `review_airfryer` |
+| `utm_content` | `sidebar`, `product_1`, `winner_cta`, etc. | conforme campanha |
+
+Quando alguém chega com UTMs na URL (`?utm_source=google&utm_medium=cpc&utm_campaign=review_airfryer`), esses valores são **repassados** aos cliques em links de afiliado por 24h.
+
+Reviews gerados pelo n8n também incluem UTMs no HTML commitado no GitHub.
+
+### Configurar no WordPress
+
+**Aparência → Personalizar → Guru do Desconto:**
+
+| Campo | Uso |
+|-------|-----|
+| Google Analytics ID (`G-...`) | GA4 + eventos `affiliate_click` e `whatsapp_click` |
+| Google Ads ID (`AW-...`) | Tag opcional para vincular Ads ao GA4 |
+| Meta Pixel ID | Remarketing Facebook/Instagram |
+| UTM padrão source/medium | Fallback quando não há campanha na URL |
+
+> Se usar **Site Kit** para GA4, deixe o campo GA vazio no tema para não duplicar a tag. Os eventos de clique funcionam desde que `gtag` esteja carregado (Site Kit ou tema).
+
+### Marcar conversões no GA4
+
+1. **GA4 → Administrar → Eventos**
+2. Aguarde aparecer `affiliate_click` e `whatsapp_click` (ou crie eventos personalizados)
+3. Marque ambos como **Conversões**
+
+### Google Ads + GA4
+
+1. No **Google Ads** → Ferramentas → **Vinculações** → vincule a propriedade GA4
+2. Em campanhas, use URL final com UTMs, ex.:
+   `https://gurudodesconto.com.br/reviews/melhor-air-fryer-2026/?utm_source=google&utm_medium=cpc&utm_campaign=review_airfryer&utm_content=ad1`
+3. No GA4, analise **Aquisição → Aquisição de tráfego** e relatório de conversões por campanha
+
+### Meta Pixel
+
+Cole o Pixel ID no Personalizar **ou** use plugin oficial Meta / integração do Site Kit quando disponível.
+
+---
 
 - **Site Kit by Google** — Analytics, Search Console, AdSense (já no projeto)
 - **LiteSpeed Cache** (Hostinger LiteSpeed) — recomendado na produção

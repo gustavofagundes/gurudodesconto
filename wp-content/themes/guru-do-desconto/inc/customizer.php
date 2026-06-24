@@ -58,9 +58,56 @@ function guru_customize_register( $wp_customize ) {
 
 	$wp_customize->add_control( 'guru_google_analytics', array(
 		'label'       => __( 'Google Analytics ID (G-XXXXXXXX)', 'guru-do-desconto' ),
-		'description' => __( 'Opcional. Cole o ID de medição do GA4.', 'guru-do-desconto' ),
+		'description' => __( 'ID GA4. Marque affiliate_click e whatsapp_click como conversões no GA4. Se usar Site Kit, deixe vazio aqui para evitar duplicar.', 'guru-do-desconto' ),
 		'section'     => 'guru_settings',
 		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_google_ads_id', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_google_ads_id', array(
+		'label'       => __( 'Google Ads ID (AW-XXXXXXXX)', 'guru-do-desconto' ),
+		'description' => __( 'Opcional. Vincule Google Ads ao GA4 no painel do Ads.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_meta_pixel_id', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_meta_pixel_id', array(
+		'label'       => __( 'Meta Pixel ID', 'guru-do-desconto' ),
+		'description' => __( 'Opcional. Remarketing Facebook/Instagram. Alternativa: plugin oficial Meta ou Site Kit.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_utm_source', array(
+		'default'           => 'gurudodesconto',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_utm_source', array(
+		'label'       => __( 'UTM padrão — source', 'guru-do-desconto' ),
+		'description' => __( 'Usado em links de afiliado quando o visitante não veio de campanha.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_utm_medium', array(
+		'default'           => 'review',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+
+	$wp_customize->add_control( 'guru_utm_medium', array(
+		'label'   => __( 'UTM padrão — medium', 'guru-do-desconto' ),
+		'section' => 'guru_settings',
+		'type'    => 'text',
 	) );
 
 	$wp_customize->add_setting( 'guru_google_search_console', array(

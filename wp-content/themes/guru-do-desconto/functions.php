@@ -7,12 +7,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.8' );
+define( 'GURU_THEME_VERSION', '1.0.9' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
 require_once GURU_THEME_DIR . '/inc/custom-post-types.php';
 require_once GURU_THEME_DIR . '/inc/customizer.php';
+require_once GURU_THEME_DIR . '/inc/tracking.php';
 require_once GURU_THEME_DIR . '/inc/seo-whatsapp.php';
 require_once GURU_THEME_DIR . '/inc/seo.php';
 require_once GURU_THEME_DIR . '/inc/meta-boxes.php';
@@ -68,14 +69,22 @@ function guru_enqueue_assets() {
 		GURU_THEME_VERSION,
 		true
 	);
+
+	wp_enqueue_script(
+		'guru-tracking',
+		GURU_THEME_URI . '/assets/js/tracking.js',
+		array(),
+		GURU_THEME_VERSION,
+		true
+	);
 }
 add_action( 'wp_enqueue_scripts', 'guru_enqueue_assets' );
 
 /**
- * Get WhatsApp group link from customizer.
+ * Link do grupo WhatsApp (com UTMs padrão).
  */
 function guru_whatsapp_link() {
-	return esc_url( get_theme_mod( 'guru_whatsapp_link', 'https://chat.whatsapp.com/I5Ln1bvpIP89FpaxRO4VJG?mode=gi_t' ) );
+	return esc_url( guru_whatsapp_tracked_url( 'link' ) );
 }
 
 /**
@@ -133,13 +142,6 @@ function guru_render_stars( $rating ) {
 	$out .= str_repeat( '☆', $empty );
 
 	return '<span class="stars" aria-label="' . esc_attr( sprintf( __( '%s de 5 estrelas', 'guru-do-desconto' ), $rating ) ) . '">' . esc_html( $out ) . '</span>';
-}
-
-/**
- * Add nofollow to affiliate links in content.
- */
-function guru_affiliate_link_attrs( $url ) {
-	return 'href="' . esc_url( $url ) . '" target="_blank" rel="nofollow sponsored noopener"';
 }
 
 /**

@@ -124,7 +124,10 @@ function guru_google_analytics() {
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
-		gtag('config', '<?php echo esc_js( $ga_id ); ?>');
+		gtag('config', '<?php echo esc_js( $ga_id ); ?>', {
+			send_page_view: true,
+			allow_google_signals: true
+		});
 	</script>
 	<?php
 }

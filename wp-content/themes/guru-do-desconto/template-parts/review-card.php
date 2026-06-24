@@ -51,7 +51,7 @@ if ( $price && $old && (float) $old > (float) $price ) {
 		<?php endif; ?>
 
 		<?php if ( $affiliate ) : ?>
-			<a <?php echo guru_affiliate_link_attrs( $affiliate ); ?> class="btn-affiliate">
+			<a <?php echo guru_affiliate_link_attrs( $affiliate, 'card' ); ?> class="btn-affiliate">
 				<?php esc_html_e( 'Ver Promoção', 'guru-do-desconto' ); ?>
 			</a>
 		<?php else : ?>

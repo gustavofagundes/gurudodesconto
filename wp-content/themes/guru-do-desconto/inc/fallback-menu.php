@@ -15,7 +15,7 @@ function guru_fallback_menu() {
 		?>
 		<li><a href="<?php echo esc_url( home_url( '/#grupo-whatsapp' ) ); ?>"><?php esc_html_e( 'Grupo WhatsApp', 'guru-do-desconto' ); ?></a></li>
 		<li><a href="<?php echo esc_url( $wa_page ); ?>"><?php esc_html_e( 'Promoções WhatsApp', 'guru-do-desconto' ); ?></a></li>
-		<li><a href="<?php echo esc_url( $whatsapp ); ?>" class="nav-cta" target="_blank" rel="noopener"><?php echo esc_html( $msg ); ?></a></li>
+		<li><a <?php echo guru_whatsapp_link_attrs( 'nav' ); ?> class="nav-cta"><?php echo esc_html( $msg ); ?></a></li>
 	</ul>
 	<?php
 }

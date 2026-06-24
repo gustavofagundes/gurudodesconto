@@ -29,7 +29,7 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 					<li><?php esc_html_e( 'Cupons Amazon e Prime Day', 'guru-do-desconto' ); ?></li>
 					<li><?php esc_html_e( 'Reviews comparativos com melhores preços', 'guru-do-desconto' ); ?></li>
 				</ul>
-				<a href="<?php echo esc_url( $whatsapp ); ?>" class="btn btn-whatsapp" target="_blank" rel="noopener">
+				<a <?php echo guru_whatsapp_link_attrs( 'faq' ); ?> class="btn btn-whatsapp">
 					<?php echo esc_html( $wa_msg ); ?>
 				</a>
 			</div>
