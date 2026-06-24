@@ -36,3 +36,53 @@ function guru_register_review_meta_rest() {
 	}
 }
 add_action( 'init', 'guru_register_review_meta_rest' );
+
+/**
+ * Webhook REST para sincronizar reviews após deploy (n8n, GitHub Actions, etc.).
+ */
+function guru_register_review_sync_rest() {
+	register_rest_route(
+		'guru/v1',
+		'/sync-reviews',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'guru_rest_sync_reviews',
+			'permission_callback' => 'guru_rest_sync_reviews_permission',
+		)
+	);
+}
+add_action( 'rest_api_init', 'guru_register_review_sync_rest' );
+
+/**
+ * Valida token do webhook.
+ */
+function guru_rest_sync_reviews_permission( WP_REST_Request $request ) {
+	$secret = guru_review_sync_secret();
+	$token  = $request->get_header( 'x_guru_sync_token' );
+
+	if ( ! $token ) {
+		$token = $request->get_param( 'token' );
+	}
+
+	return $secret && is_string( $token ) && hash_equals( $secret, (string) $token );
+}
+
+/**
+ * Executa sincronização via REST.
+ */
+function guru_rest_sync_reviews() {
+	if ( ! function_exists( 'guru_run_review_sync' ) ) {
+		return new WP_Error( 'guru_sync_unavailable', __( 'Sincronização não disponível.', 'guru-do-desconto' ), array( 'status' => 500 ) );
+	}
+
+	$result = guru_run_review_sync();
+
+	return rest_ensure_response(
+		array(
+			'success' => true,
+			'synced'  => $result['synced'],
+			'files'   => $result['files'],
+			'dir'     => $result['dir'],
+		)
+	);
+}

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const GURU_REVIEW_SYNC_VERSION = 'html-v2';
+const GURU_REVIEW_SYNC_VERSION = 'html-v3';
 
 /**
  * Diretório dos arquivos versionados no repositório.
@@ -186,6 +186,84 @@ function guru_review_html_files() {
 }
 
 /**
+ * Fingerprint dos arquivos .html (detecta mudanças após deploy/FTP).
+ */
+function guru_reviews_content_fingerprint() {
+	$files = guru_review_html_files();
+	if ( ! $files ) {
+		return '';
+	}
+
+	sort( $files );
+	$parts = array();
+
+	foreach ( $files as $file ) {
+		$raw = file_get_contents( $file );
+		if ( false === $raw ) {
+			continue;
+		}
+		$parts[] = basename( $file ) . ':' . md5( $raw );
+	}
+
+	return $parts ? md5( implode( '|', $parts ) ) : '';
+}
+
+/**
+ * Verifica se há arquivos novos ou alterados para sincronizar.
+ */
+function guru_reviews_need_sync() {
+	$files = guru_review_html_files();
+	if ( ! $files ) {
+		return false;
+	}
+
+	if ( get_option( 'guru_review_sync_version', '' ) !== GURU_REVIEW_SYNC_VERSION ) {
+		return true;
+	}
+
+	$fingerprint = guru_reviews_content_fingerprint();
+	if ( $fingerprint !== get_option( 'guru_review_content_fingerprint', '' ) ) {
+		return true;
+	}
+
+	foreach ( $files as $file ) {
+		$raw = file_get_contents( $file );
+		if ( false === $raw ) {
+			continue;
+		}
+
+		$parsed = guru_parse_review_file( $file );
+		if ( ! $parsed ) {
+			continue;
+		}
+
+		$slug     = sanitize_title( $parsed['meta']['slug'] ?? pathinfo( $file, PATHINFO_FILENAME ) );
+		$existing = guru_find_review_by_slug( $slug );
+		$hash     = md5( $raw );
+
+		if ( ! $existing || get_post_meta( $existing->ID, '_guru_repo_hash', true ) !== $hash ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Secret para webhook de sincronização (n8n / CI).
+ */
+function guru_review_sync_secret() {
+	if ( function_exists( 'guru_env' ) ) {
+		$secret = guru_env( 'GURU_REVIEW_SYNC_SECRET' );
+		if ( $secret ) {
+			return $secret;
+		}
+	}
+
+	return defined( 'AUTH_KEY' ) ? AUTH_KEY : '';
+}
+
+/**
  * Sincroniza todos os .html em content/reviews/.
  *
  * @return array{synced: int, files: int, dir: string}
@@ -201,13 +279,8 @@ function guru_run_review_sync() {
 		}
 	}
 
-	$max_mtime = 0;
-	foreach ( $files as $file ) {
-		$max_mtime = max( $max_mtime, (int) filemtime( $file ) );
-	}
-
 	update_option( 'guru_review_sync_version', GURU_REVIEW_SYNC_VERSION, false );
-	update_option( 'guru_review_sync_max_mtime', $max_mtime ?: time(), false );
+	update_option( 'guru_review_content_fingerprint', guru_reviews_content_fingerprint(), false );
 	delete_transient( 'guru_review_sync_running' );
 
 	return array(
@@ -218,27 +291,10 @@ function guru_run_review_sync() {
 }
 
 /**
- * Sincroniza todos os .html em content/reviews/ quando os arquivos mudam.
+ * Sincroniza automaticamente quando arquivos .html mudam (qualquer visita ao site).
  */
 function guru_maybe_sync_reviews_from_repo() {
-	if ( wp_installing() ) {
-		return;
-	}
-
-	$files = guru_review_html_files();
-	if ( ! $files ) {
-		return;
-	}
-
-	$max_mtime = 0;
-	foreach ( $files as $file ) {
-		$max_mtime = max( $max_mtime, (int) filemtime( $file ) );
-	}
-
-	$stored_version = get_option( 'guru_review_sync_version', '' );
-	$last_mtime     = (int) get_option( 'guru_review_sync_max_mtime', 0 );
-
-	if ( GURU_REVIEW_SYNC_VERSION === $stored_version && $max_mtime <= $last_mtime ) {
+	if ( wp_installing() || ! guru_reviews_need_sync() ) {
 		return;
 	}
 
@@ -250,6 +306,34 @@ function guru_maybe_sync_reviews_from_repo() {
 	guru_run_review_sync();
 }
 add_action( 'init', 'guru_maybe_sync_reviews_from_repo', 20 );
+
+/**
+ * Cron: sincroniza a cada 15 minutos (fallback na Hostinger).
+ */
+function guru_review_sync_cron_schedules( $schedules ) {
+	$schedules['guru_every_fifteen_minutes'] = array(
+		'interval' => 15 * MINUTE_IN_SECONDS,
+		'display'  => __( 'A cada 15 minutos (Guru reviews)', 'guru-do-desconto' ),
+	);
+	return $schedules;
+}
+add_filter( 'cron_schedules', 'guru_review_sync_cron_schedules' );
+
+function guru_schedule_review_sync_cron() {
+	if ( ! wp_next_scheduled( 'guru_cron_sync_reviews' ) ) {
+		wp_schedule_event( time(), 'guru_every_fifteen_minutes', 'guru_cron_sync_reviews' );
+	}
+}
+add_action( 'after_switch_theme', 'guru_schedule_review_sync_cron' );
+add_action( 'init', 'guru_schedule_review_sync_cron' );
+
+function guru_cron_sync_reviews() {
+	if ( ! guru_reviews_need_sync() ) {
+		return;
+	}
+	guru_run_review_sync();
+}
+add_action( 'guru_cron_sync_reviews', 'guru_cron_sync_reviews' );
 
 /**
  * Remove reviews de exemplo que não vieram de content/reviews/*.html.
@@ -370,7 +454,16 @@ function guru_review_sync_admin_page() {
 		</form>
 
 		<p class="description">
-			<?php esc_html_e( 'Após enviar novos arquivos .html para a Hostinger, clique em "Sincronizar agora". Reviews sem status no arquivo são publicados automaticamente.', 'guru-do-desconto' ); ?>
+			<?php esc_html_e( 'A sincronização é automática: ao enviar novos .html, o site importa na próxima visita ou em até 15 minutos (cron). O botão acima força a sincronização imediata.', 'guru-do-desconto' ); ?>
+		</p>
+		<p class="description">
+			<?php
+			printf(
+				/* translators: %s: REST URL */
+				esc_html__( 'Webhook (n8n/CI): POST %s com header X-Guru-Sync-Token (defina GURU_REVIEW_SYNC_SECRET no .env).', 'guru-do-desconto' ),
+				esc_url( rest_url( 'guru/v1/sync-reviews' ) )
+			);
+			?>
 		</p>
 	</div>
 	<?php

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.5' );
+define( 'GURU_THEME_VERSION', '1.0.6' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -180,3 +180,23 @@ function guru_resource_hints( $urls, $relation_type ) {
 	return $urls;
 }
 add_filter( 'wp_resource_hints', 'guru_resource_hints', 10, 2 );
+
+/**
+ * Remove menções a link/comissão de afiliado no corpo dos reviews.
+ */
+function guru_clean_review_body_copy( $content ) {
+	if ( ! is_singular( 'review' ) ) {
+		return $content;
+	}
+
+	$content = preg_replace( '/<p class="affiliate-disclaimer">.*?<\/p>/is', '', $content );
+	$content = preg_replace( '/<h3>\s*Os links são de afiliado\?\s*<\/h3>\s*<p>.*?<\/p>/is', '', $content );
+	$content = str_ireplace(
+		array( ' — link de afiliado', ' - link de afiliado', 'links de afiliado', 'link de afiliado', 'tag de afiliado', 'comissão de afiliado' ),
+		'',
+		$content
+	);
+
+	return $content;
+}
+add_filter( 'the_content', 'guru_clean_review_body_copy', 25 );

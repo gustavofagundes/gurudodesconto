@@ -79,9 +79,24 @@ Guia oficial Hostinger: [Como corrigir "Error establishing a database connection
 Os reviews **não** são criados manualmente no painel — vêm de arquivos HTML no repositório.
 
 1. Envie a pasta **`content/reviews/`** para a **raiz do site** (mesmo nível de `wp-config.php`), com os arquivos `.html`
-2. No painel: **Reviews → Sincronizar** → clique em **Sincronizar agora**
-3. Confira em **Reviews → Todos os Reviews** se aparecem como **Publicado**
+2. A sincronização é **automática**:
+   - Na **próxima visita** ao site (admin ou público), se os arquivos mudaram
+   - A cada **15 minutos** via cron do WordPress
+   - Imediata via **webhook** (recomendado com n8n — ver abaixo)
+3. Opcional: **Reviews → Sincronizar** força importação na hora
 4. Acesse `/reviews/` no site para validar
+
+**Webhook (n8n / automação)** — após gravar o `.html` na Hostinger:
+
+```http
+POST https://seudominio.com.br/wp-json/guru/v1/sync-reviews
+X-Guru-Sync-Token: SEU_TOKEN_SECRETO
+```
+
+Defina no `.env`:
+```env
+GURU_REVIEW_SYNC_SECRET=um-token-longo-e-aleatorio
+```
 
 > Se aparecer "Nenhum review encontrado", a pasta `content/reviews/` provavelmente não foi enviada ou está no lugar errado.
 
@@ -109,11 +124,9 @@ O Site Kit conecta o Search Console automaticamente. Depois:
 
 ## Adicionar reviews
 
-1. Crie ou edite um arquivo em `content/reviews/meu-review.html` (com frontmatter YAML opcional no topo)
+1. Crie ou edite um arquivo em `content/reviews/meu-review.html`
 2. Faça deploy para a Hostinger (pasta `content/reviews/` na raiz)
-3. **Reviews → Sincronizar** → **Sincronizar agora**
-
-Campos opcionais no frontmatter: `title`, `slug`, `status` (publish/draft), `meta_description`, `price`, `rating`, `affiliate_link`.
+3. Sincronização automática na próxima visita, em até 15 min, ou via webhook POST `/wp-json/guru/v1/sync-reviews`
 
 ## SEO incluído
 
