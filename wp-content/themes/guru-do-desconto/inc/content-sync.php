@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const GURU_REVIEW_SYNC_VERSION = 'html-v3';
+const GURU_REVIEW_SYNC_VERSION = 'html-v4';
 
 /**
  * Diretório dos arquivos versionados no repositório.
@@ -124,13 +124,21 @@ function guru_sync_review_file( $file_path ) {
 	$existing    = guru_find_review_by_slug( $slug );
 	$stored_hash = $existing ? get_post_meta( $existing->ID, '_guru_repo_hash', true ) : '';
 
-	if ( $existing && $stored_hash === $hash ) {
-		return $existing->ID;
-	}
-
 	$status = in_array( $meta['status'] ?? '', array( 'publish', 'draft', 'pending' ), true )
 		? $meta['status']
 		: 'publish';
+
+	if ( $existing && $stored_hash === $hash ) {
+		if ( 'publish' === $status && 'publish' !== $existing->post_status ) {
+			wp_update_post(
+				array(
+					'ID'          => $existing->ID,
+					'post_status' => 'publish',
+				)
+			);
+		}
+		return $existing->ID;
+	}
 
 	$post_data = array(
 		'post_type'    => 'review',
@@ -367,6 +375,36 @@ function guru_remove_fake_reviews_once() {
 add_action( 'init', 'guru_remove_fake_reviews_once', 21 );
 
 /**
+ * Publica reviews sincronizados que ficaram como rascunho (correção única).
+ */
+function guru_publish_draft_repo_reviews_once() {
+	if ( wp_installing() || get_option( 'guru_draft_repo_reviews_published' ) ) {
+		return;
+	}
+
+	$posts = get_posts(
+		array(
+			'post_type'      => 'review',
+			'post_status'    => 'draft',
+			'posts_per_page' => -1,
+			'meta_key'       => '_guru_repo_path',
+		)
+	);
+
+	foreach ( $posts as $post ) {
+		wp_update_post(
+			array(
+				'ID'          => $post->ID,
+				'post_status' => 'publish',
+			)
+		);
+	}
+
+	update_option( 'guru_draft_repo_reviews_published', true, false );
+}
+add_action( 'init', 'guru_publish_draft_repo_reviews_once', 22 );
+
+/**
  * Página no admin para sincronizar reviews na Hostinger (sem WP-CLI).
  */
 function guru_review_sync_admin_menu() {
@@ -405,6 +443,8 @@ function guru_review_sync_admin_page() {
 	$dir        = guru_reviews_content_dir();
 	$dir_exists = is_dir( $dir );
 	$files      = guru_review_html_files();
+	$published  = (int) wp_count_posts( 'review' )->publish;
+	$drafts     = (int) wp_count_posts( 'review' )->draft;
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Sincronizar Reviews', 'guru-do-desconto' ); ?></h1>
@@ -439,6 +479,22 @@ function guru_review_sync_admin_page() {
 							esc_html_e( 'Nenhum arquivo encontrado', 'guru-do-desconto' );
 						}
 						?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'No WordPress', 'guru-do-desconto' ); ?></th>
+					<td>
+						<?php
+						printf(
+							/* translators: 1: published count, 2: draft count */
+							esc_html__( '%1$d publicado(s), %2$d rascunho(s)', 'guru-do-desconto' ),
+							$published,
+							$drafts
+						);
+						?>
+						<?php if ( $drafts > 0 ) : ?>
+							<br><span style="color:#b32d2e"><?php esc_html_e( 'Rascunhos não aparecem no site — clique em Sincronizar agora.', 'guru-do-desconto' ); ?></span>
+						<?php endif; ?>
 					</td>
 				</tr>
 			</tbody>
