@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const GURU_REVIEW_SYNC_VERSION = 'html-v6';
+const GURU_REVIEW_SYNC_VERSION = 'html-v7';
 
 /**
  * Diretório dos arquivos versionados no repositório.
@@ -97,6 +97,67 @@ function guru_normalize_review_keyword( $keyword ) {
 }
 
 /**
+ * Chave canônica para deduplicação — unifica "melhor air fryer" com "air fryer".
+ */
+function guru_canonical_review_keyword( $keyword ) {
+	$normalized = guru_normalize_review_keyword( $keyword );
+	if ( ! $normalized ) {
+		return '';
+	}
+
+	$canonical = preg_replace( '/^melhores?-/', '', $normalized );
+
+	return $canonical ?: $normalized;
+}
+
+/**
+ * Chave única de identidade do review (keyword da planilha tem prioridade).
+ */
+function guru_review_dedupe_key( $keyword = '', $focus_keyphrase = '' ) {
+	$keyword = trim( (string) $keyword );
+	if ( $keyword ) {
+		return guru_canonical_review_keyword( $keyword );
+	}
+
+	return guru_canonical_review_keyword( $focus_keyphrase );
+}
+
+/**
+ * Calcula a chave de dedup de um post (meta salva ou legado).
+ */
+function guru_compute_post_dedupe_key( $post_id ) {
+	$stored = get_post_meta( $post_id, '_guru_dedupe_key', true );
+	if ( is_string( $stored ) && '' !== $stored ) {
+		return $stored;
+	}
+
+	return guru_review_dedupe_key(
+		get_post_meta( $post_id, '_guru_keyword', true ),
+		get_post_meta( $post_id, '_guru_focus_keyword', true )
+	);
+}
+
+/**
+ * Tenta adquirir lock global de sincronização (init, cron, webhook, admin).
+ */
+function guru_acquire_review_sync_lock() {
+	if ( get_transient( 'guru_review_sync_running' ) ) {
+		return false;
+	}
+
+	set_transient( 'guru_review_sync_running', 1, 5 * MINUTE_IN_SECONDS );
+
+	return true;
+}
+
+/**
+ * Libera lock global de sincronização.
+ */
+function guru_release_review_sync_lock() {
+	delete_transient( 'guru_review_sync_running' );
+}
+
+/**
  * Encontra post review existente pelo slug.
  */
 function guru_find_review_by_slug( $slug ) {
@@ -121,32 +182,39 @@ function guru_find_review_by_slug( $slug ) {
 }
 
 /**
- * Lista reviews com a mesma keyword da planilha.
+ * Encontra post review pelo caminho versionado no repositório.
+ */
+function guru_find_review_by_repo_path( $repo_path ) {
+	$repo_path = ltrim( (string) $repo_path, '/' );
+	if ( '' === $repo_path ) {
+		return null;
+	}
+
+	$posts = get_posts(
+		array(
+			'post_type'              => 'review',
+			'post_status'            => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+			'posts_per_page'         => 1,
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_key'               => '_guru_repo_path',
+			'meta_value'             => $repo_path,
+		)
+	);
+
+	return $posts ? $posts[0] : null;
+}
+
+/**
+ * Lista reviews com a mesma chave de identidade (keyword / focus_keyphrase).
  *
  * @return WP_Post[]
  */
-function guru_find_reviews_by_keyword( $keyword ) {
-	$keyword    = trim( (string) $keyword );
-	$normalized = guru_normalize_review_keyword( $keyword );
-
-	if ( '' === $keyword && '' === $normalized ) {
+function guru_find_reviews_by_dedupe_key( $dedupe_key ) {
+	$dedupe_key = (string) $dedupe_key;
+	if ( '' === $dedupe_key ) {
 		return array();
-	}
-
-	$meta_query = array( 'relation' => 'OR' );
-
-	if ( '' !== $keyword ) {
-		$meta_query[] = array(
-			'key'   => '_guru_keyword',
-			'value' => $keyword,
-		);
-	}
-
-	if ( '' !== $normalized ) {
-		$meta_query[] = array(
-			'key'   => '_guru_keyword_normalized',
-			'value' => $normalized,
-		);
 	}
 
 	$posts = get_posts(
@@ -155,25 +223,51 @@ function guru_find_reviews_by_keyword( $keyword ) {
 			'post_status'            => array( 'publish', 'draft', 'pending', 'future', 'private' ),
 			'posts_per_page'         => -1,
 			'no_found_rows'          => true,
-			'update_post_meta_cache' => false,
+			'update_post_meta_cache' => true,
 			'update_post_term_cache' => false,
-			'meta_query'             => $meta_query,
 		)
 	);
 
-	return $posts ?: array();
+	if ( ! $posts ) {
+		return array();
+	}
+
+	$matched = array();
+	foreach ( $posts as $post ) {
+		if ( guru_compute_post_dedupe_key( $post->ID ) === $dedupe_key ) {
+			$matched[] = $post;
+		}
+	}
+
+	return $matched;
 }
 
 /**
- * Resolve qual post atualizar: slug exato, depois keyword, depois repo path.
+ * @deprecated Use guru_find_reviews_by_dedupe_key().
+ * @return WP_Post[]
  */
-function guru_resolve_existing_review( $slug, $keyword ) {
+function guru_find_reviews_by_keyword( $keyword ) {
+	return guru_find_reviews_by_dedupe_key( guru_canonical_review_keyword( $keyword ) );
+}
+
+/**
+ * Resolve qual post atualizar: slug → repo path → chave de dedup.
+ */
+function guru_resolve_existing_review( $slug, $keyword, $repo_path = '', $focus_keyphrase = '' ) {
 	$by_slug = guru_find_review_by_slug( $slug );
 	if ( $by_slug ) {
 		return $by_slug;
 	}
 
-	$matches = guru_find_reviews_by_keyword( $keyword );
+	if ( $repo_path ) {
+		$by_repo = guru_find_review_by_repo_path( $repo_path );
+		if ( $by_repo ) {
+			return $by_repo;
+		}
+	}
+
+	$dedupe_key = guru_review_dedupe_key( $keyword, $focus_keyphrase );
+	$matches    = guru_find_reviews_by_dedupe_key( $dedupe_key );
 	if ( ! $matches ) {
 		return null;
 	}
@@ -194,16 +288,17 @@ function guru_resolve_existing_review( $slug, $keyword ) {
 }
 
 /**
- * Remove cópias extras do mesmo review (mesma keyword).
+ * Remove cópias extras do mesmo review (mesma chave de dedup).
  */
-function guru_dedupe_reviews_by_keyword( $keyword, $keep_id ) {
-	$keep_id = (int) $keep_id;
-	if ( ! $keep_id || '' === trim( (string) $keyword ) ) {
+function guru_dedupe_reviews_by_key( $dedupe_key, $keep_id ) {
+	$keep_id    = (int) $keep_id;
+	$dedupe_key = (string) $dedupe_key;
+	if ( ! $keep_id || '' === $dedupe_key ) {
 		return 0;
 	}
 
 	$removed = 0;
-	foreach ( guru_find_reviews_by_keyword( $keyword ) as $post ) {
+	foreach ( guru_find_reviews_by_dedupe_key( $dedupe_key ) as $post ) {
 		if ( (int) $post->ID === $keep_id ) {
 			continue;
 		}
@@ -212,6 +307,13 @@ function guru_dedupe_reviews_by_keyword( $keyword, $keep_id ) {
 	}
 
 	return $removed;
+}
+
+/**
+ * @deprecated Use guru_dedupe_reviews_by_key().
+ */
+function guru_dedupe_reviews_by_keyword( $keyword, $keep_id ) {
+	return guru_dedupe_reviews_by_key( guru_canonical_review_keyword( $keyword ), $keep_id );
 }
 
 /**
@@ -233,17 +335,11 @@ function guru_cleanup_duplicate_reviews() {
 	$groups = array();
 
 	foreach ( $posts as $post ) {
-		$keyword = get_post_meta( $post->ID, '_guru_keyword_normalized', true );
-		if ( ! $keyword ) {
-			$keyword = guru_normalize_review_keyword(
-				get_post_meta( $post->ID, '_guru_keyword', true )
-					?: get_post_meta( $post->ID, '_guru_focus_keyword', true )
-			);
-		}
-		if ( ! $keyword ) {
+		$dedupe_key = guru_compute_post_dedupe_key( $post->ID );
+		if ( ! $dedupe_key ) {
 			continue;
 		}
-		$groups[ $keyword ][] = $post;
+		$groups[ $dedupe_key ][] = $post;
 	}
 
 	$removed = 0;
@@ -266,6 +362,10 @@ function guru_cleanup_duplicate_reviews() {
 		);
 
 		$keep_id = (int) $group[0]->ID;
+		$dedupe  = guru_compute_post_dedupe_key( $keep_id );
+		if ( $dedupe ) {
+			update_post_meta( $keep_id, '_guru_dedupe_key', $dedupe );
+		}
 		for ( $i = 1; $i < count( $group ); $i++ ) {
 			wp_trash_post( $group[ $i ]->ID );
 			++$removed;
@@ -296,11 +396,14 @@ function guru_sync_review_file( $file_path ) {
 	}
 
 	$keyword            = trim( (string) ( $meta['keyword'] ?? '' ) );
+	$focus_keyphrase    = trim( (string) ( $meta['focus_keyphrase'] ?? '' ) );
 	$keyword_normalized = guru_normalize_review_keyword( $keyword );
+	$dedupe_key         = guru_review_dedupe_key( $keyword, $focus_keyphrase );
+	$repo_path          = 'content/reviews/' . basename( $file_path );
 
 	$hash = md5( $raw );
 
-	$existing    = guru_resolve_existing_review( $slug, $keyword );
+	$existing    = guru_resolve_existing_review( $slug, $keyword, $repo_path, $focus_keyphrase );
 	$stored_hash = $existing ? get_post_meta( $existing->ID, '_guru_repo_hash', true ) : '';
 
 	$status = in_array( $meta['status'] ?? '', array( 'publish', 'draft', 'pending' ), true )
@@ -326,14 +429,16 @@ function guru_sync_review_file( $file_path ) {
 			'_guru_featured_image_url' => $meta['featured_image'] ?? '',
 			'_guru_keyword'            => $keyword,
 			'_guru_keyword_normalized' => $keyword_normalized,
+			'_guru_dedupe_key'         => $dedupe_key,
+			'_guru_repo_path'          => $repo_path,
 		);
 		foreach ( $stale_meta as $key => $value ) {
 			update_post_meta( $existing->ID, $key, $value );
 		}
 		guru_maybe_set_review_thumbnail( $existing->ID, $meta['featured_image'] ?? '', $meta['title'] ?? $slug );
 
-		if ( $keyword ) {
-			guru_dedupe_reviews_by_keyword( $keyword, $existing->ID );
+		if ( $dedupe_key ) {
+			guru_dedupe_reviews_by_key( $dedupe_key, $existing->ID );
 		}
 
 		return $existing->ID;
@@ -378,12 +483,13 @@ function guru_sync_review_file( $file_path ) {
 		'_guru_focus_keyword'          => $meta['focus_keyphrase'] ?? ( $meta['keyword'] ?? '' ),
 		'_guru_keyword'                => $keyword,
 		'_guru_keyword_normalized'     => $keyword_normalized,
+		'_guru_dedupe_key'             => $dedupe_key,
 		'_guru_seo_title'              => $meta['seo_title'] ?? '',
 		'_guru_featured_image_url'     => $meta['featured_image'] ?? '',
 		'_guru_faq_json'               => $meta['faq_json'] ?? '',
 		'_guru_item_list_json'         => $meta['item_list_json'] ?? '',
 		'_guru_repo_hash'              => $hash,
-		'_guru_repo_path'              => 'content/reviews/' . basename( $file_path ),
+		'_guru_repo_path'              => $repo_path,
 	);
 
 	foreach ( $meta_map as $key => $value ) {
@@ -392,8 +498,8 @@ function guru_sync_review_file( $file_path ) {
 
 	guru_maybe_set_review_thumbnail( $post_id, $meta['featured_image'] ?? '', $meta['title'] ?? $slug );
 
-	if ( $keyword ) {
-		guru_dedupe_reviews_by_keyword( $keyword, $post_id );
+	if ( $dedupe_key ) {
+		guru_dedupe_reviews_by_key( $dedupe_key, $post_id );
 	}
 
 	return $post_id;
@@ -504,9 +610,11 @@ function guru_reviews_need_sync() {
 			continue;
 		}
 
-		$slug     = sanitize_title( $parsed['meta']['slug'] ?? pathinfo( $file, PATHINFO_FILENAME ) );
-		$keyword  = trim( (string) ( $parsed['meta']['keyword'] ?? '' ) );
-		$existing = guru_resolve_existing_review( $slug, $keyword );
+		$slug            = sanitize_title( $parsed['meta']['slug'] ?? pathinfo( $file, PATHINFO_FILENAME ) );
+		$keyword         = trim( (string) ( $parsed['meta']['keyword'] ?? '' ) );
+		$focus_keyphrase = trim( (string) ( $parsed['meta']['focus_keyphrase'] ?? '' ) );
+		$repo_path       = 'content/reviews/' . basename( $file );
+		$existing        = guru_resolve_existing_review( $slug, $keyword, $repo_path, $focus_keyphrase );
 		$hash     = md5( $raw );
 
 		if ( ! $existing || get_post_meta( $existing->ID, '_guru_repo_hash', true ) !== $hash ) {
@@ -534,9 +642,19 @@ function guru_review_sync_secret() {
 /**
  * Sincroniza todos os .html em content/reviews/.
  *
- * @return array{synced: int, files: int, dir: string}
+ * @return array{synced: int, files: int, dir: string, deduped: int, skipped?: bool}
  */
 function guru_run_review_sync() {
+	if ( ! guru_acquire_review_sync_lock() ) {
+		return array(
+			'synced'  => 0,
+			'files'   => count( guru_review_html_files() ),
+			'dir'     => guru_reviews_content_dir(),
+			'deduped' => 0,
+			'skipped' => true,
+		);
+	}
+
 	$dir   = guru_reviews_content_dir();
 	$files = guru_review_html_files();
 	$count = 0;
@@ -551,7 +669,7 @@ function guru_run_review_sync() {
 
 	update_option( 'guru_review_sync_version', GURU_REVIEW_SYNC_VERSION, false );
 	update_option( 'guru_review_content_fingerprint', guru_reviews_content_fingerprint(), false );
-	delete_transient( 'guru_review_sync_running' );
+	guru_release_review_sync_lock();
 
 	return array(
 		'synced'  => $count,
@@ -569,11 +687,6 @@ function guru_maybe_sync_reviews_from_repo() {
 		return;
 	}
 
-	if ( get_transient( 'guru_review_sync_running' ) ) {
-		return;
-	}
-
-	set_transient( 'guru_review_sync_running', 1, 60 );
 	guru_run_review_sync();
 }
 add_action( 'init', 'guru_maybe_sync_reviews_from_repo', 20 );
@@ -668,6 +781,19 @@ function guru_publish_draft_repo_reviews_once() {
 add_action( 'init', 'guru_publish_draft_repo_reviews_once', 22 );
 
 /**
+ * Remove duplicatas legadas após upgrade para html-v7 (mesmo sem arquivos .html).
+ */
+function guru_dedupe_reviews_once_v7() {
+	if ( wp_installing() || get_option( 'guru_dedupe_v7_done' ) ) {
+		return;
+	}
+
+	guru_cleanup_duplicate_reviews();
+	update_option( 'guru_dedupe_v7_done', true, false );
+}
+add_action( 'init', 'guru_dedupe_reviews_once_v7', 23 );
+
+/**
  * Página no admin para sincronizar reviews na Hostinger (sem WP-CLI).
  */
 function guru_review_sync_admin_menu() {
@@ -694,13 +820,18 @@ function guru_review_sync_admin_page() {
 	$message = '';
 
 	if ( isset( $_POST['guru_sync_reviews'] ) && check_admin_referer( 'guru_sync_reviews' ) ) {
-		$result  = guru_run_review_sync();
-		$message = sprintf(
-			/* translators: 1: synced count, 2: total files */
-			__( 'Sincronização concluída: %1$d de %2$d arquivo(s) importado(s).', 'guru-do-desconto' ),
-			$result['synced'],
-			$result['files']
-		);
+		$result = guru_run_review_sync();
+		if ( ! empty( $result['skipped'] ) ) {
+			$message = __( 'Outra sincronização já está em andamento. Tente novamente em instantes.', 'guru-do-desconto' );
+		} else {
+			$message = sprintf(
+				/* translators: 1: synced count, 2: total files, 3: deduped count */
+				__( 'Sincronização concluída: %1$d de %2$d arquivo(s) importado(s). %3$d duplicata(s) removida(s).', 'guru-do-desconto' ),
+				$result['synced'],
+				$result['files'],
+				$result['deduped'] ?? 0
+			);
+		}
 	}
 
 	$dir        = guru_reviews_content_dir();
@@ -713,7 +844,7 @@ function guru_review_sync_admin_page() {
 		<h1><?php esc_html_e( 'Sincronizar Reviews', 'guru-do-desconto' ); ?></h1>
 
 		<?php if ( $message ) : ?>
-			<div class="notice notice-success is-dismissible"><p><?php echo esc_html( $message ); ?></p></div>
+			<div class="notice <?php echo ! empty( $result['skipped'] ) ? 'notice-warning' : 'notice-success'; ?> is-dismissible"><p><?php echo esc_html( $message ); ?></p></div>
 		<?php endif; ?>
 
 		<p><?php esc_html_e( 'Os reviews são lidos de arquivos .html na pasta content/reviews/ na raiz do WordPress.', 'guru-do-desconto' ); ?></p>

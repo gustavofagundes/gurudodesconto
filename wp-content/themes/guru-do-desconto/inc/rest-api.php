@@ -84,6 +84,7 @@ function guru_rest_sync_reviews() {
 			'files'   => $result['files'],
 			'dir'     => $result['dir'],
 			'deduped' => $result['deduped'] ?? 0,
+			'skipped' => ! empty( $result['skipped'] ),
 		)
 	);
 }
