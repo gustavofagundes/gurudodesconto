@@ -1,0 +1,5 @@
+# Arquivos-fonte dos reviews (n8n). Sincronizados para o CPT review no WordPress (.html).
+# Não servir diretamente — evita conteúdo duplicado no Google.
+<IfModule mod_authz_core.c>
+	Require all denied
+</IfModule>

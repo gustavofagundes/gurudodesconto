@@ -186,8 +186,7 @@ function guru_schema_review() {
 	$affiliate     = get_post_meta( $id, '_guru_affiliate_link', true );
 	$price         = get_post_meta( $id, '_guru_price', true );
 	$rating        = get_post_meta( $id, '_guru_rating', true );
-	$marketplaces  = get_the_terms( $id, 'marketplace' );
-	$brand         = $marketplaces && ! is_wp_error( $marketplaces ) ? $marketplaces[0]->name : 'Marketplace';
+	$brand         = get_bloginfo( 'name' );
 	$permalink     = get_permalink();
 	$author        = guru_schema_author();
 	$publisher     = guru_schema_publisher();
@@ -276,12 +275,6 @@ function guru_sitemap_post_types( $post_types ) {
 	return $post_types;
 }
 add_filter( 'wp_sitemaps_post_types', 'guru_sitemap_post_types' );
-
-function guru_sitemap_taxonomies( $taxonomies ) {
-	$taxonomies['marketplace'] = true;
-	return $taxonomies;
-}
-add_filter( 'wp_sitemaps_taxonomies', 'guru_sitemap_taxonomies' );
 
 /**
  * Add canonical link (WordPress handles most cases; reinforce for reviews).

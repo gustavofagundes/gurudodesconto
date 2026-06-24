@@ -50,15 +50,13 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 		<div class="marketplace-grid">
 			<?php
 			$stores = array(
-				'mercado-livre' => array( 'class' => 'ml', 'icon' => 'ML', 'name' => 'Mercado Livre', 'desc' => __( 'Eletrônicos, casa, moda e muito mais com frete grátis e cupons exclusivos.', 'guru-do-desconto' ), 'btn' => __( 'Ver Reviews ML', 'guru-do-desconto' ) ),
-				'shopee'        => array( 'class' => 'shopee', 'icon' => 'S', 'name' => 'Shopee', 'desc' => __( 'Ofertas relâmpago, cashback e produtos importados com preços imbatíveis.', 'guru-do-desconto' ), 'btn' => __( 'Ver Reviews Shopee', 'guru-do-desconto' ) ),
-				'amazon'        => array( 'class' => 'amazon', 'icon' => 'A', 'name' => 'Amazon', 'desc' => __( 'Prime Day, Black Friday e promoções diárias em milhares de categorias.', 'guru-do-desconto' ), 'btn' => __( 'Ver Reviews Amazon', 'guru-do-desconto' ) ),
+				'mercado-livre' => array( 'class' => 'ml', 'icon' => 'ML', 'name' => 'Mercado Livre', 'desc' => __( 'Eletrônicos, casa, moda e muito mais com frete grátis e cupons exclusivos.', 'guru-do-desconto' ), 'btn' => __( 'Ver Reviews', 'guru-do-desconto' ) ),
+				'shopee'        => array( 'class' => 'shopee', 'icon' => 'S', 'name' => 'Shopee', 'desc' => __( 'Ofertas relâmpago, cashback e produtos importados com preços imbatíveis.', 'guru-do-desconto' ), 'btn' => __( 'Ver Reviews', 'guru-do-desconto' ) ),
+				'amazon'        => array( 'class' => 'amazon', 'icon' => 'A', 'name' => 'Amazon', 'desc' => __( 'Prime Day, Black Friday e promoções diárias em milhares de categorias.', 'guru-do-desconto' ), 'btn' => __( 'Ver Reviews', 'guru-do-desconto' ) ),
 			);
+			$reviews_archive = get_post_type_archive_link( 'review' );
 			foreach ( $stores as $slug => $store ) :
-				$link = get_term_link( $slug, 'marketplace' );
-				if ( is_wp_error( $link ) ) {
-					$link = get_post_type_archive_link( 'review' );
-				}
+				$link = $reviews_archive;
 				?>
 			<article class="marketplace-card <?php echo esc_attr( $store['class'] ); ?>">
 				<div class="marketplace-icon" aria-hidden="true"><?php echo esc_html( $store['icon'] ); ?></div>

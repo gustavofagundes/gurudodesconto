@@ -27,12 +27,10 @@
 				<h4><?php esc_html_e( 'Lojas', 'guru-do-desconto' ); ?></h4>
 				<ul>
 					<?php
-					$stores = array( 'mercado-livre' => 'Mercado Livre', 'shopee' => 'Shopee', 'amazon' => 'Amazon' );
-					foreach ( $stores as $slug => $label ) {
-						$link = get_term_link( $slug, 'marketplace' );
-						if ( ! is_wp_error( $link ) ) {
-							printf( '<li><a href="%s">%s</a></li>', esc_url( $link ), esc_html( $label ) );
-						}
+					$stores = array( 'Mercado Livre', 'Shopee', 'Amazon' );
+					$reviews_link = get_post_type_archive_link( 'review' );
+					foreach ( $stores as $label ) {
+						printf( '<li><a href="%s">%s</a></li>', esc_url( $reviews_link ), esc_html( $label ) );
 					}
 					?>
 				</ul>

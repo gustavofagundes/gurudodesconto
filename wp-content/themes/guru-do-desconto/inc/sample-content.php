@@ -27,19 +27,6 @@ function guru_create_sample_content() {
 		return;
 	}
 
-	// Default marketplaces.
-	$marketplaces = array(
-		'mercado-livre' => 'Mercado Livre',
-		'shopee'        => 'Shopee',
-		'amazon'        => 'Amazon',
-	);
-
-	foreach ( $marketplaces as $slug => $name ) {
-		if ( ! term_exists( $slug, 'marketplace' ) ) {
-			wp_insert_term( $name, 'marketplace', array( 'slug' => $slug ) );
-		}
-	}
-
 	// Homepage.
 	$home_id = wp_insert_post( array(
 		'post_title'   => 'Início',
@@ -67,7 +54,6 @@ function guru_create_sample_content() {
 			'title'    => 'Fone Bluetooth JBL Tune 510BT — Review Completo',
 			'excerpt'  => 'Análise honesta do fone JBL Tune 510BT: som, conforto, bateria e se vale a pena comprar na promoção.',
 			'content'  => '<h2>Visão Geral</h2><p>O JBL Tune 510BT é um dos fones Bluetooth mais vendidos do Brasil. Testamos por 2 semanas para trazer um review completo.</p><h2>Qualidade do Som</h2><p>Som equilibrado com graves presentes, ideal para uso diário e chamadas.</p><h2>Bateria</h2><p>Até 40 horas de reprodução — excelente para quem usa o dia todo.</p><h2>Vale a Pena?</h2><p>Sim! Especialmente com desconto. Um dos melhores custo-benefício da categoria.</p>',
-			'market'   => 'mercado-livre',
 			'price'    => '199.90',
 			'old'      => '299.90',
 			'rating'   => '4.5',
@@ -77,7 +63,6 @@ function guru_create_sample_content() {
 			'title'    => 'Smartwatch Xiaomi Redmi Watch 3 — Melhor Custo-Benefício 2025',
 			'excerpt'  => 'Review do Redmi Watch 3: monitoramento de saúde, GPS e autonomia. Comparativo com concorrentes.',
 			'content'  => '<h2>Design e Tela</h2><p>Tela AMOLED de 1.75" com boa visibilidade ao sol.</p><h2>Funcionalidades</h2><p>GPS integrado, SpO2, monitoramento de sono e mais de 100 modos esportivos.</p><h2>Autonomia</h2><p>Até 12 dias de bateria no uso normal.</p><h2>Veredito do Guru</h2><p>Excelente opção na faixa de preço. Recomendado para quem quer smartwatch completo sem gastar muito.</p>',
-			'market'   => 'shopee',
 			'price'    => '249.00',
 			'old'      => '399.00',
 			'rating'   => '4.7',
@@ -87,7 +72,6 @@ function guru_create_sample_content() {
 			'title'    => 'Echo Dot 5ª Geração — Review e Vale a Pena?',
 			'excerpt'  => 'Testamos a Alexa Echo Dot 5: som melhorado, design compacto e integração com casa inteligente.',
 			'content'  => '<h2>O que mudou</h2><p>A 5ª geração traz som mais potente e sensor de temperatura.</p><h2>Alexa no dia a dia</h2><p>Controle de luzes, músicas, lembretes e muito mais com comandos de voz.</p><h2>Preço e Promoções</h2><p>Fique de olho nas promoções da Amazon — frequentemente aparece com desconto significativo.</p>',
-			'market'   => 'amazon',
 			'price'    => '349.00',
 			'old'      => '449.00',
 			'rating'   => '4.6',
@@ -105,7 +89,6 @@ function guru_create_sample_content() {
 		) );
 
 		if ( $post_id && ! is_wp_error( $post_id ) ) {
-			wp_set_object_terms( $post_id, $sample['market'], 'marketplace' );
 			update_post_meta( $post_id, '_guru_affiliate_link', $sample['affiliate'] );
 			update_post_meta( $post_id, '_guru_price', $sample['price'] );
 			update_post_meta( $post_id, '_guru_price_old', $sample['old'] );

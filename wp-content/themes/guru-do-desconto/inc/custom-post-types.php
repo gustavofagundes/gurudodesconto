@@ -32,20 +32,6 @@ function guru_register_post_types() {
 		'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
 		'show_in_rest'       => true,
 	) );
-
-	register_taxonomy( 'marketplace', 'review', array(
-		'labels' => array(
-			'name'          => __( 'Marketplaces', 'guru-do-desconto' ),
-			'singular_name' => __( 'Marketplace', 'guru-do-desconto' ),
-			'search_items'  => __( 'Buscar Marketplaces', 'guru-do-desconto' ),
-			'all_items'     => __( 'Todos os Marketplaces', 'guru-do-desconto' ),
-		),
-		'public'            => true,
-		'hierarchical'      => true,
-		'rewrite'           => array( 'slug' => 'loja' ),
-		'show_in_rest'      => true,
-		'show_admin_column' => true,
-	) );
 }
 add_action( 'init', 'guru_register_post_types' );
 

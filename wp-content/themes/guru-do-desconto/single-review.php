@@ -15,9 +15,6 @@ while ( have_posts() ) :
 	$old       = get_post_meta( $id, '_guru_price_old', true );
 	$rating    = get_post_meta( $id, '_guru_rating', true );
 	$affiliate = get_post_meta( $id, '_guru_affiliate_link', true );
-	$terms     = get_the_terms( $id, 'marketplace' );
-	$mp_slug   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->slug : '';
-	$mp        = guru_marketplace_info( $mp_slug );
 
 	$discount = '';
 	if ( $price && $old && (float) $old > (float) $price ) {
@@ -36,9 +33,6 @@ while ( have_posts() ) :
 			<meta itemprop="bestRating" content="5">
 		</div>
 		<header class="review-single-header">
-			<?php if ( $mp_slug ) : ?>
-				<span class="review-badge <?php echo esc_attr( $mp['class'] ); ?>"><?php echo esc_html( $mp['label'] ); ?></span>
-			<?php endif; ?>
 			<h1 itemprop="name"><?php the_title(); ?></h1>
 			<div class="review-meta">
 				<?php echo guru_render_stars( $rating ); ?>

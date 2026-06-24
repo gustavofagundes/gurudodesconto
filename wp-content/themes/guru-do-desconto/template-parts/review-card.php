@@ -5,14 +5,11 @@
  * @package GuruDoDesconto
  */
 
-$id       = get_the_ID();
-$price    = get_post_meta( $id, '_guru_price', true );
-$old      = get_post_meta( $id, '_guru_price_old', true );
-$rating   = get_post_meta( $id, '_guru_rating', true );
+$id        = get_the_ID();
+$price     = get_post_meta( $id, '_guru_price', true );
+$old       = get_post_meta( $id, '_guru_price_old', true );
+$rating    = get_post_meta( $id, '_guru_rating', true );
 $affiliate = get_post_meta( $id, '_guru_affiliate_link', true );
-$terms    = get_the_terms( $id, 'marketplace' );
-$mp_slug  = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->slug : '';
-$mp       = guru_marketplace_info( $mp_slug );
 
 $discount = '';
 if ( $price && $old && (float) $old > (float) $price ) {
@@ -28,10 +25,6 @@ if ( $price && $old && (float) $old > (float) $price ) {
 	<?php endif; ?>
 
 	<div class="review-card-body">
-		<?php if ( $mp_slug ) : ?>
-			<span class="review-badge <?php echo esc_attr( $mp['class'] ); ?>"><?php echo esc_html( $mp['label'] ); ?></span>
-		<?php endif; ?>
-
 		<h3 itemprop="name">
 			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 		</h3>
