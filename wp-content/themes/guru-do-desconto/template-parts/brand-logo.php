@@ -24,8 +24,8 @@ $alt     = get_bloginfo( 'name' ) . ' — ' . __( 'economia de verdade', 'guru-d
 	<img class="brand-logo__img"
 	     src="<?php echo esc_url( $src ); ?>"
 	     alt="<?php echo esc_attr( $alt ); ?>"
-	     width="360"
-	     height="240"
+	     width="720"
+	     height="480"
 	     decoding="async"
 	     <?php echo 'header' === $context ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'; ?>>
 

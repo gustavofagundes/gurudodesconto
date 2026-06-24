@@ -109,13 +109,14 @@ a:hover {
 .brand-logo__img {
   display: block;
   width: auto;
-  height: 64px;
-  max-width: 320px;
+  height: 72px;
+  max-width: none;
+  aspect-ratio: 3 / 2;
   object-fit: contain;
 }
 
 .brand-logo--header .brand-logo__img {
-  height: 68px;
+  height: 76px;
 }
 
 .brand-logo--footer {
@@ -123,13 +124,16 @@ a:hover {
 }
 
 .brand-logo--footer .brand-logo__img {
-  height: 60px;
+  height: 80px;
 }
 
 @media (max-width: 600px) {
   .brand-logo__img {
-    height: 52px;
-    max-width: 260px;
+    height: 64px;
+  }
+
+  .brand-logo--footer .brand-logo__img {
+    height: 68px;
   }
 
   .header-inner {
