@@ -344,13 +344,20 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
-  font-weight: 800;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-.marketplace-card.ml .marketplace-icon { background: #ffe600; color: #2d3277; }
-.marketplace-card.shopee .marketplace-icon { background: #ee4d2d; color: #fff; }
-.marketplace-card.amazon .marketplace-icon { background: #ff9900; color: #232f3e; }
+.marketplace-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.marketplace-card.ml .marketplace-icon { background: #ffe600; }
+.marketplace-card.shopee .marketplace-icon { background: #ee4d2d; }
+.marketplace-card.amazon .marketplace-icon { background: #ff9900; }
 
 .marketplace-card h3 {
   margin: 0 0 0.5rem;
@@ -360,7 +367,7 @@ a:hover {
 .marketplace-card p {
   color: var(--guru-gray);
   font-size: 0.95rem;
-  margin: 0 0 1rem;
+  margin: 0;
 }
 
 /* Reviews grid */
@@ -588,7 +595,139 @@ a:hover {
 .review-prose h2,
 .review-prose h3 {
   color: var(--guru-blue);
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Comparativo de produtos (reviews gerados por IA) */
+.guru-compare-table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0 2rem;
+}
+
+.guru-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.guru-compare-table th,
+.guru-compare-table td {
+  border: 1px solid var(--guru-border, #e5e7eb);
+  padding: 0.65rem 0.75rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+.guru-compare-table th {
+  background: var(--guru-blue-light, #f0f4f8);
+  font-weight: 700;
+}
+
+.guru-compare-table .btn-affiliate {
+  display: inline-block;
+  margin-top: 0;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.guru-product-compare {
+  border: 1px solid var(--guru-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  background: #fff;
+}
+
+.guru-compare-header {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.guru-compare-figure,
+.guru-winner-figure {
+  margin: 0;
+}
+
+.guru-compare-img {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #f8fafc;
+}
+
+.guru-compare-meta h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.guru-compare-price {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.guru-compare-rating {
+  margin: 0;
+  color: var(--guru-muted, #64748b);
+  font-size: 0.95rem;
+}
+
+.guru-pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.guru-pros h3,
+.guru-cons h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.guru-pros ul,
+.guru-cons ul,
+.guru-list-pros,
+.guru-list-cons {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.guru-pros li {
+  color: #166534;
+}
+
+.guru-cons li {
+  color: #991b1b;
+}
+
+.guru-veredito {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  background: #f0fdf4;
+  border-radius: 8px;
+}
+
+.guru-product-compare .btn-affiliate {
+  margin-top: 1rem;
+}
+
+.guru-winner-figure {
+  margin: 1rem 0;
+}
+
+@media (max-width: 640px) {
+  .guru-compare-header {
+    grid-template-columns: 1fr;
+  }
+
+  .guru-pros-cons {
+    grid-template-columns: 1fr;
+  }
 }
 
 .review-sidebar {

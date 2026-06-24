@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.3' );
+define( 'GURU_THEME_VERSION', '1.0.4' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 

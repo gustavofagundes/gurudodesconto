@@ -12,7 +12,7 @@ Na raiz do projeto:
 docker compose up -d
 ```
 
-Aguarde ~30 segundos e acesse: **http://localhost:8080**
+Aguarde ~30 segundos e acesse: **http://localhost:8081**
 
 ## Primeira instalação
 
@@ -21,7 +21,7 @@ Aguarde ~30 segundos e acesse: **http://localhost:8080**
    - Título: `Guru do Desconto`
    - Usuário, senha e e-mail (anote a senha)
 3. Clique em **Instalar o WordPress**
-4. Faça login em http://localhost:8080/wp-admin
+4. Faça login em http://localhost:8081/wp-admin
 5. **Aparência → Temas** → ative **Guru do Desconto**
 6. **Aparência → Personalizar → Guru do Desconto** → cole o link do WhatsApp
 
@@ -29,7 +29,7 @@ Aguarde ~30 segundos e acesse: **http://localhost:8080**
 
 O plugin **Site Kit by Google** já está incluído em `wp-content/plugins/google-site-kit/`.
 
-1. Acesse **http://localhost:8080/wp-admin**
+1. Acesse **http://localhost:8081/wp-admin**
 2. Menu lateral: **Site Kit** → **Start setup**
 3. Faça login com sua conta Google e conecte Search Console + Analytics
 
@@ -63,7 +63,7 @@ O Docker lê o `.env` automaticamente via `docker-compose.yml`.
 
 ## Problemas comuns
 
-**Porta 8080 em uso** — altere em `docker-compose.yml`:
+**Porta 8081 em uso** — altere em `docker-compose.yml`:
 ```yaml
 ports:
   - "8888:80"

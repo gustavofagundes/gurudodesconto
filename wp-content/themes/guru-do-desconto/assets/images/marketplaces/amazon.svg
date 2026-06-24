@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Amazon">
+  <circle cx="32" cy="32" r="32" fill="#FF9900"/>
+  <path fill="#232F3E" d="M14 36c6 4 12 6 18 6s12-2 18-6v2c-6 4-12 6-18 6s-12-2-18-6v-2z"/>
+  <path fill="#232F3E" d="M18 22h4l2 10 2-10h4l-3 14h-4l-3-14zm16 0h8v3h-5v2h4v3h-4v3h5v3h-8v-14z"/>
+</svg>

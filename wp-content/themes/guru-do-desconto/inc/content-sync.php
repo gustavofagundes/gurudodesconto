@@ -227,6 +227,37 @@ function guru_maybe_sync_reviews_from_repo() {
 add_action( 'init', 'guru_maybe_sync_reviews_from_repo', 20 );
 
 /**
+ * Remove reviews de exemplo que não vieram de content/reviews/*.html.
+ */
+function guru_remove_fake_reviews_once() {
+	if ( wp_installing() || get_option( 'guru_fake_reviews_removed' ) ) {
+		return;
+	}
+
+	$posts = get_posts(
+		array(
+			'post_type'      => 'review',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'     => '_guru_repo_path',
+					'compare' => 'NOT EXISTS',
+				),
+			),
+		)
+	);
+
+	foreach ( $posts as $post_id ) {
+		wp_delete_post( $post_id, true );
+	}
+
+	update_option( 'guru_fake_reviews_removed', true, false );
+}
+add_action( 'init', 'guru_remove_fake_reviews_once', 21 );
+
+/**
  * WP-CLI: wp guru sync-reviews
  */
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
