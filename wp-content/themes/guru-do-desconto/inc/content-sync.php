@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const GURU_REVIEW_SYNC_VERSION = 'html-v5';
+const GURU_REVIEW_SYNC_VERSION = 'html-v6';
 
 /**
  * Diretório dos arquivos versionados no repositório.
@@ -81,14 +81,35 @@ function guru_parse_review_file( $file_path ) {
 }
 
 /**
+ * Normaliza keyword para comparação (evita duplicar "air fryer" vs "Air Fryer").
+ */
+function guru_normalize_review_keyword( $keyword ) {
+	$keyword = strtolower( trim( (string) $keyword ) );
+	if ( '' === $keyword ) {
+		return '';
+	}
+
+	if ( function_exists( 'remove_accents' ) ) {
+		$keyword = remove_accents( $keyword );
+	}
+
+	return sanitize_title( $keyword );
+}
+
+/**
  * Encontra post review existente pelo slug.
  */
 function guru_find_review_by_slug( $slug ) {
+	$slug = sanitize_title( $slug );
+	if ( ! $slug ) {
+		return null;
+	}
+
 	$posts = get_posts(
 		array(
 			'post_type'              => 'review',
 			'name'                   => $slug,
-			'post_status'            => array( 'publish', 'draft', 'pending', 'future' ),
+			'post_status'            => array( 'publish', 'draft', 'pending', 'future', 'private' ),
 			'posts_per_page'         => 1,
 			'no_found_rows'          => true,
 			'update_post_meta_cache' => false,
@@ -97,6 +118,161 @@ function guru_find_review_by_slug( $slug ) {
 	);
 
 	return $posts ? $posts[0] : null;
+}
+
+/**
+ * Lista reviews com a mesma keyword da planilha.
+ *
+ * @return WP_Post[]
+ */
+function guru_find_reviews_by_keyword( $keyword ) {
+	$keyword    = trim( (string) $keyword );
+	$normalized = guru_normalize_review_keyword( $keyword );
+
+	if ( '' === $keyword && '' === $normalized ) {
+		return array();
+	}
+
+	$meta_query = array( 'relation' => 'OR' );
+
+	if ( '' !== $keyword ) {
+		$meta_query[] = array(
+			'key'   => '_guru_keyword',
+			'value' => $keyword,
+		);
+	}
+
+	if ( '' !== $normalized ) {
+		$meta_query[] = array(
+			'key'   => '_guru_keyword_normalized',
+			'value' => $normalized,
+		);
+	}
+
+	$posts = get_posts(
+		array(
+			'post_type'              => 'review',
+			'post_status'            => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+			'posts_per_page'         => -1,
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_query'             => $meta_query,
+		)
+	);
+
+	return $posts ?: array();
+}
+
+/**
+ * Resolve qual post atualizar: slug exato, depois keyword, depois repo path.
+ */
+function guru_resolve_existing_review( $slug, $keyword ) {
+	$by_slug = guru_find_review_by_slug( $slug );
+	if ( $by_slug ) {
+		return $by_slug;
+	}
+
+	$matches = guru_find_reviews_by_keyword( $keyword );
+	if ( ! $matches ) {
+		return null;
+	}
+
+	foreach ( $matches as $post ) {
+		if ( $post->post_name === $slug ) {
+			return $post;
+		}
+	}
+
+	foreach ( $matches as $post ) {
+		if ( get_post_meta( $post->ID, '_guru_repo_path', true ) ) {
+			return $post;
+		}
+	}
+
+	return $matches[0];
+}
+
+/**
+ * Remove cópias extras do mesmo review (mesma keyword).
+ */
+function guru_dedupe_reviews_by_keyword( $keyword, $keep_id ) {
+	$keep_id = (int) $keep_id;
+	if ( ! $keep_id || '' === trim( (string) $keyword ) ) {
+		return 0;
+	}
+
+	$removed = 0;
+	foreach ( guru_find_reviews_by_keyword( $keyword ) as $post ) {
+		if ( (int) $post->ID === $keep_id ) {
+			continue;
+		}
+		wp_trash_post( $post->ID );
+		++$removed;
+	}
+
+	return $removed;
+}
+
+/**
+ * Varre todos os reviews e remove duplicatas por keyword (mantém o mais recente com repo path).
+ *
+ * @return int Número de posts enviados à lixeira.
+ */
+function guru_cleanup_duplicate_reviews() {
+	$posts = get_posts(
+		array(
+			'post_type'      => 'review',
+			'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+			'posts_per_page' => -1,
+			'orderby'        => 'modified',
+			'order'          => 'DESC',
+		)
+	);
+
+	$groups = array();
+
+	foreach ( $posts as $post ) {
+		$keyword = get_post_meta( $post->ID, '_guru_keyword_normalized', true );
+		if ( ! $keyword ) {
+			$keyword = guru_normalize_review_keyword(
+				get_post_meta( $post->ID, '_guru_keyword', true )
+					?: get_post_meta( $post->ID, '_guru_focus_keyword', true )
+			);
+		}
+		if ( ! $keyword ) {
+			continue;
+		}
+		$groups[ $keyword ][] = $post;
+	}
+
+	$removed = 0;
+
+	foreach ( $groups as $group ) {
+		if ( count( $group ) < 2 ) {
+			continue;
+		}
+
+		usort(
+			$group,
+			static function ( $a, $b ) {
+				$a_repo = (bool) get_post_meta( $a->ID, '_guru_repo_path', true );
+				$b_repo = (bool) get_post_meta( $b->ID, '_guru_repo_path', true );
+				if ( $a_repo !== $b_repo ) {
+					return $b_repo <=> $a_repo;
+				}
+				return strtotime( $b->post_modified ) <=> strtotime( $a->post_modified );
+			}
+		);
+
+		$keep_id = (int) $group[0]->ID;
+		for ( $i = 1; $i < count( $group ); $i++ ) {
+			wp_trash_post( $group[ $i ]->ID );
+			++$removed;
+		}
+	}
+
+	return $removed;
 }
 
 /**
@@ -119,9 +295,12 @@ function guru_sync_review_file( $file_path ) {
 		return false;
 	}
 
+	$keyword            = trim( (string) ( $meta['keyword'] ?? '' ) );
+	$keyword_normalized = guru_normalize_review_keyword( $keyword );
+
 	$hash = md5( $raw );
 
-	$existing    = guru_find_review_by_slug( $slug );
+	$existing    = guru_resolve_existing_review( $slug, $keyword );
 	$stored_hash = $existing ? get_post_meta( $existing->ID, '_guru_repo_hash', true ) : '';
 
 	$status = in_array( $meta['status'] ?? '', array( 'publish', 'draft', 'pending' ), true )
@@ -145,11 +324,17 @@ function guru_sync_review_file( $file_path ) {
 			'_guru_price_old'          => $meta['price_old'] ?? '',
 			'_guru_rating'             => $meta['rating'] ?? '',
 			'_guru_featured_image_url' => $meta['featured_image'] ?? '',
+			'_guru_keyword'            => $keyword,
+			'_guru_keyword_normalized' => $keyword_normalized,
 		);
 		foreach ( $stale_meta as $key => $value ) {
 			update_post_meta( $existing->ID, $key, $value );
 		}
 		guru_maybe_set_review_thumbnail( $existing->ID, $meta['featured_image'] ?? '', $meta['title'] ?? $slug );
+
+		if ( $keyword ) {
+			guru_dedupe_reviews_by_keyword( $keyword, $existing->ID );
+		}
 
 		return $existing->ID;
 	}
@@ -165,9 +350,19 @@ function guru_sync_review_file( $file_path ) {
 
 	if ( $existing ) {
 		$post_data['ID'] = $existing->ID;
-		$post_id         = wp_update_post( $post_data, true );
+		// Preserva URL canônica se o slug do arquivo mudou entre execuções.
+		if ( $existing->post_name && $existing->post_name !== $slug ) {
+			$post_data['post_name'] = $existing->post_name;
+		}
+		$post_id = wp_update_post( $post_data, true );
 	} else {
-		$post_id = wp_insert_post( $post_data, true );
+		$collision = guru_find_review_by_slug( $slug );
+		if ( $collision ) {
+			$post_data['ID'] = $collision->ID;
+			$post_id         = wp_update_post( $post_data, true );
+		} else {
+			$post_id = wp_insert_post( $post_data, true );
+		}
 	}
 
 	if ( is_wp_error( $post_id ) || ! $post_id ) {
@@ -175,18 +370,20 @@ function guru_sync_review_file( $file_path ) {
 	}
 
 	$meta_map = array(
-		'_guru_affiliate_link'      => $meta['affiliate_link'] ?? '',
-		'_guru_price'               => $meta['price'] ?? '',
-		'_guru_price_old'           => $meta['price_old'] ?? '',
-		'_guru_rating'              => $meta['rating'] ?? '',
-		'_guru_meta_description'    => $meta['meta_description'] ?? '',
-		'_guru_focus_keyword'       => $meta['focus_keyphrase'] ?? ( $meta['keyword'] ?? '' ),
-		'_guru_seo_title'           => $meta['seo_title'] ?? '',
-		'_guru_featured_image_url'  => $meta['featured_image'] ?? '',
-		'_guru_faq_json'            => $meta['faq_json'] ?? '',
-		'_guru_item_list_json'      => $meta['item_list_json'] ?? '',
-		'_guru_repo_hash'           => $hash,
-		'_guru_repo_path'           => 'content/reviews/' . basename( $file_path ),
+		'_guru_affiliate_link'         => $meta['affiliate_link'] ?? '',
+		'_guru_price'                  => $meta['price'] ?? '',
+		'_guru_price_old'              => $meta['price_old'] ?? '',
+		'_guru_rating'                 => $meta['rating'] ?? '',
+		'_guru_meta_description'       => $meta['meta_description'] ?? '',
+		'_guru_focus_keyword'          => $meta['focus_keyphrase'] ?? ( $meta['keyword'] ?? '' ),
+		'_guru_keyword'                => $keyword,
+		'_guru_keyword_normalized'     => $keyword_normalized,
+		'_guru_seo_title'              => $meta['seo_title'] ?? '',
+		'_guru_featured_image_url'     => $meta['featured_image'] ?? '',
+		'_guru_faq_json'               => $meta['faq_json'] ?? '',
+		'_guru_item_list_json'         => $meta['item_list_json'] ?? '',
+		'_guru_repo_hash'              => $hash,
+		'_guru_repo_path'              => 'content/reviews/' . basename( $file_path ),
 	);
 
 	foreach ( $meta_map as $key => $value ) {
@@ -194,6 +391,10 @@ function guru_sync_review_file( $file_path ) {
 	}
 
 	guru_maybe_set_review_thumbnail( $post_id, $meta['featured_image'] ?? '', $meta['title'] ?? $slug );
+
+	if ( $keyword ) {
+		guru_dedupe_reviews_by_keyword( $keyword, $post_id );
+	}
 
 	return $post_id;
 }
@@ -304,7 +505,8 @@ function guru_reviews_need_sync() {
 		}
 
 		$slug     = sanitize_title( $parsed['meta']['slug'] ?? pathinfo( $file, PATHINFO_FILENAME ) );
-		$existing = guru_find_review_by_slug( $slug );
+		$keyword  = trim( (string) ( $parsed['meta']['keyword'] ?? '' ) );
+		$existing = guru_resolve_existing_review( $slug, $keyword );
 		$hash     = md5( $raw );
 
 		if ( ! $existing || get_post_meta( $existing->ID, '_guru_repo_hash', true ) !== $hash ) {
@@ -345,14 +547,17 @@ function guru_run_review_sync() {
 		}
 	}
 
+	$deduped = guru_cleanup_duplicate_reviews();
+
 	update_option( 'guru_review_sync_version', GURU_REVIEW_SYNC_VERSION, false );
 	update_option( 'guru_review_content_fingerprint', guru_reviews_content_fingerprint(), false );
 	delete_transient( 'guru_review_sync_running' );
 
 	return array(
-		'synced' => $count,
-		'files'  => count( $files ),
-		'dir'    => $dir,
+		'synced'  => $count,
+		'files'   => count( $files ),
+		'dir'     => $dir,
+		'deduped' => $deduped,
 	);
 }
 
