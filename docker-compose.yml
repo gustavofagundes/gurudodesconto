@@ -7,6 +7,7 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
       MYSQL_ROOT_PASSWORD: root
+      TZ: ${TZ:-America/Sao_Paulo}
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -28,6 +29,9 @@ services:
       WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-wordpress}
       WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
       WORDPRESS_TABLE_PREFIX: ${DB_TABLE_PREFIX:-wp_}
+      TZ: ${TZ:-America/Sao_Paulo}
+      WORDPRESS_CONFIG_EXTRA: |
+        date_default_timezone_set('America/Sao_Paulo');
     volumes:
       - .:/var/www/html
     depends_on:
