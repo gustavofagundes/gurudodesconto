@@ -34,17 +34,41 @@ function guru_adsense_should_render() {
 }
 
 /**
- * Script global do AdSense no <head>.
+ * Carrega o script do AdSense após idle/interação (não bloqueia LCP).
  */
 function guru_adsense_head_script() {
 	if ( ! guru_adsense_should_render() ) {
 		return;
 	}
 
-	$client = esc_attr( guru_adsense_client_id() );
+	$client = esc_js( guru_adsense_client_id() );
 	?>
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo $client; ?>"
-	        crossorigin="anonymous"></script>
+	<script>
+	(function () {
+		var loaded = false;
+		function loadAdsense() {
+			if (loaded) {
+				return;
+			}
+			loaded = true;
+			var s = document.createElement('script');
+			s.async = true;
+			s.crossOrigin = 'anonymous';
+			s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo $client; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>';
+			document.head.appendChild(s);
+		}
+		if ('requestIdleCallback' in window) {
+			requestIdleCallback(loadAdsense, { timeout: 3500 });
+		} else {
+			window.addEventListener('load', function () {
+				setTimeout(loadAdsense, 2000);
+			});
+		}
+		['scroll', 'click', 'touchstart', 'keydown'].forEach(function (evt) {
+			window.addEventListener(evt, loadAdsense, { once: true, passive: true });
+		});
+	})();
+	</script>
 	<?php
 }
 add_action( 'wp_head', 'guru_adsense_head_script', 5 );
@@ -78,11 +102,4 @@ function guru_render_adsense_unit( $slot_key ) {
 		<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 	</div>
 	<?php
-}
-
-/**
- * Ativa anúncios automáticos via filtro (Auto ads gerenciado no painel AdSense).
- */
-function guru_adsense_auto_ads_note() {
-	// O script no head é suficiente para Auto ads quando habilitado em adsense.google.com.
 }

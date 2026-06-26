@@ -57,6 +57,7 @@ while ( have_posts() ) :
 						     alt="<?php echo esc_attr( get_the_title() ); ?>"
 						     width="800" height="600"
 						     loading="lazy"
+						     decoding="async"
 						     itemprop="image"
 						     class="review-single-thumb">
 					<?php endif; ?>

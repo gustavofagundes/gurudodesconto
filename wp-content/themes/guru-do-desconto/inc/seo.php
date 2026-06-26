@@ -34,24 +34,53 @@ function guru_schema_publisher() {
 }
 
 /**
+ * Retorna meta description para a página atual (sempre com fallback).
+ */
+function guru_get_meta_description() {
+	if ( is_front_page() || guru_is_whatsapp_landing_page() ) {
+		return guru_default_seo_description();
+	}
+
+	if ( is_post_type_archive( 'review' ) ) {
+		return __( 'Reviews comparativos e análises honestas de produtos com promoções no Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' );
+	}
+
+	if ( is_singular() ) {
+		$desc = get_post_meta( get_the_ID(), '_guru_meta_description', true );
+		if ( $desc ) {
+			return $desc;
+		}
+		if ( has_excerpt() ) {
+			return get_the_excerpt();
+		}
+		$content_desc = wp_trim_words( wp_strip_all_tags( get_the_content() ), 30 );
+		if ( $content_desc ) {
+			return $content_desc;
+		}
+	}
+
+	$custom = get_theme_mod( 'guru_site_description', '' );
+	if ( $custom ) {
+		return $custom;
+	}
+
+	return guru_default_seo_description();
+}
+
+/**
  * Output meta description.
  */
 function guru_meta_description() {
-	if ( is_singular() ) {
-		$desc = get_post_meta( get_the_ID(), '_guru_meta_description', true );
-		if ( ! $desc ) {
-			$desc = has_excerpt() ? get_the_excerpt() : wp_trim_words( get_the_content(), 30 );
-		}
-	} elseif ( is_post_type_archive( 'review' ) ) {
-		$desc = __( 'Reviews comparativos e análises honestas de produtos com promoções no Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' );
-	} elseif ( is_front_page() || guru_is_whatsapp_landing_page() ) {
-		$desc = guru_default_seo_description();
-	} else {
-		$desc = get_theme_mod( 'guru_site_description', guru_default_seo_description() );
-	}
+	$desc = guru_get_meta_description();
+	$desc = wp_strip_all_tags( $desc );
 
 	if ( $desc ) {
-		echo '<meta name="description" content="' . esc_attr( wp_strip_all_tags( $desc ) ) . '">' . "\n";
+		if ( function_exists( 'mb_substr' ) ) {
+			$desc = mb_substr( $desc, 0, 160 );
+		} else {
+			$desc = substr( $desc, 0, 160 );
+		}
+		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
 	}
 }
 add_action( 'wp_head', 'guru_meta_description', 2 );
@@ -61,9 +90,7 @@ add_action( 'wp_head', 'guru_meta_description', 2 );
  */
 function guru_social_meta() {
 	$title = wp_get_document_title();
-	$desc  = is_front_page() || guru_is_whatsapp_landing_page()
-		? guru_default_seo_description()
-		: get_theme_mod( 'guru_site_description', guru_default_seo_description() );
+	$desc  = wp_strip_all_tags( guru_get_meta_description() );
 	$url   = is_singular() ? get_permalink() : home_url( '/' );
 	$image = GURU_THEME_URI . '/assets/images/guru_fundo_branco_texto.png';
 
@@ -71,15 +98,6 @@ function guru_social_meta() {
 		$image = get_the_post_thumbnail_url( null, 'large' );
 	} elseif ( is_singular( 'review' ) ) {
 		$image = guru_review_og_image( $image );
-	}
-
-	if ( is_singular() ) {
-		$custom_desc = get_post_meta( get_the_ID(), '_guru_meta_description', true );
-		if ( $custom_desc ) {
-			$desc = $custom_desc;
-		} elseif ( has_excerpt() ) {
-			$desc = get_the_excerpt();
-		}
 	}
 
 	$type = is_singular( 'review' ) ? 'article' : 'website';
@@ -114,6 +132,10 @@ add_action( 'wp_head', 'guru_search_console_verification', 1 );
  * Google Analytics 4.
  */
 function guru_google_analytics() {
+	if ( guru_site_kit_handles_analytics() ) {
+		return;
+	}
+
 	$ga_id = get_theme_mod( 'guru_google_analytics' );
 	if ( ! $ga_id || is_user_logged_in() ) {
 		return;
@@ -329,23 +351,13 @@ function guru_schema_review() {
 add_action( 'wp_head', 'guru_schema_review', 10 );
 
 /**
- * Enhance WordPress core sitemap.
+ * Enhance WordPress core sitemap — reviews habilitados (detalhes em crawling-indexing.php).
  */
 function guru_sitemap_post_types( $post_types ) {
 	$post_types['review'] = true;
 	return $post_types;
 }
 add_filter( 'wp_sitemaps_post_types', 'guru_sitemap_post_types' );
-
-/**
- * Add canonical link (WordPress handles most cases; reinforce for reviews).
- */
-function guru_canonical_url() {
-	if ( is_singular() ) {
-		echo '<link rel="canonical" href="' . esc_url( get_permalink() ) . '">' . "\n";
-	}
-}
-add_action( 'wp_head', 'guru_canonical_url', 1 );
 
 /**
  * Título SEO customizado para reviews.

@@ -7,15 +7,24 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.10' );
+define( 'GURU_THEME_VERSION', '1.0.12' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
 require_once GURU_THEME_DIR . '/inc/custom-post-types.php';
 require_once GURU_THEME_DIR . '/inc/customizer.php';
+
+/**
+ * Site Kit já injeta GA4/GTM — evita tags duplicadas no tema.
+ */
+function guru_site_kit_handles_analytics() {
+	return defined( 'GOOGLESITEKIT_VERSION' ) || class_exists( 'Google\\Site_Kit\\Plugin' );
+}
+
 require_once GURU_THEME_DIR . '/inc/tracking.php';
 require_once GURU_THEME_DIR . '/inc/seo-whatsapp.php';
 require_once GURU_THEME_DIR . '/inc/seo.php';
+require_once GURU_THEME_DIR . '/inc/crawling-indexing.php';
 require_once GURU_THEME_DIR . '/inc/meta-boxes.php';
 require_once GURU_THEME_DIR . '/inc/rest-api.php';
 require_once GURU_THEME_DIR . '/inc/content-sync.php';
@@ -67,7 +76,10 @@ function guru_enqueue_assets() {
 		GURU_THEME_URI . '/assets/js/main.js',
 		array(),
 		GURU_THEME_VERSION,
-		true
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
 	);
 
 	wp_enqueue_script(
@@ -75,10 +87,43 @@ function guru_enqueue_assets() {
 		GURU_THEME_URI . '/assets/js/tracking.js',
 		array(),
 		GURU_THEME_VERSION,
-		true
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
 	);
 }
 add_action( 'wp_enqueue_scripts', 'guru_enqueue_assets' );
+
+/**
+ * URL de imagem do tema com variante otimizada (ex.: logo-com-texto-320.png).
+ */
+function guru_theme_image_url( $filename, $variant = '' ) {
+	$info = pathinfo( $filename );
+	$base = $info['filename'] ?? $filename;
+	$ext  = $info['extension'] ?? 'png';
+
+	$candidates = array();
+	if ( $variant ) {
+		$candidates[] = $base . '-' . $variant . '.' . $ext;
+	}
+	$candidates[] = $filename;
+
+	foreach ( $candidates as $file ) {
+		if ( file_exists( GURU_THEME_DIR . '/assets/images/' . $file ) ) {
+			return GURU_THEME_URI . '/assets/images/' . $file;
+		}
+	}
+
+	return GURU_THEME_URI . '/assets/images/' . $filename;
+}
+
+/**
+ * URL da imagem hero (LCP) — variante redimensionada quando disponível.
+ */
+function guru_hero_image_url() {
+	return guru_theme_image_url( 'Guru_sem_fundo.png', '512' );
+}
 
 /**
  * Link do grupo WhatsApp (com UTMs padrão).
@@ -240,3 +285,33 @@ function guru_clean_review_body_copy( $content ) {
 	return $content;
 }
 add_filter( 'the_content', 'guru_clean_review_body_copy', 25 );
+
+/**
+ * Imagens no corpo do review: lazy-load e dimensões padrão (evita CLS).
+ */
+function guru_optimize_review_content_images( $content ) {
+	if ( ! is_singular( 'review' ) || false === stripos( $content, '<img' ) ) {
+		return $content;
+	}
+
+	return preg_replace_callback(
+		'/<img\b([^>]*)>/i',
+		static function ( $matches ) {
+			$attrs = $matches[1];
+
+			if ( false === stripos( $attrs, 'loading=' ) ) {
+				$attrs .= ' loading="lazy"';
+			}
+			if ( false === stripos( $attrs, 'decoding=' ) ) {
+				$attrs .= ' decoding="async"';
+			}
+			if ( false === stripos( $attrs, 'width=' ) ) {
+				$attrs .= ' width="600" height="400"';
+			}
+
+			return '<img' . $attrs . '>';
+		},
+		$content
+	);
+}
+add_filter( 'the_content', 'guru_optimize_review_content_images', 26 );

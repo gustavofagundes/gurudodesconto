@@ -27,6 +27,7 @@ if ( $price && $old && (float) $old > (float) $price ) {
 			     alt="<?php echo esc_attr( get_the_title() ); ?>"
 			     width="600" height="375"
 			     loading="lazy"
+			     decoding="async"
 			     itemprop="image">
 		</a>
 	<?php endif; ?>

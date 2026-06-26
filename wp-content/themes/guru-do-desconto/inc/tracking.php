@@ -193,6 +193,10 @@ add_action( 'wp_head', 'guru_meta_pixel_script', 20 );
  * Google Ads tag (opcional) — vincula campanhas ao GA4.
  */
 function guru_google_ads_script() {
+	if ( guru_site_kit_handles_analytics() ) {
+		return;
+	}
+
 	$ads_id = get_theme_mod( 'guru_google_ads_id', '' );
 	if ( ! $ads_id || is_user_logged_in() ) {
 		return;

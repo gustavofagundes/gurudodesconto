@@ -46,8 +46,13 @@ function guru_create_sample_content() {
 	if ( $home_id && ! is_wp_error( $home_id ) ) {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $home_id );
+		update_post_meta( $home_id, '_guru_meta_description', guru_default_seo_description() );
 	}
 
 	update_option( 'guru_sample_content_created', true );
+
+	if ( function_exists( 'guru_remove_placeholder_content' ) ) {
+		guru_remove_placeholder_content();
+	}
 }
 add_action( 'after_switch_theme', 'guru_create_sample_content' );

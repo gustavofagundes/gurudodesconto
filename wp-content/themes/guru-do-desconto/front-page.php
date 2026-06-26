@@ -28,10 +28,27 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 			</div>
 		</div>
 		<div class="hero-image">
-			<img src="<?php echo esc_url( GURU_THEME_URI . '/assets/images/Guru_sem_fundo.png' ); ?>"
+			<?php
+			$hero_url   = guru_hero_image_url();
+			$hero_760   = guru_theme_image_url( 'Guru_sem_fundo.png', '760' );
+			$hero_full  = guru_theme_image_url( 'Guru_sem_fundo.png' );
+			$hero_parts = array( $hero_url . ' 512w' );
+			if ( $hero_760 !== $hero_url ) {
+				$hero_parts[] = $hero_760 . ' 760w';
+			}
+			if ( $hero_full !== $hero_760 && $hero_full !== $hero_url ) {
+				$hero_parts[] = $hero_full . ' 1024w';
+			}
+			$hero_srcset = implode( ', ', $hero_parts );
+			?>
+			<img src="<?php echo esc_url( $hero_url ); ?>"
+			     srcset="<?php echo esc_attr( $hero_srcset ); ?>"
+			     sizes="(max-width: 768px) 280px, 380px"
 			     alt="<?php esc_attr_e( 'Guru do Desconto — grupo de promoções no WhatsApp', 'guru-do-desconto' ); ?>"
-			     width="400" height="400"
-			     loading="eager">
+			     width="380" height="380"
+			     loading="eager"
+			     fetchpriority="high"
+			     decoding="async">
 		</div>
 	</div>
 </section>

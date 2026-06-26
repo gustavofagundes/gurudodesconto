@@ -2,29 +2,11 @@
 /**
  * Plugin Name: Guru SEO Boost
  * Description: Otimizações SEO adicionais para o Guru do Desconto — sitemap, robots, performance.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Guru do Desconto
  */
 
 defined( 'ABSPATH' ) || exit;
-
-/**
- * Add robots.txt rules for better crawling.
- */
-function guru_seo_robots_txt( $output, $public ) {
-	if ( ! $public ) {
-		return $output;
-	}
-
-	$extra  = "User-agent: *\n";
-	$extra .= "Allow: /\n";
-	$extra .= "Disallow: /wp-admin/\n";
-	$extra .= "Allow: /wp-admin/admin-ajax.php\n";
-	$extra .= "Sitemap: " . home_url( '/wp-sitemap.xml' ) . "\n";
-
-	return $extra;
-}
-add_filter( 'robots_txt', 'guru_seo_robots_txt', 10, 2 );
 
 /**
  * Remove unnecessary head tags for cleaner HTML.
@@ -34,10 +16,41 @@ remove_action( 'wp_head', 'wlwmanifest_link' );
 remove_action( 'wp_head', 'rsd_link' );
 
 /**
- * Add async/defer to scripts where possible.
+ * CSS principal: preload + carregamento não bloqueante.
+ */
+function guru_seo_style_loader( $html, $handle, $href, $media ) {
+	if ( 'guru-style' !== $handle ) {
+		return $html;
+	}
+
+	$preload = sprintf(
+		'<link rel="preload" href="%s" as="style">',
+		esc_url( $href )
+	);
+
+	$async = preg_replace(
+		'/media=[\'"]all[\'"]/',
+		'media="print" onload="this.media=\'all\'"',
+		$html,
+		1
+	);
+
+	if ( $async === $html ) {
+		$async = str_replace( "media='all'", "media='print' onload=\"this.media='all'\"", $html );
+	}
+
+	$noscript = preg_replace( '/\smedia="print"\s+onload="this\.media=\'all\'"/', ' media="all"', $async );
+	$noscript = str_replace( "media='print' onload=\"this.media='all'\"", "media='all'", $noscript );
+
+	return $preload . $async . '<noscript>' . $noscript . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'guru_seo_style_loader', 10, 4 );
+
+/**
+ * Defer em scripts do tema (fallback para WP < 6.3).
  */
 function guru_seo_script_loader( $tag, $handle ) {
-	if ( 'guru-main' === $handle ) {
+	if ( in_array( $handle, array( 'guru-main', 'guru-tracking' ), true ) && false === strpos( $tag, ' defer' ) ) {
 		return str_replace( ' src', ' defer src', $tag );
 	}
 	return $tag;
@@ -45,14 +58,18 @@ function guru_seo_script_loader( $tag, $handle ) {
 add_filter( 'script_loader_tag', 'guru_seo_script_loader', 10, 2 );
 
 /**
- * Preload hero image on front page.
+ * Preload da imagem LCP (hero) na home com alta prioridade.
  */
 function guru_seo_preload_hero() {
-	if ( ! is_front_page() ) {
+	if ( ! is_front_page() || ! function_exists( 'guru_hero_image_url' ) ) {
 		return;
 	}
-	$hero = get_template_directory_uri() . '/assets/images/Guru_sem_fundo.png';
-	echo '<link rel="preload" as="image" href="' . esc_url( $hero ) . '">' . "\n";
+
+	$hero = guru_hero_image_url();
+	printf(
+		'<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
+		esc_url( $hero )
+	);
 }
 add_action( 'wp_head', 'guru_seo_preload_hero', 1 );
 
