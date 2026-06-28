@@ -61,11 +61,18 @@ add_filter( 'script_loader_tag', 'guru_seo_script_loader', 10, 2 );
  * Preload da imagem LCP (hero) na home com alta prioridade.
  */
 function guru_seo_preload_hero() {
-	if ( ! is_front_page() || ! function_exists( 'guru_hero_image_url' ) ) {
+	if ( ! is_front_page() ) {
 		return;
 	}
 
 	$hero = guru_hero_image_url();
+	if ( function_exists( 'guru_get_whatsapp_group' ) ) {
+		$geral = guru_get_whatsapp_group( 'geral' );
+		if ( $geral && ! empty( $geral['image'] ) ) {
+			$hero = $geral['image'];
+		}
+	}
+
 	printf(
 		'<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
 		esc_url( $hero )

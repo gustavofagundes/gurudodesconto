@@ -97,6 +97,7 @@
 
   function trackWhatsappClick(el) {
     var content = el.getAttribute('data-guru-utm-content') || 'whatsapp';
+    var groupSlug = el.getAttribute('data-guru-group') || '';
     var payload = {
       event_category: 'conversion',
       event_label: content,
@@ -114,7 +115,8 @@
     }
 
     var metaParams = Object.assign(metaBaseParams(content), {
-      content_name: 'whatsapp_' + content.replace(/^whatsapp_/, ''),
+      content_name: groupSlug ? 'grupo_' + groupSlug : 'whatsapp_' + content.replace(/^whatsapp_/, ''),
+      content_category: groupSlug || 'whatsapp',
     });
 
     fbqTrack('Contact', metaParams);

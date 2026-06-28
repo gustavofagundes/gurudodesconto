@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * Descrição SEO padrão com foco em grupo WhatsApp.
  */
 function guru_default_seo_description() {
-	return 'Grupo de promoções no WhatsApp do Guru do Desconto! Ofertas do Mercado Livre, Shopee e Amazon, cupons e descontos em tempo real. Entre grátis.';
+	return 'Grupos de promoções no WhatsApp por nicho: Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Ofertas grátis do Mercado Livre, Shopee e Amazon.';
 }
 
 /**
@@ -19,8 +19,8 @@ function guru_default_seo_description() {
  */
 function guru_front_page_title( $parts ) {
 	if ( is_front_page() ) {
-		$parts['title'] = __( 'Grupo de Promoções no WhatsApp', 'guru-do-desconto' );
-		$parts['tagline'] = __( 'Mercado Livre, Shopee e Amazon', 'guru-do-desconto' );
+		$parts['title'] = __( 'Grupos de Promoções no WhatsApp por Nicho', 'guru-do-desconto' );
+		$parts['tagline'] = __( 'Casa, Tech, Kids e mais — ML, Shopee, Amazon', 'guru-do-desconto' );
 	}
 	return $parts;
 }
@@ -57,19 +57,19 @@ function guru_whatsapp_faq_items() {
 		),
 		array(
 			'question' => __( 'Como entrar no grupo de ofertas no WhatsApp?', 'guru-do-desconto' ),
-			'answer'   => sprintf(
-				/* translators: %s: WhatsApp group URL */
-				__( 'Clique no botão "Entrar no Grupo de Promoções" nesta página ou acesse diretamente: %s. O link abre o WhatsApp e você confirma a entrada no grupo.', 'guru-do-desconto' ),
-				$whatsapp
-			),
+			'answer'   => __( 'Na página inicial, escolha o grupo do seu nicho (Casa, Mulher, Kids, Tech, Até R$ 50, Homem ou Geral) e clique em "Entrar no grupo". O link abre o WhatsApp para confirmar a entrada.', 'guru-do-desconto' ),
 		),
 		array(
 			'question' => __( 'O grupo de promoções no WhatsApp é gratuito?', 'guru-do-desconto' ),
 			'answer'   => __( 'Sim! A participação é 100% gratuita. Você recebe alertas de descontos sem pagar nada — nossa missão é economia e alegria.', 'guru-do-desconto' ),
 		),
 		array(
-			'question' => __( 'Quais tipos de promoções são enviadas no grupo?', 'guru-do-desconto' ),
-			'answer'   => __( 'Enviamos ofertas de eletrônicos, casa, moda, beleza e muito mais nas lojas Mercado Livre, Shopee e Amazon. Incluímos cupons, frete grátis e promoções por tempo limitado.', 'guru-do-desconto' ),
+			'question' => __( 'Quantos grupos de promoções existem?', 'guru-do-desconto' ),
+			'answer'   => __( 'São 7 grupos gratuitos no WhatsApp: Geral, Casa, Mulher, Kids, Tech & Games, Até R$ 50 e Homem. Cada um envia ofertas do Mercado Livre, Shopee e Amazon no seu nicho.', 'guru-do-desconto' ),
+		),
+		array(
+			'question' => __( 'Posso entrar em mais de um grupo?', 'guru-do-desconto' ),
+			'answer'   => __( 'Sim! Escolha os nichos que você mais compra — por exemplo, Tech para games e Casa para eletrodomésticos. Todos são gratuitos.', 'guru-do-desconto' ),
 		),
 		array(
 			'question' => __( 'Posso sair do grupo de promoções quando quiser?', 'guru-do-desconto' ),
@@ -227,29 +227,49 @@ function guru_schema_home_whatsapp() {
 		return;
 	}
 
-	$whatsapp = guru_whatsapp_link();
-	$schema   = array(
+	$channels = array();
+	$list     = array();
+	$pos      = 1;
+
+	foreach ( guru_whatsapp_groups() as $group ) {
+		$channels[] = array(
+			'@type'             => 'CommunicationChannel',
+			'name'              => $group['name'],
+			'description'       => $group['description'],
+			'url'               => $group['url'],
+			'availableLanguage' => 'pt-BR',
+			'serviceType'       => 'WhatsApp Group',
+		);
+		$list[] = array(
+			'@type'    => 'ListItem',
+			'position' => $pos++,
+			'name'     => $group['name'],
+			'url'      => home_url( '/#grupo-' . $group['slug'] ),
+		);
+	}
+
+	$schema = array(
 		'@context' => 'https://schema.org',
-		'@graph'   => array(
+		'@graph'   => array_merge(
 			array(
-				'@type'       => 'WebPage',
-				'@id'         => home_url( '/#grupo-whatsapp' ),
-				'url'         => home_url( '/' ),
-				'name'        => __( 'Grupo de Promoções no WhatsApp — Guru do Desconto', 'guru-do-desconto' ),
-				'description' => guru_default_seo_description(),
-				'inLanguage'  => 'pt-BR',
-				'author'      => guru_schema_author(),
-				'publisher'   => guru_schema_publisher(),
-				'isPartOf'    => array( '@id' => home_url( '/#website' ) ),
+				array(
+					'@type'       => 'WebPage',
+					'@id'         => home_url( '/#grupos-whatsapp' ),
+					'url'         => home_url( '/' ),
+					'name'        => __( 'Grupos de Promoções no WhatsApp por Nicho — Guru do Desconto', 'guru-do-desconto' ),
+					'description' => guru_default_seo_description(),
+					'inLanguage'  => 'pt-BR',
+					'author'      => guru_schema_author(),
+					'publisher'   => guru_schema_publisher(),
+					'isPartOf'    => array( '@id' => home_url( '/#website' ) ),
+				),
+				array(
+					'@type'           => 'ItemList',
+					'name'            => __( 'Grupos WhatsApp Guru do Desconto', 'guru-do-desconto' ),
+					'itemListElement' => $list,
+				),
 			),
-			array(
-				'@type'              => 'CommunicationChannel',
-				'name'               => __( 'Grupo de Promoções no WhatsApp', 'guru-do-desconto' ),
-				'description'        => __( 'Canal gratuito de ofertas e cupons do Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' ),
-				'url'                => $whatsapp,
-				'availableLanguage'  => 'pt-BR',
-				'serviceType'        => 'WhatsApp Group',
-			),
+			$channels
 		),
 	);
 

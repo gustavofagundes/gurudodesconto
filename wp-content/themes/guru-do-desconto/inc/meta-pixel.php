@@ -81,9 +81,9 @@ function guru_meta_pixel_page_data() {
 	);
 
 	if ( is_front_page() ) {
-		$data['pageType']     = 'home';
-		$data['contentName']  = __( 'Grupo de Promoções WhatsApp', 'guru-do-desconto' );
-		$data['contentCategory'] = 'landing';
+		$data['pageType']        = 'home';
+		$data['contentName']     = __( 'Grupos de Promoções WhatsApp', 'guru-do-desconto' );
+		$data['contentCategory'] = 'whatsapp_grupos';
 		return $data;
 	}
 

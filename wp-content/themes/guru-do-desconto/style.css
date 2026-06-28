@@ -857,6 +857,135 @@ a:hover {
   margin-top: 1rem;
 }
 
+/* WhatsApp groups grid — home */
+.whatsapp-groups {
+  background: linear-gradient(180deg, var(--guru-bg) 0%, var(--guru-white) 100%);
+}
+
+.whatsapp-groups-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.whatsapp-group-card {
+  position: relative;
+  background: var(--guru-white);
+  border-radius: var(--guru-radius);
+  box-shadow: var(--guru-shadow);
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.whatsapp-group-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(29, 53, 87, 0.12);
+}
+
+.whatsapp-group-card--featured {
+  border: 2px solid var(--guru-success);
+}
+
+.whatsapp-group-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: var(--guru-orange);
+  color: var(--guru-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.whatsapp-group-card__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.whatsapp-group-card__link:hover {
+  color: inherit;
+}
+
+.whatsapp-group-card__media {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--guru-bg);
+}
+
+.whatsapp-group-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s;
+}
+
+.whatsapp-group-card:hover .whatsapp-group-card__media img {
+  transform: scale(1.04);
+}
+
+.whatsapp-group-card__body {
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.whatsapp-group-card__body h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  color: var(--guru-blue);
+}
+
+.whatsapp-group-card__tagline {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--guru-orange);
+}
+
+.whatsapp-group-card__desc {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  color: var(--guru-gray);
+  line-height: 1.5;
+}
+
+.btn-sm {
+  padding: 0.65rem 1.1rem;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.whatsapp-groups-seo {
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.whatsapp-groups-seo h2 {
+  font-size: 1.35rem;
+  color: var(--guru-blue);
+}
+
+.hero--groups .hero-image img {
+  border-radius: var(--guru-radius);
+  max-height: 420px;
+  object-fit: contain;
+}
+
+.btn-outline--wa {
+  border-color: var(--guru-success);
+  color: var(--guru-success);
+}
+
+.btn-outline--wa:hover {
+  background: var(--guru-success);
+  color: var(--guru-white);
+}
+
 /* WhatsApp SEO + FAQ */
 .whatsapp-seo {
   background: var(--guru-white);
@@ -916,6 +1045,16 @@ a:hover {
 
 @media (max-width: 900px) {
   .whatsapp-seo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .whatsapp-groups-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .whatsapp-groups-grid {
     grid-template-columns: 1fr;
   }
 }
