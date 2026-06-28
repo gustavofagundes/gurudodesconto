@@ -337,27 +337,26 @@ a:hover {
 }
 
 .marketplace-icon {
-  width: 64px;
+  width: 120px;
   height: 64px;
   margin: 0 auto 1rem;
-  border-radius: 50%;
+  border-radius: var(--guru-radius);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
+  background: #fff;
+  border: 1px solid var(--guru-border, #e5e7eb);
+  padding: 0.5rem;
 }
 
 .marketplace-icon img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
-
-.marketplace-card.ml .marketplace-icon { background: #ffe600; }
-.marketplace-card.shopee .marketplace-icon { background: #ee4d2d; }
-.marketplace-card.amazon .marketplace-icon { background: #ff9900; }
 
 .marketplace-card h3 {
   margin: 0 0 0.5rem;

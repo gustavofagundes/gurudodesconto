@@ -64,35 +64,13 @@ $wa_msg = get_theme_mod( 'guru_whatsapp_message', __( 'Ver todos os grupos', 'gu
 		</div>
 
 		<div class="marketplace-grid">
-			<?php
-			$stores = array(
-				'mercado-livre' => array(
-					'class' => 'ml',
-					'logo'  => 'mercado-livre.svg',
-					'name'  => 'Mercado Livre',
-					'desc'  => __( 'Eletrônicos, casa, moda e muito mais com frete grátis e cupons exclusivos.', 'guru-do-desconto' ),
-				),
-				'shopee'        => array(
-					'class' => 'shopee',
-					'logo'  => 'shopee.svg',
-					'name'  => 'Shopee',
-					'desc'  => __( 'Ofertas relâmpago, cashback e produtos importados com preços imbatíveis.', 'guru-do-desconto' ),
-				),
-				'amazon'        => array(
-					'class' => 'amazon',
-					'logo'  => 'amazon.svg',
-					'name'  => 'Amazon',
-					'desc'  => __( 'Prime Day, Black Friday e promoções diárias em milhares de categorias.', 'guru-do-desconto' ),
-				),
-			);
-			foreach ( $stores as $store ) :
-				$logo_src = GURU_THEME_URI . '/assets/images/marketplaces/' . $store['logo'];
-				?>
+			<?php foreach ( guru_home_marketplaces() as $store ) : ?>
+				<?php $logo_src = guru_theme_image_url( 'marketplaces/' . $store['logo'] ); ?>
 			<article class="marketplace-card <?php echo esc_attr( $store['class'] ); ?>">
 				<div class="marketplace-icon">
 					<img src="<?php echo esc_url( $logo_src ); ?>"
 					     alt="<?php echo esc_attr( $store['name'] ); ?>"
-					     width="64"
+					     width="120"
 					     height="64"
 					     loading="lazy"
 					     decoding="async">

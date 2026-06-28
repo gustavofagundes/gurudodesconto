@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.14' );
+define( 'GURU_THEME_VERSION', '1.0.15' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -160,6 +160,34 @@ function guru_marketplace_info( $slug ) {
 		'label' => ucfirst( str_replace( '-', ' ', $slug ) ),
 		'class' => 'badge-ml',
 		'icon'  => '?',
+	);
+}
+
+/**
+ * Lojas exibidas na home (logos oficiais em assets/images/marketplaces/).
+ *
+ * @return array<string, array{class: string, logo: string, name: string, desc: string}>
+ */
+function guru_home_marketplaces() {
+	return array(
+		'mercado-livre' => array(
+			'class' => 'ml',
+			'logo'  => 'mercado-livre-logo.png',
+			'name'  => 'Mercado Livre',
+			'desc'  => __( 'Eletrônicos, casa, moda e muito mais com frete grátis e cupons exclusivos.', 'guru-do-desconto' ),
+		),
+		'shopee'        => array(
+			'class' => 'shopee',
+			'logo'  => 'shopee-logo.webp',
+			'name'  => 'Shopee',
+			'desc'  => __( 'Ofertas relâmpago, cashback e produtos importados com preços imbatíveis.', 'guru-do-desconto' ),
+		),
+		'amazon'        => array(
+			'class' => 'amazon',
+			'logo'  => 'amazon-logo.webp',
+			'name'  => 'Amazon',
+			'desc'  => __( 'Prime Day, Black Friday e promoções diárias em milhares de categorias.', 'guru-do-desconto' ),
+		),
 	);
 }
 
