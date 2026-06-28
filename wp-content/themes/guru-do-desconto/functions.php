@@ -7,11 +7,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.12' );
+define( 'GURU_THEME_VERSION', '1.0.13' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
 require_once GURU_THEME_DIR . '/inc/custom-post-types.php';
+require_once GURU_THEME_DIR . '/inc/meta-pixel.php';
 require_once GURU_THEME_DIR . '/inc/customizer.php';
 
 /**

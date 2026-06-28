@@ -75,16 +75,39 @@ function guru_customize_register( $wp_customize ) {
 		'type'        => 'text',
 	) );
 
+	$wp_customize->add_setting( 'guru_meta_pixel_enabled', array(
+		'default'           => true,
+		'sanitize_callback' => 'wp_validate_boolean',
+	) );
+
+	$wp_customize->add_control( 'guru_meta_pixel_enabled', array(
+		'label'   => __( 'Ativar Meta Pixel', 'guru-do-desconto' ),
+		'section' => 'guru_settings',
+		'type'    => 'checkbox',
+	) );
+
 	$wp_customize->add_setting( 'guru_meta_pixel_id', array(
 		'default'           => '',
-		'sanitize_callback' => 'sanitize_text_field',
+		'sanitize_callback' => 'guru_sanitize_meta_pixel_id',
 	) );
 
 	$wp_customize->add_control( 'guru_meta_pixel_id', array(
 		'label'       => __( 'Meta Pixel ID', 'guru-do-desconto' ),
-		'description' => __( 'Opcional. Remarketing Facebook/Instagram. Alternativa: plugin oficial Meta ou Site Kit.', 'guru-do-desconto' ),
+		'description' => __( 'ID numérico de 15–16 dígitos (Events Manager → Fontes de dados → Pixel). Alternativa: GURU_META_PIXEL_ID no .env', 'guru-do-desconto' ),
 		'section'     => 'guru_settings',
 		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_meta_pixel_skip_admins', array(
+		'default'           => true,
+		'sanitize_callback' => 'wp_validate_boolean',
+	) );
+
+	$wp_customize->add_control( 'guru_meta_pixel_skip_admins', array(
+		'label'       => __( 'Não rastrear admins logados', 'guru-do-desconto' ),
+		'description' => __( 'Evita poluir conversões quando você navega logado no wp-admin.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'checkbox',
 	) );
 
 	$wp_customize->add_setting( 'guru_utm_source', array(

@@ -165,29 +165,33 @@ function guru_add_utm_to_content_affiliate_links( $content ) {
 add_filter( 'the_content', 'guru_add_utm_to_content_affiliate_links', 30 );
 
 /**
- * Meta Pixel (Facebook) — alternativa ao plugin; pode coexistir com Site Kit.
+ * Configuração JS para eventos de conversão (GA4 + Meta Pixel).
  */
-function guru_meta_pixel_script() {
-	$pixel_id = get_theme_mod( 'guru_meta_pixel_id', '' );
-	if ( ! $pixel_id || is_user_logged_in() ) {
-		return;
-	}
-	?>
-	<!-- Meta Pixel -->
-	<script>
-	!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-	n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-	n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-	t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-	document,'script','https://connect.facebook.net/en_US/fbevents.js');
-	fbq('init', '<?php echo esc_js( $pixel_id ); ?>');
-	fbq('track', 'PageView');
-	</script>
-	<noscript><img height="1" width="1" style="display:none" alt=""
-	src="https://www.facebook.com/tr?id=<?php echo esc_attr( $pixel_id ); ?>&ev=PageView&noscript=1"/></noscript>
-	<?php
+function guru_tracking_script_config() {
+	$campaign = guru_review_campaign_slug();
+	$keyword  = is_singular( 'review' ) ? get_post_meta( get_the_ID(), '_guru_focus_keyword', true ) : '';
+	$pixel    = function_exists( 'guru_meta_pixel_page_data' ) ? guru_meta_pixel_page_data() : array();
+
+	wp_localize_script(
+		'guru-tracking',
+		'guruTracking',
+		array(
+			'campaign'        => $campaign,
+			'keyword'         => $keyword,
+			'postType'        => is_singular( 'review' ) ? 'review' : 'page',
+			'gaId'            => get_theme_mod( 'guru_google_analytics', '' ),
+			'adsId'           => get_theme_mod( 'guru_google_ads_id', '' ),
+			'pixelId'         => function_exists( 'guru_meta_pixel_id' ) ? guru_meta_pixel_id() : '',
+			'pixelEnabled'    => function_exists( 'guru_meta_pixel_should_load' ) ? guru_meta_pixel_should_load() : false,
+			'pixelPage'       => $pixel,
+			'utmSource'       => guru_get_stored_utm( 'utm_source' ),
+			'utmMedium'       => guru_get_stored_utm( 'utm_medium' ),
+			'utmCampaign'     => guru_get_stored_utm( 'utm_campaign' ),
+			'utmContent'      => guru_get_stored_utm( 'utm_content' ),
+		)
+	);
 }
-add_action( 'wp_head', 'guru_meta_pixel_script', 20 );
+add_action( 'wp_enqueue_scripts', 'guru_tracking_script_config', 20 );
 
 /**
  * Google Ads tag (opcional) — vincula campanhas ao GA4.
@@ -212,29 +216,3 @@ function guru_google_ads_script() {
 	<?php
 }
 add_action( 'wp_head', 'guru_google_ads_script', 98 );
-
-/**
- * Configuração JS para eventos de conversão.
- */
-function guru_tracking_script_config() {
-	$campaign = guru_review_campaign_slug();
-	$keyword  = is_singular( 'review' ) ? get_post_meta( get_the_ID(), '_guru_focus_keyword', true ) : '';
-
-	wp_localize_script(
-		'guru-tracking',
-		'guruTracking',
-		array(
-			'campaign'       => $campaign,
-			'keyword'        => $keyword,
-			'postType'       => is_singular( 'review' ) ? 'review' : 'page',
-			'gaId'           => get_theme_mod( 'guru_google_analytics', '' ),
-			'adsId'          => get_theme_mod( 'guru_google_ads_id', '' ),
-			'pixelId'        => get_theme_mod( 'guru_meta_pixel_id', '' ),
-			'utmSource'      => guru_get_stored_utm( 'utm_source' ),
-			'utmMedium'      => guru_get_stored_utm( 'utm_medium' ),
-			'utmCampaign'    => guru_get_stored_utm( 'utm_campaign' ),
-			'utmContent'     => guru_get_stored_utm( 'utm_content' ),
-		)
-	);
-}
-add_action( 'wp_enqueue_scripts', 'guru_tracking_script_config', 20 );

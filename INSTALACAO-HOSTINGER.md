@@ -180,9 +180,33 @@ Reviews gerados pelo n8n também incluem UTMs no HTML commitado no GitHub.
    `https://gurudodesconto.com.br/reviews/melhor-air-fryer-2026/?utm_source=google&utm_medium=cpc&utm_campaign=review_airfryer&utm_content=ad1`
 3. No GA4, analise **Aquisição → Aquisição de tráfego** e relatório de conversões por campanha
 
-### Meta Pixel
+### Meta Pixel (Facebook / Instagram)
 
-Cole o Pixel ID no Personalizar **ou** use plugin oficial Meta / integração do Site Kit quando disponível.
+1. **Events Manager** → [business.facebook.com/events_manager](https://business.facebook.com/events_manager) → copie o **Pixel ID** (15–16 dígitos)
+2. No WordPress: **Aparência → Personalizar → Guru do Desconto**
+   - Marque **Ativar Meta Pixel**
+   - Cole o **Meta Pixel ID**
+3. Ou defina no `.env`:
+   ```env
+   GURU_META_PIXEL_ID=1234567890123456
+   ```
+
+**Eventos enviados automaticamente:**
+
+| Evento Meta | Quando |
+|-------------|--------|
+| `PageView` | Toda página |
+| `ViewContent` | Página de review (produto + preço) |
+| `Lead` | Clique em link de afiliado |
+| `Contact` | Clique no botão WhatsApp |
+| `AffiliateClick` | Evento customizado — clique afiliado |
+| `WhatsAppClick` | Evento customizado — clique WhatsApp |
+
+**Validar:** instale a extensão [Meta Pixel Helper](https://chromewebstore.google.com/detail/meta-pixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc) no Chrome e navegue no site.
+
+**Conversões no Ads:** Events Manager → Configurar → **Conversões personalizadas** → use `Lead`, `Contact` ou os eventos customizados acima.
+
+> Admins logados não são rastreados por padrão (evita dados falsos). Desmarque *“Não rastrear admins logados”* no Personalizar para testar logado.
 
 ---
 

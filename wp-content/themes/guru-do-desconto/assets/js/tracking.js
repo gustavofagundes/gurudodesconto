@@ -5,8 +5,9 @@
   'use strict';
 
   var cfg = window.guruTracking || {};
+  var pixelPage = cfg.pixelPage || {};
 
-  // Persiste UTMs da landing (ex.: Google Ads) para a sessão.
+  // Persiste UTMs da landing (ex.: Google Ads, Meta Ads) para a sessão.
   try {
     var params = new URLSearchParams(window.location.search);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (key) {
@@ -34,11 +35,29 @@
     window.gtag('event', name, params);
   }
 
-  function fbqEvent(name, params) {
-    if (typeof window.fbq !== 'function') {
+  function fbqTrack(eventName, params) {
+    if (!cfg.pixelEnabled || typeof window.fbq !== 'function') {
       return;
     }
-    window.fbq('track', name, params || {});
+    window.fbq('track', eventName, params || {});
+  }
+
+  function fbqCustom(eventName, params) {
+    if (!cfg.pixelEnabled || typeof window.fbq !== 'function') {
+      return;
+    }
+    window.fbq('trackCustom', eventName, params || {});
+  }
+
+  function metaBaseParams(content) {
+    return {
+      content_name: pixelPage.contentName || document.title || '',
+      content_category: pixelPage.contentCategory || cfg.keyword || cfg.campaign || 'site',
+      utm_source: storedUtm('utm_source') || cfg.utmSource || '',
+      utm_medium: storedUtm('utm_medium') || cfg.utmMedium || '',
+      utm_campaign: storedUtm('utm_campaign') || cfg.utmCampaign || cfg.campaign || '',
+      utm_content: content || '',
+    };
   }
 
   function trackAffiliateClick(el) {
@@ -54,12 +73,26 @@
       utm_medium: storedUtm('utm_medium') || cfg.utmMedium || '',
       utm_campaign: storedUtm('utm_campaign') || cfg.utmCampaign || cfg.campaign || '',
       utm_content: content,
-      value: 1,
+      value: pixelPage.value || 1,
     };
 
     gtagEvent('affiliate_click', payload);
-    gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
-    fbqEvent('Lead', { content_name: 'affiliate_click', content_category: content });
+    if (cfg.gaId) {
+      gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
+    }
+
+    var metaParams = Object.assign(metaBaseParams(content), {
+      content_type: 'product',
+      currency: pixelPage.currency || 'BRL',
+      value: pixelPage.value || 1,
+    });
+
+    if (pixelPage.contentIds) {
+      metaParams.content_ids = pixelPage.contentIds;
+    }
+
+    fbqTrack('Lead', metaParams);
+    fbqCustom('AffiliateClick', metaParams);
   }
 
   function trackWhatsappClick(el) {
@@ -76,8 +109,16 @@
     };
 
     gtagEvent('whatsapp_click', payload);
-    gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
-    fbqEvent('Contact', { content_name: 'whatsapp_click', content_category: content });
+    if (cfg.gaId) {
+      gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
+    }
+
+    var metaParams = Object.assign(metaBaseParams(content), {
+      content_name: 'whatsapp_' + content.replace(/^whatsapp_/, ''),
+    });
+
+    fbqTrack('Contact', metaParams);
+    fbqCustom('WhatsAppClick', metaParams);
   }
 
   document.addEventListener(
