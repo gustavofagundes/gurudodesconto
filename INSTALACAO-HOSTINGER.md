@@ -10,6 +10,8 @@ public_html/                    ← Raiz do site (upload na Hostinger)
 │   └── reviews/                  ← Arquivos .html dos reviews (OBRIGATÓRIO)
 ├── wp-content/
 │   ├── themes/guru-do-desconto/  ← Tema personalizado
+│   ├── plugins/pixelyoursite/    ← Meta Pixel + CAPI
+│   ├── plugins/google-site-kit/  ← GA4 + Search Console
 │   └── mu-plugins/guru-seo-boost.php ← SEO automático
 ├── .htaccess                   ← Cache, GZIP e rewrite
 └── robots.txt                  ← Referência para crawlers
@@ -100,12 +102,18 @@ GURU_REVIEW_SYNC_SECRET=um-token-longo-e-aleatorio
 
 > Se aparecer "Nenhum review encontrado", a pasta `content/reviews/` provavelmente não foi enviada ou está no lugar errado.
 
-### 6. Configurar WhatsApp e Google Site Kit
+### 6. Configurar WhatsApp, Site Kit e PixelYourSite
 
 1. **Aparência → Personalizar → Guru do Desconto** → cole o **link do grupo WhatsApp**
-2. **Plugins** → confirme que **Site Kit by Google** está ativo (`wp-content/plugins/google-site-kit/`)
-3. Menu **Site Kit** → **Iniciar configuração** → conecte conta Google
-4. Conecte **Search Console** e **Google Analytics (GA4)** pelo assistente do Site Kit
+2. **Plugins** → confirme que estão ativos:
+   - **Site Kit by Google** (`wp-content/plugins/google-site-kit/`)
+   - **PixelYourSite** (`wp-content/plugins/pixelyoursite/`)
+   > Na primeira visita ao `/wp-admin`, o mu-plugin `guru-bundled-plugins.php` ativa ambos automaticamente.
+3. **Site Kit** → **Iniciar configuração** → conecte Search Console + GA4
+4. **PixelYourSite** → **Dashboard** → cole o **Meta Pixel ID** e ative o Facebook Pixel
+   - Opcional: ative **Conversions API (CAPI)** no PYS para melhor atribuição em campanhas Meta
+   - **Desative** o Meta Pixel no Personalizar do tema (evita duplicar o código base)
+5. Os eventos do tema (`Lead`, `Contact`, `WhatsAppClick` nos cliques) continuam funcionando via `tracking.js` enquanto o PYS carrega o `fbq`
 
 > Erro *"not a valid JSON response"*? Vá em **Configurações → Links permanentes → Nome do post → Salvar**.
 
@@ -180,36 +188,40 @@ Reviews gerados pelo n8n também incluem UTMs no HTML commitado no GitHub.
    `https://gurudodesconto.com.br/reviews/melhor-air-fryer-2026/?utm_source=google&utm_medium=cpc&utm_campaign=review_airfryer&utm_content=ad1`
 3. No GA4, analise **Aquisição → Aquisição de tráfego** e relatório de conversões por campanha
 
-### Meta Pixel (Facebook / Instagram)
+### Meta Pixel (Facebook / Instagram) — PixelYourSite
 
-1. **Events Manager** → [business.facebook.com/events_manager](https://business.facebook.com/events_manager) → copie o **Pixel ID** (15–16 dígitos)
-2. No WordPress: **Aparência → Personalizar → Guru do Desconto**
-   - Marque **Ativar Meta Pixel**
-   - Cole o **Meta Pixel ID**
-3. Ou defina no `.env`:
-   ```env
-   GURU_META_PIXEL_ID=1234567890123456
-   ```
+O plugin **PixelYourSite** (já incluído no projeto) gerencia o Pixel, PageView e CAPI.
 
-**Eventos enviados automaticamente:**
+1. **Plugins → PixelYourSite** → ative se ainda não estiver
+2. **PixelYourSite → Dashboard** → **Facebook Pixel** → cole o **Pixel ID** (15–16 dígitos do Events Manager)
+3. Ative **Conversions API** (recomendado para tráfego pago Meta)
+4. No WordPress: **Aparência → Personalizar → Guru do Desconto** → **desmarque** *Ativar Meta Pixel (tema)*
+
+**Eventos extras do tema** (via `tracking.js`, sem duplicar o Pixel base):
 
 | Evento Meta | Quando |
 |-------------|--------|
-| `PageView` | Toda página |
-| `ViewContent` | Página de review (produto + preço) |
 | `Lead` | Clique em link de afiliado |
 | `Contact` | Clique no botão WhatsApp |
 | `AffiliateClick` | Evento customizado — clique afiliado |
 | `WhatsAppClick` | Evento customizado — clique WhatsApp |
 
-**Validar:** instale a extensão [Meta Pixel Helper](https://chromewebstore.google.com/detail/meta-pixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc) no Chrome e navegue no site.
+Configure `ViewContent` e `PageView` no painel do **PixelYourSite** conforme sua estratégia.
 
-**Conversões no Ads:** Events Manager → Configurar → **Conversões personalizadas** → use `Lead`, `Contact` ou os eventos customizados acima.
+**Fallback (sem PYS):** use **Aparência → Personalizar → Meta Pixel ID** ou `.env`:
+```env
+GURU_META_PIXEL_ID=1234567890123456
+```
 
-> Admins logados não são rastreados por padrão (evita dados falsos). Desmarque *“Não rastrear admins logados”* no Personalizar para testar logado.
+**Validar:** extensão [Meta Pixel Helper](https://chromewebstore.google.com/detail/meta-pixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc) no Chrome.
+
+**Conversões no Ads:** Events Manager → marque `Lead`, `Contact` ou eventos customizados como conversões.
+
+> Admins logados não disparam eventos do tema por padrão. Desmarque *“Não rastrear admins logados”* no Personalizar para testar logado.
 
 ---
 
 - **Site Kit by Google** — Analytics, Search Console, AdSense (já no projeto)
+- **PixelYourSite** — Meta Pixel + CAPI (+ GA4/GTM opcional no plugin)
 - **LiteSpeed Cache** (Hostinger LiteSpeed) — recomendado na produção
 - **Really Simple SSL** — recomendado na produção

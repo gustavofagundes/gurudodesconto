@@ -182,7 +182,7 @@ function guru_tracking_script_config() {
 			'gaId'            => get_theme_mod( 'guru_google_analytics', '' ),
 			'adsId'           => get_theme_mod( 'guru_google_ads_id', '' ),
 			'pixelId'         => function_exists( 'guru_meta_pixel_id' ) ? guru_meta_pixel_id() : '',
-			'pixelEnabled'    => function_exists( 'guru_meta_pixel_should_load' ) ? guru_meta_pixel_should_load() : false,
+			'pixelEnabled'    => function_exists( 'guru_meta_pixel_events_enabled' ) ? guru_meta_pixel_events_enabled() : false,
 			'pixelPage'       => $pixel,
 			'utmSource'       => guru_get_stored_utm( 'utm_source' ),
 			'utmMedium'       => guru_get_stored_utm( 'utm_medium' ),

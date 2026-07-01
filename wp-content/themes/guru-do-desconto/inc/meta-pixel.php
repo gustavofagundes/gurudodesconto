@@ -58,6 +58,10 @@ function guru_meta_pixel_should_load() {
 		return false;
 	}
 
+	if ( function_exists( 'guru_theme_handles_meta_pixel_base' ) && ! guru_theme_handles_meta_pixel_base() ) {
+		return false;
+	}
+
 	if ( ! guru_meta_pixel_enabled() ) {
 		return false;
 	}
@@ -165,6 +169,10 @@ add_action( 'wp_head', 'guru_meta_pixel_head_script', 5 );
  */
 function guru_meta_pixel_view_content_script() {
 	if ( ! guru_meta_pixel_should_load() || ! is_singular( 'review' ) ) {
+		return;
+	}
+
+	if ( function_exists( 'guru_pixelyoursite_active' ) && guru_pixelyoursite_active() ) {
 		return;
 	}
 

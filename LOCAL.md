@@ -12,7 +12,7 @@ Na raiz do projeto:
 docker compose up -d
 ```
 
-Aguarde ~30 segundos e acesse: **http://localhost:8081**
+Aguarde ~30 segundos e acesse: **http://localhost:8082**
 
 ## Primeira instalação
 
@@ -21,7 +21,7 @@ Aguarde ~30 segundos e acesse: **http://localhost:8081**
    - Título: `Guru do Desconto`
    - Usuário, senha e e-mail (anote a senha)
 3. Clique em **Instalar o WordPress**
-4. Faça login em http://localhost:8081/wp-admin
+4. Faça login em http://localhost:8082/wp-admin
 5. **Aparência → Temas** → ative **Guru do Desconto**
 6. **Aparência → Personalizar → Guru do Desconto** → cole o link do WhatsApp
 
@@ -29,9 +29,18 @@ Aguarde ~30 segundos e acesse: **http://localhost:8081**
 
 O plugin **Site Kit by Google** já está incluído em `wp-content/plugins/google-site-kit/`.
 
-1. Acesse **http://localhost:8081/wp-admin**
+1. Acesse **http://localhost:8082/wp-admin**
 2. Menu lateral: **Site Kit** → **Start setup**
 3. Faça login com sua conta Google e conecte Search Console + Analytics
+
+## PixelYourSite (Meta Pixel)
+
+O plugin **PixelYourSite** já está em `wp-content/plugins/pixelyoursite/`.
+
+1. **Plugins** → ative **PixelYourSite** (ou acesse o admin uma vez — ativação automática)
+2. Menu **PixelYourSite** → **Dashboard** → cole o **Meta Pixel ID**
+3. Ative **Conversions API** se for rodar anúncios no Meta
+4. **Personalizar → Guru do Desconto** → desmarque *Ativar Meta Pixel (tema)*
 
 > Se aparecer *"not a valid JSON response"*, vá em **Configurações → Links permanentes → Nome do post → Salvar**.
 

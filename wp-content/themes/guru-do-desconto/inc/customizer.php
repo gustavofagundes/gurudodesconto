@@ -81,9 +81,10 @@ function guru_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_control( 'guru_meta_pixel_enabled', array(
-		'label'   => __( 'Ativar Meta Pixel', 'guru-do-desconto' ),
-		'section' => 'guru_settings',
-		'type'    => 'checkbox',
+		'label'       => __( 'Ativar Meta Pixel (tema)', 'guru-do-desconto' ),
+		'description' => __( 'Use apenas se o plugin PixelYourSite estiver desativado. Com PYS ativo, configure o Pixel no menu PixelYourSite.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'checkbox',
 	) );
 
 	$wp_customize->add_setting( 'guru_meta_pixel_id', array(
@@ -93,7 +94,7 @@ function guru_customize_register( $wp_customize ) {
 
 	$wp_customize->add_control( 'guru_meta_pixel_id', array(
 		'label'       => __( 'Meta Pixel ID', 'guru-do-desconto' ),
-		'description' => __( 'ID numérico de 15–16 dígitos (Events Manager → Fontes de dados → Pixel). Alternativa: GURU_META_PIXEL_ID no .env', 'guru-do-desconto' ),
+		'description' => __( 'ID numérico de 15–16 dígitos. Com PixelYourSite ativo, configure o Pixel no plugin (não aqui). Alternativa: GURU_META_PIXEL_ID no .env', 'guru-do-desconto' ),
 		'section'     => 'guru_settings',
 		'type'        => 'text',
 	) );
