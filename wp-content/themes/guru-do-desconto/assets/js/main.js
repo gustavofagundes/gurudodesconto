@@ -11,4 +11,11 @@
     var isOpen = nav.classList.toggle('open');
     toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
+
+  nav.addEventListener('click', function (event) {
+    if (event.target.closest('a')) {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
 })();

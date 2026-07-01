@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.15' );
+define( 'GURU_THEME_VERSION', '1.0.17' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -63,6 +63,17 @@ function guru_theme_setup() {
 add_action( 'after_setup_theme', 'guru_theme_setup' );
 
 /**
+ * Classe no body para estilos/scripts da landing (home).
+ */
+function guru_body_classes( $classes ) {
+	if ( is_front_page() ) {
+		$classes[] = 'guru-front-landing';
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'guru_body_classes' );
+
+/**
  * Enqueue styles and scripts.
  */
 function guru_enqueue_assets() {
@@ -94,6 +105,45 @@ function guru_enqueue_assets() {
 			'strategy'  => 'defer',
 		)
 	);
+
+	if ( is_front_page() ) {
+		wp_enqueue_script(
+			'guru-whatsapp-groups',
+			GURU_THEME_URI . '/assets/js/whatsapp-groups.js',
+			array( 'guru-tracking' ),
+			GURU_THEME_VERSION,
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
+		);
+
+		wp_localize_script(
+			'guru-whatsapp-groups',
+			'guruWhatsappPicker',
+			array(
+				'strings' => array(
+					'noneSelected'  => __( 'Nenhum grupo selecionado', 'guru-do-desconto' ),
+					'oneSelected'   => __( '1 grupo selecionado', 'guru-do-desconto' ),
+					'manySelected'  => __( '%d grupos selecionados', 'guru-do-desconto' ),
+					'joinOne'       => __( 'Entrar em 1 grupo no WhatsApp', 'guru-do-desconto' ),
+					'joinMany'      => __( 'Entrar em %d grupos no WhatsApp', 'guru-do-desconto' ),
+					'fallbackTitle' => __( 'Algumas abas foram bloqueadas pelo navegador. Toque em cada link abaixo:', 'guru-do-desconto' ),
+				),
+			)
+		);
+
+		wp_enqueue_script(
+			'guru-landing',
+			GURU_THEME_URI . '/assets/js/landing.js',
+			array( 'guru-main' ),
+			GURU_THEME_VERSION,
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'guru_enqueue_assets' );
 

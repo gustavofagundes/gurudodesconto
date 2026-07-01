@@ -26,6 +26,12 @@ Tags: affiliate, reviews, seo, e-commerce
   --guru-shadow: 0 4px 24px rgba(29, 53, 87, 0.08);
   --guru-radius: 16px;
   --guru-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --guru-header-height: 76px;
+  --guru-landing-nav-height: 52px;
+}
+
+.guru-front-landing [id] {
+  scroll-margin-top: calc(var(--guru-header-height) + var(--guru-landing-nav-height) + 12px);
 }
 
 *,
@@ -86,7 +92,7 @@ a:hover {
   box-shadow: var(--guru-shadow);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 101;
 }
 
 .header-inner {
@@ -234,6 +240,22 @@ a:hover {
   max-width: 520px;
 }
 
+.hero-lead {
+  font-size: 1.15rem;
+}
+
+.hero-microcopy {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  color: var(--guru-gray);
+  max-width: 480px;
+}
+
+.btn-lg {
+  padding: 1rem 1.85rem;
+  font-size: 1.05rem;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -292,6 +314,231 @@ a:hover {
 /* Sections */
 .section {
   padding: 4rem 0;
+}
+
+.section--muted {
+  background: var(--guru-white);
+}
+
+.section--reviews {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.section-footer-cta {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.reviews-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--guru-gray);
+}
+
+/* Landing — navegação por seções */
+.landing-section-nav {
+  position: sticky;
+  top: var(--guru-header-height);
+  z-index: 99;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(29, 53, 87, 0.08);
+}
+
+.landing-section-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+}
+
+.landing-section-nav__links {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.landing-section-nav__links::-webkit-scrollbar {
+  display: none;
+}
+
+.landing-section-nav__link {
+  flex-shrink: 0;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--guru-blue);
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.landing-section-nav__link:hover,
+.landing-section-nav__link.is-active {
+  background: rgba(242, 116, 5, 0.12);
+  color: var(--guru-orange);
+}
+
+.landing-section-nav__cta {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* Landing — barra de confiança */
+.landing-trust-bar {
+  background: var(--guru-white);
+  border-bottom: 1px solid rgba(29, 53, 87, 0.06);
+  padding: 1rem 0;
+}
+
+.landing-trust-bar__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.landing-trust-bar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--guru-blue);
+}
+
+.landing-trust-bar__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.15);
+  color: var(--guru-success);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* Landing — como funciona */
+.landing-steps {
+  background: var(--guru-bg);
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.landing-steps__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+
+.landing-steps__item {
+  background: var(--guru-white);
+  border-radius: var(--guru-radius);
+  padding: 1.5rem 1.25rem;
+  box-shadow: var(--guru-shadow);
+  text-align: center;
+}
+
+.landing-steps__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--guru-orange), var(--guru-orange-dark));
+  color: var(--guru-white);
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 0.85rem;
+}
+
+.landing-steps__item h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--guru-blue);
+}
+
+.landing-steps__item p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--guru-gray);
+  line-height: 1.5;
+}
+
+.landing-steps__cta {
+  text-align: center;
+  margin: 2rem 0 0;
+}
+
+/* Chips de atalho para grupos */
+.group-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.group-chip {
+  display: inline-block;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--guru-white);
+  border: 1px solid rgba(29, 53, 87, 0.12);
+  color: var(--guru-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.group-chip:hover {
+  border-color: var(--guru-success);
+  background: rgba(37, 211, 102, 0.08);
+  color: var(--guru-blue);
+}
+
+/* CTA fixo mobile — landing */
+.landing-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 150;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid rgba(29, 53, 87, 0.1);
+  box-shadow: 0 -8px 24px rgba(29, 53, 87, 0.1);
+  display: none;
+}
+
+.landing-sticky-cta .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+body.landing-sticky-visible .landing-sticky-cta {
+  display: block;
+}
+
+body.landing-sticky-visible .floating-whatsapp {
+  bottom: 5.5rem;
 }
 
 .section-header {
@@ -511,6 +758,24 @@ a:hover {
   margin: 0 0 1.5rem;
   opacity: 0.95;
   font-size: 1.1rem;
+}
+
+.whatsapp-band__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  justify-content: center;
+}
+
+.btn-outline--light {
+  background: transparent;
+  color: var(--guru-white);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.btn-outline--light:hover {
+  background: var(--guru-white);
+  color: var(--guru-success);
 }
 
 /* Footer */
@@ -861,6 +1126,44 @@ a:hover {
   background: linear-gradient(180deg, var(--guru-bg) 0%, var(--guru-white) 100%);
 }
 
+.whatsapp-groups-picker {
+  position: relative;
+}
+
+.whatsapp-groups-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--guru-white);
+  border-radius: var(--guru-radius);
+  box-shadow: var(--guru-shadow);
+}
+
+.whatsapp-groups-toolbar__hint {
+  margin: 0;
+  flex: 1 1 220px;
+  font-size: 0.95rem;
+  color: var(--guru-gray);
+}
+
+.whatsapp-groups-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.whatsapp-groups-toolbar__count {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--guru-blue);
+  white-space: nowrap;
+}
+
 .whatsapp-groups-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -884,6 +1187,70 @@ a:hover {
 
 .whatsapp-group-card--featured {
   border: 2px solid var(--guru-success);
+}
+
+.whatsapp-group-card--selected {
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.35), var(--guru-shadow);
+}
+
+.whatsapp-group-card__select {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.whatsapp-group-card__checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.whatsapp-group-card__checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--guru-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.whatsapp-group-card__checkmark::after {
+  content: '';
+  width: 0.45rem;
+  height: 0.75rem;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg) scale(0);
+  margin-top: -2px;
+  transition: transform 0.15s;
+}
+
+.whatsapp-group-card__checkbox:checked + .whatsapp-group-card__checkmark {
+  background: var(--guru-success);
+  border-color: var(--guru-success);
+  transform: scale(1.05);
+}
+
+.whatsapp-group-card__checkbox:checked + .whatsapp-group-card__checkmark::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.whatsapp-group-card__select:hover .whatsapp-group-card__checkmark {
+  border-color: var(--guru-success);
 }
 
 .whatsapp-group-badge {
@@ -955,6 +1322,51 @@ a:hover {
 .btn-sm {
   padding: 0.65rem 1.1rem;
   font-size: 0.9rem;
+  width: 100%;
+}
+
+.whatsapp-groups-bulk-bar {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 20;
+  margin-top: 1.5rem;
+  pointer-events: none;
+}
+
+.whatsapp-groups-bulk-bar__inner {
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.whatsapp-groups-bulk-bar .btn {
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.45);
+  min-width: min(100%, 360px);
+}
+
+.whatsapp-groups-fallback {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: #fff8e6;
+  border: 1px solid #f0c36d;
+  border-radius: var(--guru-radius);
+}
+
+.whatsapp-groups-fallback p {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--guru-blue);
+}
+
+.whatsapp-groups-fallback__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.whatsapp-groups-fallback__links .btn {
   width: 100%;
 }
 
@@ -1056,6 +1468,46 @@ a:hover {
   .whatsapp-groups-grid {
     grid-template-columns: 1fr;
   }
+
+  .landing-trust-bar__list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .group-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .group-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .group-chip {
+    flex-shrink: 0;
+  }
+
+  .whatsapp-groups-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .whatsapp-groups-toolbar__actions {
+    justify-content: stretch;
+  }
+
+  .whatsapp-groups-toolbar__actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .whatsapp-groups-bulk-bar {
+    bottom: 5rem;
+  }
 }
 
 /* Floating WhatsApp */
@@ -1084,10 +1536,19 @@ a:hover {
 
 /* Responsive */
 @media (max-width: 900px) {
+  :root {
+    --guru-header-height: 64px;
+  }
+
   .hero-grid,
   .review-content,
-  .footer-grid {
+  .footer-grid,
+  .landing-steps__grid {
     grid-template-columns: 1fr;
+  }
+
+  .landing-section-nav__cta {
+    display: none;
   }
 
   .marketplace-grid {

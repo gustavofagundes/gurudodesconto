@@ -123,6 +123,8 @@
     fbqCustom('WhatsAppClick', metaParams);
   }
 
+  window.guruTrackWhatsappClick = trackWhatsappClick;
+
   document.addEventListener(
     'click',
     function (event) {

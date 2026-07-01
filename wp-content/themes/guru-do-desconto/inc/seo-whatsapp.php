@@ -57,7 +57,7 @@ function guru_whatsapp_faq_items() {
 		),
 		array(
 			'question' => __( 'Como entrar no grupo de ofertas no WhatsApp?', 'guru-do-desconto' ),
-			'answer'   => __( 'Na página inicial, escolha o grupo do seu nicho (Casa, Mulher, Kids, Tech, Até R$ 50, Homem ou Geral) e clique em "Entrar no grupo". O link abre o WhatsApp para confirmar a entrada.', 'guru-do-desconto' ),
+			'answer'   => __( 'Na página inicial, escolha o grupo do seu nicho e clique em "Entrar no grupo". Para entrar em vários de uma vez, marque os checkboxes dos grupos desejados e toque em "Entrar nos grupos selecionados".', 'guru-do-desconto' ),
 		),
 		array(
 			'question' => __( 'O grupo de promoções no WhatsApp é gratuito?', 'guru-do-desconto' ),

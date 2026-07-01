@@ -4,33 +4,30 @@
  *
  * @package GuruDoDesconto
  */
-
-$whatsapp = guru_whatsapp_link();
-$wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Promoções', 'guru-do-desconto' ) );
 ?>
 
 <section class="section whatsapp-seo" id="grupo-whatsapp">
 	<div class="container">
 		<div class="section-header">
-			<h2><?php esc_html_e( 'Grupo de Promoções no WhatsApp — Grátis', 'guru-do-desconto' ); ?></h2>
-			<p><?php esc_html_e( 'Receba ofertas do Mercado Livre, Shopee e Amazon direto no seu celular. O melhor grupo de cupons e descontos no WhatsApp.', 'guru-do-desconto' ); ?></p>
+			<h2><?php esc_html_e( 'Dúvidas sobre os grupos', 'guru-do-desconto' ); ?></h2>
+			<p><?php esc_html_e( 'Tudo o que você precisa saber antes de entrar — é grátis e sem compromisso.', 'guru-do-desconto' ); ?></p>
 		</div>
 
 		<div class="whatsapp-seo-grid">
 			<div class="whatsapp-seo-content review-prose">
 				<p>
-					<?php esc_html_e( 'Procurando um', 'guru-do-desconto' ); ?>
-					<strong><?php esc_html_e( 'grupo de promoção no WhatsApp', 'guru-do-desconto' ); ?></strong>
-					<?php esc_html_e( 'confiável? O Guru do Desconto envia diariamente as melhores ofertas, cupons exclusivos e alertas de preço baixo nas maiores lojas online do Brasil.', 'guru-do-desconto' ); ?>
+					<?php esc_html_e( 'O Guru do Desconto organiza', 'guru-do-desconto' ); ?>
+					<strong><?php esc_html_e( '7 grupos de promoção no WhatsApp', 'guru-do-desconto' ); ?></strong>
+					<?php esc_html_e( 'por nicho. Você recebe ofertas do Mercado Livre, Shopee e Amazon sem pagar nada — só o que importa para você.', 'guru-do-desconto' ); ?>
 				</p>
 				<ul>
 					<li><?php esc_html_e( 'Promoções Mercado Livre no WhatsApp', 'guru-do-desconto' ); ?></li>
 					<li><?php esc_html_e( 'Ofertas Shopee com desconto', 'guru-do-desconto' ); ?></li>
 					<li><?php esc_html_e( 'Cupons Amazon e Prime Day', 'guru-do-desconto' ); ?></li>
-					<li><?php esc_html_e( 'Reviews comparativos com melhores preços', 'guru-do-desconto' ); ?></li>
+					<li><?php esc_html_e( 'Entre em um ou vários grupos de uma vez', 'guru-do-desconto' ); ?></li>
 				</ul>
-				<a <?php echo guru_whatsapp_link_attrs( 'faq' ); ?> class="btn btn-whatsapp">
-					<?php echo esc_html( $wa_msg ); ?>
+				<a href="#grupos-whatsapp" class="btn btn-whatsapp">
+					<?php esc_html_e( 'Ver grupos e entrar grátis', 'guru-do-desconto' ); ?>
 				</a>
 			</div>
 
