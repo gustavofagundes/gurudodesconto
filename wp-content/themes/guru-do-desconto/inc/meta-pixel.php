@@ -91,6 +91,13 @@ function guru_meta_pixel_page_data() {
 		return $data;
 	}
 
+	if ( function_exists( 'guru_get_whatsapp_group_from_page' ) && ( $group = guru_get_whatsapp_group_from_page() ) ) {
+		$data['pageType']        = 'whatsapp_group_landing';
+		$data['contentName']     = $group['name'];
+		$data['contentCategory'] = 'whatsapp_' . ( $group['slug'] ?? 'grupo' );
+		return $data;
+	}
+
 	if ( is_singular( 'review' ) ) {
 		$id    = get_the_ID();
 		$price = get_post_meta( $id, '_guru_price', true );

@@ -41,6 +41,17 @@ function guru_get_meta_description() {
 		return guru_default_seo_description();
 	}
 
+	if ( function_exists( 'guru_is_whatsapp_group_landing_page' ) && guru_is_whatsapp_group_landing_page() ) {
+		$group = guru_get_whatsapp_group_from_page();
+		if ( $group ) {
+			return guru_whatsapp_group_meta_description( $group );
+		}
+	}
+
+	if ( function_exists( 'guru_is_whatsapp_groups_hub_page' ) && guru_is_whatsapp_groups_hub_page() ) {
+		return __( '7 grupos de promoções no WhatsApp por nicho — Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Grátis!', 'guru-do-desconto' );
+	}
+
 	if ( is_post_type_archive( 'review' ) ) {
 		return __( 'Reviews comparativos e análises honestas de produtos com promoções no Mercado Livre, Shopee e Amazon.', 'guru-do-desconto' );
 	}
@@ -96,6 +107,8 @@ function guru_social_meta() {
 
 	if ( is_singular() && has_post_thumbnail() ) {
 		$image = get_the_post_thumbnail_url( null, 'large' );
+	} elseif ( function_exists( 'guru_get_whatsapp_group_from_page' ) && ( $group = guru_get_whatsapp_group_from_page() ) ) {
+		$image = $group['image'] ?? $image;
 	} elseif ( is_singular( 'review' ) ) {
 		$image = guru_review_og_image( $image );
 	}

@@ -45,6 +45,16 @@ function guru_crawling_sitemap_entry( $entry, $post, $post_type ) {
 		if ( $whatsapp_id && (int) $post->ID === $whatsapp_id ) {
 			$entry['priority'] = 0.9;
 		}
+
+		$hub_id = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
+		if ( $hub_id && (int) $post->ID === $hub_id ) {
+			$entry['priority'] = 0.9;
+		}
+
+		$group_slug = get_post_meta( $post->ID, '_guru_whatsapp_group_slug', true );
+		if ( $group_slug ) {
+			$entry['priority'] = 0.85;
+		}
 	}
 
 	return $entry;

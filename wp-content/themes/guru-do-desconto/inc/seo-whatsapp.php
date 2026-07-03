@@ -27,6 +27,30 @@ function guru_front_page_title( $parts ) {
 add_filter( 'document_title_parts', 'guru_front_page_title' );
 
 /**
+ * Título SEO das landings por grupo.
+ */
+function guru_whatsapp_group_document_title( $parts ) {
+	if ( ! function_exists( 'guru_get_whatsapp_group_from_page' ) ) {
+		return $parts;
+	}
+
+	$group = guru_get_whatsapp_group_from_page();
+	if ( ! $group ) {
+		return $parts;
+	}
+
+	$parts['title'] = sprintf(
+		/* translators: %s: group name */
+		__( 'Grupo %s no WhatsApp — Promoções Grátis', 'guru-do-desconto' ),
+		$group['name']
+	);
+	$parts['tagline'] = __( 'ML, Shopee e Amazon', 'guru-do-desconto' );
+
+	return $parts;
+}
+add_filter( 'document_title_parts', 'guru_whatsapp_group_document_title', 12 );
+
+/**
  * Meta description otimizada na home e página do grupo.
  */
 function guru_whatsapp_meta_description( $desc ) {
@@ -147,6 +171,10 @@ function guru_schema_webpage() {
 		return;
 	}
 
+	if ( function_exists( 'guru_is_whatsapp_group_landing_page' ) && guru_is_whatsapp_group_landing_page() ) {
+		return;
+	}
+
 	$schema = array(
 		'@context'    => 'https://schema.org',
 		'@type'       => 'WebPage',
@@ -244,7 +272,7 @@ function guru_schema_home_whatsapp() {
 			'@type'    => 'ListItem',
 			'position' => $pos++,
 			'name'     => $group['name'],
-			'url'      => home_url( '/#grupo-' . $group['slug'] ),
+			'url'      => guru_whatsapp_group_landing_url( $group ),
 		);
 	}
 
@@ -276,3 +304,71 @@ function guru_schema_home_whatsapp() {
 	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 }
 add_action( 'wp_head', 'guru_schema_home_whatsapp', 12 );
+
+/**
+ * Schema — landing de grupo por nicho.
+ */
+function guru_schema_whatsapp_group_landing() {
+	$group = guru_get_whatsapp_group_from_page();
+	if ( ! $group ) {
+		return;
+	}
+
+	$schema = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => array(
+			array(
+				'@type'       => 'WebPage',
+				'name'        => get_the_title(),
+				'url'         => get_permalink(),
+				'description' => guru_whatsapp_group_meta_description( $group ),
+				'inLanguage'  => 'pt-BR',
+				'author'      => guru_schema_author(),
+				'publisher'   => guru_schema_publisher(),
+				'image'       => $group['image'] ?? '',
+			),
+			array(
+				'@type'             => 'CommunicationChannel',
+				'name'              => $group['name'],
+				'description'       => $group['description'],
+				'url'               => $group['url'],
+				'availableLanguage' => 'pt-BR',
+				'serviceType'       => 'WhatsApp Group',
+			),
+		),
+	);
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'guru_schema_whatsapp_group_landing', 10 );
+
+/**
+ * FAQ schema — landing de grupo.
+ */
+function guru_schema_whatsapp_group_faq() {
+	$group = guru_get_whatsapp_group_from_page();
+	if ( ! $group ) {
+		return;
+	}
+
+	$entities = array();
+	foreach ( guru_whatsapp_group_faq_items( $group ) as $item ) {
+		$entities[] = array(
+			'@type'          => 'Question',
+			'name'           => $item['question'],
+			'acceptedAnswer' => array(
+				'@type' => 'Answer',
+				'text'  => wp_strip_all_tags( $item['answer'] ),
+			),
+		);
+	}
+
+	$schema = array(
+		'@context'   => 'https://schema.org',
+		'@type'      => 'FAQPage',
+		'mainEntity' => $entities,
+	);
+
+	echo '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'guru_schema_whatsapp_group_faq', 11 );

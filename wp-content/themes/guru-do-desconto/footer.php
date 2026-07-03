@@ -15,6 +15,12 @@
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'review' ) ); ?>"><?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?></a></li>
 					<li><a href="<?php echo esc_url( home_url( '/#grupos-whatsapp' ) ); ?>"><?php esc_html_e( 'Grupos WhatsApp', 'guru-do-desconto' ); ?></a></li>
 					<?php
+					$hub_id = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
+					if ( $hub_id ) :
+						?>
+					<li><a href="<?php echo esc_url( get_permalink( $hub_id ) ); ?>"><?php esc_html_e( 'Todos os grupos', 'guru-do-desconto' ); ?></a></li>
+					<?php endif; ?>
+					<?php
 					$wa_page_id = (int) get_option( 'guru_whatsapp_page_id', 0 );
 					if ( $wa_page_id ) :
 						?>
