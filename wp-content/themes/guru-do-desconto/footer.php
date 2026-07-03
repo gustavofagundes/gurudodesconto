@@ -1,7 +1,10 @@
 </main>
 
-<footer class="site-footer" role="contentinfo">
+<?php $conversion = function_exists( 'guru_is_conversion_page' ) && guru_is_conversion_page(); ?>
+
+<footer class="site-footer<?php echo $conversion ? ' site-footer--conversion' : ''; ?>" role="contentinfo">
 	<div class="container">
+		<?php if ( ! $conversion ) : ?>
 		<div class="footer-grid">
 			<div class="footer-brand">
 				<?php get_template_part( 'template-parts/brand', 'logo', array( 'context' => 'footer' ) ); ?>
@@ -20,12 +23,6 @@
 						?>
 					<li><a href="<?php echo esc_url( get_permalink( $hub_id ) ); ?>"><?php esc_html_e( 'Todos os grupos', 'guru-do-desconto' ); ?></a></li>
 					<?php endif; ?>
-					<?php
-					$wa_page_id = (int) get_option( 'guru_whatsapp_page_id', 0 );
-					if ( $wa_page_id ) :
-						?>
-					<li><a href="<?php echo esc_url( get_permalink( $wa_page_id ) ); ?>"><?php esc_html_e( 'Grupo de Promoções', 'guru-do-desconto' ); ?></a></li>
-					<?php endif; ?>
 				</ul>
 			</div>
 
@@ -33,33 +30,29 @@
 				<h4><?php esc_html_e( 'Lojas', 'guru-do-desconto' ); ?></h4>
 				<ul>
 					<?php
-					$stores = array( 'Mercado Livre', 'Shopee', 'Amazon' );
 					$reviews_link = get_post_type_archive_link( 'review' );
-					foreach ( $stores as $label ) {
+					foreach ( array( 'Mercado Livre', 'Shopee', 'Amazon' ) as $label ) {
 						printf( '<li><a href="%s">%s</a></li>', esc_url( $reviews_link ), esc_html( $label ) );
 					}
 					?>
 				</ul>
 			</div>
 		</div>
+		<?php endif; ?>
 
 		<div class="footer-bottom">
 			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. <?php esc_html_e( 'Todos os direitos reservados.', 'guru-do-desconto' ); ?></p>
+			<?php if ( ! $conversion ) : ?>
 			<p class="affiliate-disclaimer"><?php esc_html_e( 'Podemos receber comissão por compras realizadas, sem custo extra para você.', 'guru-do-desconto' ); ?></p>
+			<?php endif; ?>
 		</div>
 	</div>
 </footer>
 
-<?php
-$float_group = function_exists( 'guru_get_whatsapp_group' ) ? guru_get_whatsapp_group( 'geral' ) : null;
-if ( is_front_page() ) :
+<?php if ( ! $conversion ) : ?>
+	<?php
+	$float_group = function_exists( 'guru_get_whatsapp_group' ) ? guru_get_whatsapp_group( 'geral' ) : null;
 	?>
-<a href="<?php echo esc_url( home_url( '/#grupos-whatsapp' ) ); ?>"
-   class="floating-whatsapp"
-   aria-label="<?php esc_attr_e( 'Escolher grupos de promoções no WhatsApp', 'guru-do-desconto' ); ?>">
-	<svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
-<?php else : ?>
 <a <?php echo $float_group ? guru_whatsapp_group_link_attrs( $float_group, 'floating' ) : guru_whatsapp_link_attrs( 'floating' ); ?>
    class="floating-whatsapp"
    aria-label="<?php esc_attr_e( 'Entrar no grupo de promoções no WhatsApp', 'guru-do-desconto' ); ?>">

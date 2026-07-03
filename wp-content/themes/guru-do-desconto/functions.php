@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.19' );
+define( 'GURU_THEME_VERSION', '1.0.21' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -25,6 +25,7 @@ function guru_site_kit_handles_analytics() {
 
 require_once GURU_THEME_DIR . '/inc/tracking.php';
 require_once GURU_THEME_DIR . '/inc/whatsapp-groups.php';
+require_once GURU_THEME_DIR . '/inc/whatsapp-copy.php';
 require_once GURU_THEME_DIR . '/inc/whatsapp-group-pages.php';
 require_once GURU_THEME_DIR . '/inc/seo-whatsapp.php';
 require_once GURU_THEME_DIR . '/inc/seo.php';
@@ -73,6 +74,9 @@ function guru_body_classes( $classes ) {
 	}
 	if ( function_exists( 'guru_is_whatsapp_group_landing_page' ) && guru_is_whatsapp_group_landing_page() ) {
 		$classes[] = 'guru-wa-group-landing';
+	}
+	if ( function_exists( 'guru_is_conversion_page' ) && guru_is_conversion_page() ) {
+		$classes[] = 'guru-conversion-page';
 	}
 	return $classes;
 }

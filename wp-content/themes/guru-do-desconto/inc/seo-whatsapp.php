@@ -39,12 +39,8 @@ function guru_whatsapp_group_document_title( $parts ) {
 		return $parts;
 	}
 
-	$parts['title'] = sprintf(
-		/* translators: %s: group name */
-		__( 'Grupo %s no WhatsApp — Promoções Grátis', 'guru-do-desconto' ),
-		$group['name']
-	);
-	$parts['tagline'] = __( 'ML, Shopee e Amazon', 'guru-do-desconto' );
+	$parts['title'] = wp_strip_all_tags( guru_whatsapp_group_headline( $group ) );
+	$parts['tagline'] = __( 'Grupo grátis no WhatsApp', 'guru-do-desconto' );
 
 	return $parts;
 }

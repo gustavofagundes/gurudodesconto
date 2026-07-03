@@ -67,6 +67,10 @@ add_filter( 'wp_sitemaps_posts_entry', 'guru_crawling_sitemap_entry', 15, 3 );
  * @see https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls
  */
 function guru_crawling_canonical_url( $canonical ) {
+	if ( function_exists( 'guru_normalize_canonical_url' ) && function_exists( 'guru_is_production_domain' ) && guru_is_production_domain() ) {
+		$canonical = guru_normalize_canonical_url( $canonical );
+	}
+
 	if ( is_singular( 'review' ) ) {
 		return get_permalink();
 	}
@@ -76,7 +80,13 @@ function guru_crawling_canonical_url( $canonical ) {
 	}
 
 	if ( is_front_page() ) {
-		return home_url( '/' );
+		return function_exists( 'guru_canonical_origin' )
+			? guru_canonical_origin() . '/'
+			: home_url( '/' );
+	}
+
+	if ( function_exists( 'guru_is_whatsapp_group_landing_page' ) && guru_is_whatsapp_group_landing_page() ) {
+		return get_permalink();
 	}
 
 	if ( function_exists( 'guru_is_whatsapp_landing_page' ) && guru_is_whatsapp_landing_page() ) {

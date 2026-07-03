@@ -117,11 +117,33 @@ GURU_REVIEW_SYNC_SECRET=um-token-longo-e-aleatorio
 
 > Erro *"not a valid JSON response"*? Vá em **Configurações → Links permanentes → Nome do post → Salvar**.
 
-### 7. SSL e URLs
+### 7. SSL e URLs canônicas (Google Search)
+
+**URL canônica do site:** `https://gurudodesconto.com.br` (HTTPS, **sem** `www`)
 
 1. hPanel → **SSL** → ative certificado gratuito
-2. **Configurações → Gerais** → URLs com `https://`
-3. Instale **Really Simple SSL** (recomendado)
+2. **Configurações → Gerais** → ambos os campos devem ser exatamente:
+   - `https://gurudodesconto.com.br`
+   - **Não** use `http://` nem `https://www.`
+3. O `.htaccess` e o mu-plugin `guru-canonical-url.php` redirecionam automaticamente:
+   - `http://` → `https://`
+   - `https://www.` → `https://` (sem www)
+4. Limpe o cache da Hostinger após o deploy
+
+**Search Console — “Página com redirecionamento”**
+
+É **normal** que estas URLs apareçam como *não indexadas* (elas redirecionam de propósito):
+
+| URL | O que acontece |
+|-----|----------------|
+| `http://gurudodesconto.com.br/` | Redireciona para `https://gurudodesconto.com.br/` |
+| `https://www.gurudodesconto.com.br/` | Redireciona para `https://gurudodesconto.com.br/` |
+
+A página indexada deve ser **`https://gurudodesconto.com.br/`**. Após o deploy:
+
+1. Search Console → o problema → **Validar correção**
+2. Inspeção de URL → cole `https://gurudodesconto.com.br/` → **Solicitar indexação**
+3. Confirme o sitemap: `https://gurudodesconto.com.br/wp-sitemap.xml`
 
 ### 8. Google Search Console (via Site Kit)
 
