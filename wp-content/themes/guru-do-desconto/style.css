@@ -1781,6 +1781,25 @@ body.landing-sticky-visible .floating-whatsapp {
   justify-content: space-between;
 }
 
+.site-header--conversion .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}
+
+.site-header--conversion .header-nav-link {
+  color: var(--guru-blue);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.site-header--conversion .header-nav-link:hover {
+  color: var(--guru-orange);
+}
+
 .site-header--conversion .header-cta {
   padding: 0.55rem 1rem;
   font-size: 0.85rem;
@@ -1945,6 +1964,14 @@ body.landing-sticky-visible .floating-whatsapp {
   .site-header--conversion .header-cta {
     font-size: 0.78rem;
     padding: 0.5rem 0.75rem;
+  }
+
+  .site-header--conversion .header-nav-link {
+    font-size: 0.82rem;
+  }
+
+  .site-header--conversion .header-actions {
+    gap: 0.5rem;
   }
 
   .hero--conversion .hero-grid {

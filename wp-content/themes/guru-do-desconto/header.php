@@ -26,9 +26,19 @@ $header_label = $group
 		<?php get_template_part( 'template-parts/brand', 'logo', array( 'context' => 'header' ) ); ?>
 
 		<?php if ( $conversion ) : ?>
-			<a <?php echo $header_cta; ?> class="btn btn-whatsapp header-cta">
-				<?php echo esc_html( $header_label ); ?>
-			</a>
+			<div class="header-actions">
+				<?php
+				$reviews_url = get_post_type_archive_link( 'review' );
+				if ( $reviews_url ) :
+					?>
+				<a href="<?php echo esc_url( $reviews_url ); ?>" class="header-nav-link">
+					<?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?>
+				</a>
+				<?php endif; ?>
+				<a <?php echo $header_cta; ?> class="btn btn-whatsapp header-cta">
+					<?php echo esc_html( $header_label ); ?>
+				</a>
+			</div>
 		<?php else : ?>
 			<button class="menu-toggle" aria-label="<?php esc_attr_e( 'Abrir menu', 'guru-do-desconto' ); ?>" aria-expanded="false">☰</button>
 			<nav class="main-nav" role="navigation" aria-label="<?php esc_attr_e( 'Menu principal', 'guru-do-desconto' ); ?>">
