@@ -21,6 +21,10 @@ $benefits = $group['benefits'] ?? array();
 			<div class="wa-group-hero__content">
 				<span class="hero-badge"><?php esc_html_e( '100% grátis', 'guru-do-desconto' ); ?></span>
 
+				<p class="wa-group-hook conversion-hook">
+					<?php echo esc_html( guru_whatsapp_group_hook( $group ) ); ?>
+				</p>
+
 				<h1 itemprop="name"><?php echo esc_html( guru_whatsapp_group_headline( $group ) ); ?></h1>
 
 				<p class="wa-group-hero__promise hero-promise" itemprop="description">

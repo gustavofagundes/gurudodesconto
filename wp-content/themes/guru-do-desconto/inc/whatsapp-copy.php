@@ -32,6 +32,17 @@ function guru_whatsapp_group_headline( $group ) {
 }
 
 /**
+ * Gancho curioso — chamada de conversão (curiosidade + grátis + curadoria).
+ */
+function guru_whatsapp_group_hook( $group ) {
+	if ( ! empty( $group['hook'] ) ) {
+		return $group['hook'];
+	}
+
+	return __( 'As melhores ofertas duram pouco — por isso selecionamos só as melhores oportunidades do dia. Grupo 100% grátis, direto no seu WhatsApp.', 'guru-do-desconto' );
+}
+
+/**
  * Promessa / subtítulo.
  */
 function guru_whatsapp_group_promise( $group ) {

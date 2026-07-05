@@ -1825,6 +1825,19 @@ body.landing-sticky-visible .floating-whatsapp {
   color: var(--guru-blue);
 }
 
+.conversion-hook,
+.wa-group-hook {
+  margin: 0.75rem 0 1rem;
+  padding: 0.9rem 1.1rem;
+  background: linear-gradient(135deg, #fff8f0 0%, #f0f7ff 100%);
+  border-left: 4px solid var(--guru-orange);
+  border-radius: 0 var(--guru-radius) var(--guru-radius) 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--guru-blue);
+  max-width: 520px;
+}
+
 .conversion-social-proof {
   margin: 0 0 1.25rem;
   padding: 0.75rem 1rem;
