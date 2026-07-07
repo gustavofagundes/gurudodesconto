@@ -14,16 +14,17 @@ if ( ! $groups ) {
 <section class="section whatsapp-groups whatsapp-groups--conversion" id="grupos-whatsapp">
 	<div class="container">
 		<header class="section-header">
-			<h2><?php esc_html_e( 'Qual nicho combina com você?', 'guru-do-desconto' ); ?></h2>
-			<p><?php esc_html_e( 'Toque em "Receber Ofertas" e entre grátis — leva menos de 1 minuto.', 'guru-do-desconto' ); ?></p>
+			<h2><?php esc_html_e( 'Qual achadinho você não quer perder?', 'guru-do-desconto' ); ?></h2>
+			<p><?php esc_html_e( 'Escolha seu nicho, toque no botão verde e confirme "Participar do grupo" no WhatsApp.', 'guru-do-desconto' ); ?></p>
 		</header>
 
 		<div class="whatsapp-groups-grid whatsapp-groups-grid--conversion">
 			<?php
 			foreach ( $groups as $index => $group ) :
 				$featured   = ! empty( $group['featured'] );
-				$card_class = 'whatsapp-group-card whatsapp-group-card--conversion' . ( $featured ? ' whatsapp-group-card--featured' : '' );
+				$card_class = 'whatsapp-group-card whatsapp-group-card--conversion whatsapp-group-card--v2' . ( $featured ? ' whatsapp-group-card--featured' : '' );
 				$loading    = $index < 3 ? 'eager' : 'lazy';
+				$teaser     = guru_whatsapp_group_teaser_items( $group );
 				?>
 			<article id="grupo-<?php echo esc_attr( $group['slug'] ); ?>" class="<?php echo esc_attr( $card_class ); ?>">
 				<?php if ( $featured ) : ?>
@@ -40,16 +41,26 @@ if ( ! $groups ) {
 				</div>
 				<div class="whatsapp-group-card__body">
 					<h3><?php echo esc_html( $group['name'] ); ?></h3>
-					<p class="whatsapp-group-card__promise"><?php echo esc_html( guru_whatsapp_group_promise( $group ) ); ?></p>
+					<p class="whatsapp-group-card__hook"><?php echo esc_html( guru_whatsapp_group_hook( $group ) ); ?></p>
+					<?php if ( $teaser ) : ?>
+						<ul class="whatsapp-group-card__teaser">
+							<?php foreach ( array_slice( $teaser, 0, 2 ) as $item ) : ?>
+								<li><?php echo esc_html( $item ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
 				</div>
 				<div class="whatsapp-group-card__footer">
 					<a <?php echo guru_whatsapp_group_link_attrs( $group, 'card' ); ?> class="btn btn-whatsapp btn-sm btn-cta-primary">
 						<?php echo guru_whatsapp_icon_svg( 18 ); ?>
 						<?php echo esc_html( guru_whatsapp_cta_label( $group, 'card' ) ); ?>
 					</a>
+					<p class="whatsapp-group-card__hint"><?php echo esc_html( guru_whatsapp_join_hint() ); ?></p>
 				</div>
 			</article>
 			<?php endforeach; ?>
 		</div>
 	</div>
 </section>
+
+<?php get_template_part( 'template-parts/whatsapp', 'join-steps' ); ?>

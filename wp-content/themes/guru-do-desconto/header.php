@@ -18,7 +18,7 @@ $header_cta   = $group
 	: 'href="' . esc_url( home_url( '/#grupos-whatsapp' ) ) . '"';
 $header_label = $group
 	? guru_whatsapp_cta_label( $group, 'sticky' )
-	: __( 'Entrar no Grupo Grátis', 'guru-do-desconto' );
+	: __( 'Participar do Grupo Grátis', 'guru-do-desconto' );
 ?>
 
 <header class="site-header<?php echo $conversion ? ' site-header--conversion' : ''; ?>" role="banner">

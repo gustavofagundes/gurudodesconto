@@ -32,14 +32,34 @@ function guru_whatsapp_group_headline( $group ) {
 }
 
 /**
- * Gancho curioso — chamada de conversão (curiosidade + grátis + curadoria).
+ * Gancho curioso — pergunta ou afirmação que prende (H1).
  */
 function guru_whatsapp_group_hook( $group ) {
 	if ( ! empty( $group['hook'] ) ) {
 		return $group['hook'];
 	}
 
-	return __( 'As melhores ofertas duram pouco — por isso selecionamos só as melhores oportunidades do dia. Grupo 100% grátis, direto no seu WhatsApp.', 'guru-do-desconto' );
+	return __( 'E se as melhores promoções do dia chegassem direto no seu bolso — de graça?', 'guru-do-desconto' );
+}
+
+/**
+ * Instrução abaixo do botão — reduz abandono na tela do WhatsApp.
+ */
+function guru_whatsapp_join_hint() {
+	return __( 'Abre o WhatsApp → toque em "Participar do grupo" → pronto!', 'guru-do-desconto' );
+}
+
+/**
+ * Exemplos de achadinhos (prova de valor + curiosidade).
+ *
+ * @return string[]
+ */
+function guru_whatsapp_group_teaser_items( $group ) {
+	if ( ! empty( $group['teaser_items'] ) && is_array( $group['teaser_items'] ) ) {
+		return $group['teaser_items'];
+	}
+
+	return array();
 }
 
 /**
@@ -64,9 +84,9 @@ function guru_whatsapp_cta_label( $group, $type = 'primary' ) {
 	}
 
 	$defaults = array(
-		'primary' => __( 'Entrar no Grupo Grátis', 'guru-do-desconto' ),
-		'sticky'  => __( 'Entrar no Grupo Grátis', 'guru-do-desconto' ),
-		'card'    => __( 'Receber Ofertas no WhatsApp', 'guru-do-desconto' ),
+		'primary' => __( 'Participar do Grupo Grátis', 'guru-do-desconto' ),
+		'sticky'  => __( 'Participar do Grupo Agora', 'guru-do-desconto' ),
+		'card'    => __( 'Participar Gratuitamente', 'guru-do-desconto' ),
 		'bulk'    => __( 'Entrar nos Grupos Selecionados', 'guru-do-desconto' ),
 	);
 

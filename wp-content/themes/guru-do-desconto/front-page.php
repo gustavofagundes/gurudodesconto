@@ -10,35 +10,44 @@ get_header();
 $geral = guru_get_whatsapp_group( 'geral' );
 ?>
 
-<section class="hero hero--groups hero--conversion">
+<section class="hero hero--groups hero--conversion hero--v2">
 	<div class="container hero-grid">
 		<div class="hero-content">
 			<span class="hero-badge"><?php esc_html_e( '100% grátis · Sem spam', 'guru-do-desconto' ); ?></span>
-			<h1>
-				<?php esc_html_e( 'Receba achadinhos e promoções', 'guru-do-desconto' ); ?>
-				<span><?php esc_html_e( 'todos os dias no WhatsApp', 'guru-do-desconto' ); ?></span>
-			</h1>
-			<p class="hero-lead hero-promise">
-				<?php esc_html_e( '7 grupos por nicho — Mercado Livre, Shopee e Amazon. Escolha o seu e entre em menos de 1 minuto.', 'guru-do-desconto' ); ?>
-			</p>
 
-			<p class="conversion-social-proof">
-				<?php esc_html_e( 'Comunidade gratuita para quem ama economizar — promoções selecionadas todos os dias.', 'guru-do-desconto' ); ?>
+			<h1 class="hero-hook">
+				<?php esc_html_e( 'E se você soubesse das promoções', 'guru-do-desconto' ); ?>
+				<span><?php esc_html_e( 'antes de todo mundo?', 'guru-do-desconto' ); ?></span>
+			</h1>
+
+			<p class="hero-lead hero-promise">
+				<?php esc_html_e( 'Achadinhos selecionados do Mercado Livre, Shopee e Amazon — direto no seu WhatsApp, sem pagar nada.', 'guru-do-desconto' ); ?>
 			</p>
 
 			<div class="hero-actions hero-actions--single">
 				<a href="#grupos-whatsapp" class="btn btn-whatsapp btn-lg btn-cta-primary">
 					<?php echo guru_whatsapp_icon_svg( 22 ); ?>
-					<?php esc_html_e( 'Entrar no Grupo Grátis', 'guru-do-desconto' ); ?>
+					<?php esc_html_e( 'Escolher Meu Grupo Grátis', 'guru-do-desconto' ); ?>
 				</a>
+				<p class="cta-join-hint">
+					<span class="cta-join-hint__arrow" aria-hidden="true">↓</span>
+					<?php echo esc_html( guru_whatsapp_join_hint() ); ?>
+				</p>
 			</div>
 
-			<p class="conversion-urgency">
-				<?php esc_html_e( 'Ofertas podem acabar a qualquer momento — entre para não perder os achadinhos do dia.', 'guru-do-desconto' ); ?>
-			</p>
+			<?php if ( $geral ) : ?>
+				<div class="wa-teaser wa-teaser--hero">
+					<p class="wa-teaser__label"><?php esc_html_e( 'Exemplos de achadinhos que já rolam nos grupos:', 'guru-do-desconto' ); ?></p>
+					<ul class="wa-teaser__list">
+						<?php foreach ( guru_whatsapp_group_teaser_items( $geral ) as $item ) : ?>
+							<li><?php echo esc_html( $item ); ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+			<?php endif; ?>
 
-			<p class="hero-microcopy">
-				<?php esc_html_e( 'Sem cartão · Sem cadastro · Saia quando quiser', 'guru-do-desconto' ); ?>
+			<p class="conversion-urgency">
+				<?php esc_html_e( 'Promoções boas duram poucas horas. Quem está no grupo recebe primeiro.', 'guru-do-desconto' ); ?>
 			</p>
 		</div>
 		<div class="hero-image">
@@ -56,10 +65,13 @@ $geral = guru_get_whatsapp_group( 'geral' );
 <?php get_template_part( 'template-parts/whatsapp', 'groups-grid' ); ?>
 
 <div class="landing-sticky-cta landing-sticky-cta--always" data-landing-sticky>
-	<a href="#grupos-whatsapp" class="btn btn-whatsapp">
-		<?php echo guru_whatsapp_icon_svg( 20 ); ?>
-		<?php esc_html_e( 'Entrar no Grupo Grátis', 'guru-do-desconto' ); ?>
-	</a>
+	<div class="landing-sticky-cta__inner">
+		<p class="landing-sticky-cta__hint"><?php esc_html_e( 'Escolha seu grupo e confirme no WhatsApp', 'guru-do-desconto' ); ?></p>
+		<a href="#grupos-whatsapp" class="btn btn-whatsapp">
+			<?php echo guru_whatsapp_icon_svg( 20 ); ?>
+			<?php esc_html_e( 'Participar Gratuitamente', 'guru-do-desconto' ); ?>
+		</a>
+	</div>
 </div>
 
 <?php get_footer(); ?>
