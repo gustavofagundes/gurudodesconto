@@ -12,10 +12,16 @@ function guru_fallback_menu() {
 			<li><a href="#como-funciona"><?php esc_html_e( 'Como funciona', 'guru-do-desconto' ); ?></a></li>
 			<li><a href="#grupo-whatsapp"><?php esc_html_e( 'Dúvidas', 'guru-do-desconto' ); ?></a></li>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'review' ) ); ?>"><?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?></a></li>
+			<?php if ( function_exists( 'guru_has_achadinhos_page' ) && guru_has_achadinhos_page() ) : ?>
+			<li><a href="<?php echo esc_url( guru_achadinhos_page_url() ); ?>"><?php esc_html_e( 'Achadinhos Amazon', 'guru-do-desconto' ); ?></a></li>
+			<?php endif; ?>
 			<li><a href="#grupos-whatsapp" class="nav-cta"><?php echo esc_html( $msg ); ?></a></li>
 		<?php else : ?>
 			<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Início', 'guru-do-desconto' ); ?></a></li>
 			<li><a href="<?php echo esc_url( get_post_type_archive_link( 'review' ) ); ?>"><?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?></a></li>
+			<?php if ( function_exists( 'guru_has_achadinhos_page' ) && guru_has_achadinhos_page() ) : ?>
+			<li><a href="<?php echo esc_url( guru_achadinhos_page_url() ); ?>"><?php esc_html_e( 'Achadinhos Amazon', 'guru-do-desconto' ); ?></a></li>
+			<?php endif; ?>
 			<?php
 			$wa_page_id = (int) get_option( 'guru_whatsapp_page_id', 0 );
 			$wa_page    = $wa_page_id ? get_permalink( $wa_page_id ) : home_url( '/grupo-promocoes-whatsapp/' );

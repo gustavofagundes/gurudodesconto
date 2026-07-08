@@ -27,6 +27,11 @@ $header_label = $group
 
 		<?php if ( $conversion ) : ?>
 			<div class="header-actions">
+				<?php if ( function_exists( 'guru_has_achadinhos_page' ) && guru_has_achadinhos_page() ) : ?>
+				<a href="<?php echo esc_url( guru_achadinhos_page_url() ); ?>" class="header-nav-link">
+					<?php esc_html_e( 'Achadinhos Amazon', 'guru-do-desconto' ); ?>
+				</a>
+				<?php endif; ?>
 				<?php
 				$reviews_url = get_post_type_archive_link( 'review' );
 				if ( $reviews_url ) :

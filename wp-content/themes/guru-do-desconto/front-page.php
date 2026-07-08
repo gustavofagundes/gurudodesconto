@@ -29,6 +29,11 @@ $geral = guru_get_whatsapp_group( 'geral' );
 					<?php echo guru_whatsapp_icon_svg( 22 ); ?>
 					<?php esc_html_e( 'Escolher Meu Grupo Grátis', 'guru-do-desconto' ); ?>
 				</a>
+				<?php if ( function_exists( 'guru_has_achadinhos_page' ) && guru_has_achadinhos_page() ) : ?>
+				<a href="<?php echo esc_url( guru_achadinhos_page_url() ); ?>" class="btn btn-secondary btn-lg hero-achadinhos-cta">
+					<?php esc_html_e( 'Ver Achadinhos Amazon do dia', 'guru-do-desconto' ); ?>
+				</a>
+				<?php endif; ?>
 				<p class="cta-join-hint">
 					<span class="cta-join-hint__arrow" aria-hidden="true">↓</span>
 					<?php echo esc_html( guru_whatsapp_join_hint() ); ?>

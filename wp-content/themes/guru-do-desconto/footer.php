@@ -16,6 +16,9 @@
 				<ul>
 					<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Início', 'guru-do-desconto' ); ?></a></li>
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'review' ) ); ?>"><?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?></a></li>
+					<?php if ( function_exists( 'guru_has_achadinhos_page' ) && guru_has_achadinhos_page() ) : ?>
+					<li><a href="<?php echo esc_url( guru_achadinhos_page_url() ); ?>"><?php esc_html_e( 'Achadinhos Amazon', 'guru-do-desconto' ); ?></a></li>
+					<?php endif; ?>
 					<li><a href="<?php echo esc_url( home_url( '/#grupos-whatsapp' ) ); ?>"><?php esc_html_e( 'Grupos WhatsApp', 'guru-do-desconto' ); ?></a></li>
 					<?php
 					$hub_id = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
@@ -31,9 +34,10 @@
 				<ul>
 					<?php
 					$reviews_link = get_post_type_archive_link( 'review' );
-					foreach ( array( 'Mercado Livre', 'Shopee', 'Amazon' ) as $label ) {
-						printf( '<li><a href="%s">%s</a></li>', esc_url( $reviews_link ), esc_html( $label ) );
-					}
+					$achadinhos   = function_exists( 'guru_achadinhos_page_url' ) ? guru_achadinhos_page_url() : $reviews_link;
+					printf( '<li><a href="%s">%s</a></li>', esc_url( $reviews_link ), esc_html__( 'Mercado Livre', 'guru-do-desconto' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( $reviews_link ), esc_html__( 'Shopee', 'guru-do-desconto' ) );
+					printf( '<li><a href="%s">%s</a></li>', esc_url( $achadinhos ), esc_html__( 'Amazon', 'guru-do-desconto' ) );
 					?>
 				</ul>
 			</div>
@@ -43,7 +47,7 @@
 		<div class="footer-bottom">
 			<p>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?>. <?php esc_html_e( 'Todos os direitos reservados.', 'guru-do-desconto' ); ?></p>
 			<?php if ( ! $conversion ) : ?>
-			<p class="affiliate-disclaimer"><?php esc_html_e( 'Podemos receber comissão por compras realizadas, sem custo extra para você.', 'guru-do-desconto' ); ?></p>
+			<p class="affiliate-disclaimer"><?php esc_html_e( 'Como Associado da Amazon, podemos receber comissão por compras qualificadas, sem custo extra para você.', 'guru-do-desconto' ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>

@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.24' );
+define( 'GURU_THEME_VERSION', '1.0.25' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -185,6 +185,28 @@ function guru_theme_image_url( $filename, $variant = '' ) {
  */
 function guru_hero_image_url() {
 	return guru_theme_image_url( 'Guru_sem_fundo.png', '512' );
+}
+
+/**
+ * URL da página Achadinhos Amazon (/achadinhos/).
+ */
+function guru_achadinhos_page_url() {
+	$page = function_exists( 'guru_find_achadinhos_page' ) ? guru_find_achadinhos_page() : null;
+	if ( $page ) {
+		return get_permalink( $page );
+	}
+	return home_url( '/achadinhos/' );
+}
+
+/**
+ * Verifica se a página achadinhos existe e está publicada.
+ */
+function guru_has_achadinhos_page() {
+	if ( ! function_exists( 'guru_find_achadinhos_page' ) ) {
+		return false;
+	}
+	$page = guru_find_achadinhos_page();
+	return $page && 'publish' === $page->post_status;
 }
 
 /**
