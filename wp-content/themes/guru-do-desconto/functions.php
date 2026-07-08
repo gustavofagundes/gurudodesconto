@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GURU_THEME_VERSION', '1.0.23' );
+define( 'GURU_THEME_VERSION', '1.0.24' );
 define( 'GURU_THEME_DIR', get_template_directory() );
 define( 'GURU_THEME_URI', get_template_directory_uri() );
 
@@ -33,6 +33,7 @@ require_once GURU_THEME_DIR . '/inc/crawling-indexing.php';
 require_once GURU_THEME_DIR . '/inc/meta-boxes.php';
 require_once GURU_THEME_DIR . '/inc/rest-api.php';
 require_once GURU_THEME_DIR . '/inc/content-sync.php';
+require_once GURU_THEME_DIR . '/inc/achadinhos-sync.php';
 require_once GURU_THEME_DIR . '/inc/sample-content.php';
 require_once GURU_THEME_DIR . '/inc/fallback-menu.php';
 require_once GURU_THEME_DIR . '/inc/adsense.php';

@@ -1038,6 +1038,132 @@ body.landing-sticky-visible .floating-whatsapp {
   }
 }
 
+/* Achadinhos do dia */
+.achadinhos-page__header {
+  margin: 2rem 0 1.5rem;
+  text-align: center;
+}
+
+.achadinhos-page__badge {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: #e8f4fd;
+  color: #1d3557;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.achadinhos-page__intro {
+  max-width: 640px;
+  margin: 0.75rem auto 0;
+  color: var(--guru-muted, #5c6b7a);
+}
+
+.guru-achadinhos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.guru-achadinho-card {
+  background: var(--guru-white, #fff);
+  border-radius: var(--guru-radius, 12px);
+  box-shadow: var(--guru-shadow, 0 4px 20px rgba(0, 0, 0, 0.08));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.guru-achadinho-card__rank {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: #e63946;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+}
+
+.guru-achadinho-card__media {
+  position: relative;
+  background: #f8f9fa;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.guru-achadinho-card__media img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.guru-achadinho-card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.guru-achadinho-card__title {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.guru-achadinho-card__price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1d3557;
+  margin: 0;
+}
+
+.guru-achadinho-card__price s {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #888;
+  margin-left: 0.35rem;
+}
+
+.guru-achadinho-card__rating {
+  font-size: 0.85rem;
+  color: #5c6b7a;
+  margin: 0;
+}
+
+.guru-achadinho-card .btn-affiliate {
+  margin-top: auto;
+  text-align: center;
+}
+
+.achadinhos-page__cta {
+  margin: 2.5rem 0 3rem;
+  padding: 1.75rem;
+  border-radius: var(--guru-radius, 12px);
+  background: linear-gradient(135deg, #1d3557 0%, #457b9d 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.achadinhos-page__cta h2 {
+  color: #fff;
+  margin-top: 0;
+}
+
+.achadinhos-page__cta .btn-affiliate {
+  display: inline-block;
+  background: #25d366;
+  margin-top: 0.75rem;
+}
+
 .review-sidebar {
   position: sticky;
   top: 90px;

@@ -50,6 +50,16 @@ function guru_register_review_sync_rest() {
 			'permission_callback' => 'guru_rest_sync_reviews_permission',
 		)
 	);
+
+	register_rest_route(
+		'guru/v1',
+		'/sync-achadinhos',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'guru_rest_sync_achadinhos',
+			'permission_callback' => 'guru_rest_sync_reviews_permission',
+		)
+	);
 }
 add_action( 'rest_api_init', 'guru_register_review_sync_rest' );
 
@@ -84,6 +94,27 @@ function guru_rest_sync_reviews() {
 			'files'   => $result['files'],
 			'dir'     => $result['dir'],
 			'deduped' => $result['deduped'] ?? 0,
+			'skipped' => ! empty( $result['skipped'] ),
+		)
+	);
+}
+
+/**
+ * Executa sincronização dos achadinhos do dia via REST.
+ */
+function guru_rest_sync_achadinhos() {
+	if ( ! function_exists( 'guru_run_achadinhos_sync' ) ) {
+		return new WP_Error( 'guru_sync_unavailable', __( 'Sincronização de achadinhos não disponível.', 'guru-do-desconto' ), array( 'status' => 500 ) );
+	}
+
+	$result = guru_run_achadinhos_sync();
+
+	return rest_ensure_response(
+		array(
+			'success' => (bool) $result['synced'],
+			'page_id' => (int) $result['page_id'],
+			'url'     => $result['page_id'] ? get_permalink( $result['page_id'] ) : '',
+			'file'    => $result['file'] ?? '',
 			'skipped' => ! empty( $result['skipped'] ),
 		)
 	);
