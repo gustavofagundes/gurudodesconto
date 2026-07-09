@@ -85,7 +85,7 @@ function guru_whatsapp_faq_items() {
 		),
 		array(
 			'question' => __( 'Quantos grupos de promoções existem?', 'guru-do-desconto' ),
-			'answer'   => __( 'São 7 grupos gratuitos no WhatsApp: Geral, Casa, Mulher, Kids, Tech & Games, Até R$ 50 e Homem. Cada um envia ofertas do Mercado Livre, Shopee e Amazon no seu nicho.', 'guru-do-desconto' ),
+			'answer'   => __( 'São 8 grupos gratuitos no WhatsApp: Geral, Shopee, Casa, Mulher, Kids, Tech & Games, Até R$ 50 e Homem. Cada um envia ofertas do Mercado Livre, Shopee e Amazon no seu nicho.', 'guru-do-desconto' ),
 		),
 		array(
 			'question' => __( 'Posso entrar em mais de um grupo?', 'guru-do-desconto' ),

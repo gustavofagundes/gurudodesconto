@@ -16,7 +16,7 @@ $items = array(
 	),
 	array(
 		'icon'  => '7',
-		'label' => __( '7 grupos por nicho', 'guru-do-desconto' ),
+		'label' => __( '8 grupos por nicho', 'guru-do-desconto' ),
 	),
 	array(
 		'icon'  => '🔕',

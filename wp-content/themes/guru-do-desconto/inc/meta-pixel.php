@@ -149,6 +149,11 @@ function guru_meta_pixel_head_script() {
 	}
 
 	$pixel_id = guru_meta_pixel_id();
+	$ext_id   = function_exists( 'guru_get_anonymous_external_id' ) ? guru_get_anonymous_external_id() : '';
+	if ( ! $ext_id && function_exists( 'guru_ensure_anonymous_external_id' ) ) {
+		$ext_id = guru_ensure_anonymous_external_id();
+	}
+	$init_data = $ext_id ? array( 'external_id' => $ext_id ) : array();
 	?>
 	<!-- Meta Pixel Code -->
 	<script>
@@ -160,7 +165,7 @@ function guru_meta_pixel_head_script() {
 	t.src=v;s=b.getElementsByTagName(e)[0];
 	s.parentNode.insertBefore(t,s)}(window, document,'script',
 	'https://connect.facebook.net/en_US/fbevents.js');
-	fbq('init', '<?php echo esc_js( $pixel_id ); ?>');
+	fbq('init', '<?php echo esc_js( $pixel_id ); ?>', <?php echo wp_json_encode( $init_data, JSON_UNESCAPED_UNICODE ); ?>);
 	fbq('track', 'PageView');
 	</script>
 	<noscript><img height="1" width="1" style="display:none" alt=""

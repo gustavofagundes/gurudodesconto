@@ -112,7 +112,7 @@ function guru_whatsapp_group_faq_items( $group ) {
 			'question' => __( 'Existem outros grupos além deste?', 'guru-do-desconto' ),
 			'answer'   => sprintf(
 				/* translators: %s: group tagline */
-				__( 'Sim! O Guru do Desconto tem 7 grupos por nicho (%s e mais). Você pode entrar em quantos quiser.', 'guru-do-desconto' ),
+				__( 'Sim! O Guru do Desconto tem 8 grupos por nicho (%s e mais). Você pode entrar em quantos quiser.', 'guru-do-desconto' ),
 				$tag
 			),
 		),
@@ -123,7 +123,7 @@ function guru_whatsapp_group_faq_items( $group ) {
  * Cria ou atualiza páginas /grupo-whatsapp/{slug}/.
  */
 function guru_ensure_whatsapp_group_pages() {
-	$version = 1;
+	$version = 2;
 	if ( (int) get_option( 'guru_whatsapp_group_pages_version', 0 ) >= $version ) {
 		return;
 	}
@@ -162,7 +162,7 @@ function guru_ensure_whatsapp_group_pages() {
 	update_post_meta(
 		$hub_id,
 		'_guru_meta_description',
-		__( '7 grupos de promoções no WhatsApp por nicho — Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Grátis!', 'guru-do-desconto' )
+		__( '8 grupos de promoções no WhatsApp por nicho — Shopee, Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Grátis!', 'guru-do-desconto' )
 	);
 
 	$page_ids = array();

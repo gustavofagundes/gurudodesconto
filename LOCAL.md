@@ -39,8 +39,11 @@ O plugin **PixelYourSite** já está em `wp-content/plugins/pixelyoursite/`.
 
 1. **Plugins** → ative **PixelYourSite** (ou acesse o admin uma vez — ativação automática)
 2. Menu **PixelYourSite** → **Dashboard** → cole o **Meta Pixel ID**
-3. Ative **Conversions API** se for rodar anúncios no Meta
-4. **Personalizar → Guru do Desconto** → desmarque *Ativar Meta Pixel (tema)*
+3. Ative **Conversions API (CAPI)** com token do Events Manager
+4. **PixelYourSite → Settings** → ative **Use external_id** e **Advanced Matching** (Facebook)
+5. **Personalizar → Guru do Desconto** → desmarque *Ativar Meta Pixel (tema)*
+
+O tema (v1.0.26+) captura automaticamente `fbclid` → cookie `_fbc` e gera um **external_id anônimo** — sem formulário nem interação do visitante. Isso melhora a pontuação de correspondência de eventos no Meta.
 
 > Se aparecer *"not a valid JSON response"*, vá em **Configurações → Links permanentes → Nome do post → Salvar**.
 

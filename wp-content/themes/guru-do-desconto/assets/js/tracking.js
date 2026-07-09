@@ -7,11 +7,96 @@
   var cfg = window.guruTracking || {};
   var pixelPage = cfg.pixelPage || {};
 
+  var META_COOKIE_MAX_AGE = 90 * 24 * 60 * 60;
+
+  function setCookie(name, value, maxAge) {
+    try {
+      var secure = location.protocol === 'https:' ? ';Secure' : '';
+      document.cookie =
+        name +
+        '=' +
+        encodeURIComponent(value) +
+        ';path=/;max-age=' +
+        maxAge +
+        ';SameSite=Lax' +
+        secure;
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  function getCookie(name) {
+    try {
+      var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return match ? decodeURIComponent(match[1]) : '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  /**
+   * Captura fbclid o mais cedo possível → _fbc (Click ID Meta).
+   */
+  function captureMetaClickId() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var fbclid = params.get('fbclid');
+
+      if (!fbclid) {
+        fbclid = sessionStorage.getItem('guru_fbclid') || getCookie('guru_fbclid') || '';
+      }
+
+      if (!fbclid) {
+        return;
+      }
+
+      if (params.get('fbclid')) {
+        fbclid = params.get('fbclid');
+        sessionStorage.setItem('guru_fbclid', fbclid);
+        setCookie('guru_fbclid', fbclid, META_COOKIE_MAX_AGE);
+        setCookie('_fbc', 'fb.1.' + Date.now() + '.' + fbclid, META_COOKIE_MAX_AGE);
+        return;
+      }
+
+      if (fbclid && !getCookie('_fbc')) {
+        setCookie('_fbc', 'fb.1.' + Date.now() + '.' + fbclid, META_COOKIE_MAX_AGE);
+      }
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  /**
+   * ID anônimo persistente (external_id) — sem dados pessoais.
+   */
+  function ensureAnonymousExternalId() {
+    try {
+      var id = getCookie('pbid') || getCookie('guru_ext_id') || localStorage.getItem('guru_ext_id');
+      if (!id) {
+        id =
+          'guru.' +
+          Date.now() +
+          '.' +
+          Math.random().toString(36).slice(2, 11) +
+          Math.random().toString(36).slice(2, 11);
+      }
+      setCookie('guru_ext_id', id, 365 * 24 * 60 * 60);
+      setCookie('pbid', id, 365 * 24 * 60 * 60);
+      localStorage.setItem('guru_ext_id', id);
+      return id;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  captureMetaClickId();
+  ensureAnonymousExternalId();
+
   // Persiste UTMs da landing (ex.: Google Ads, Meta Ads) para a sessão.
   try {
-    var params = new URLSearchParams(window.location.search);
+    var urlParams = new URLSearchParams(window.location.search);
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (key) {
-      var val = params.get(key);
+      var val = urlParams.get(key);
       if (val) {
         sessionStorage.setItem('guru_' + key, val);
       }
@@ -28,6 +113,10 @@
     }
   }
 
+  function metaEventId() {
+    return 'guru_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
+  }
+
   function gtagEvent(name, params) {
     if (typeof window.gtag !== 'function') {
       return;
@@ -39,14 +128,14 @@
     if (!cfg.pixelEnabled || typeof window.fbq !== 'function') {
       return;
     }
-    window.fbq('track', eventName, params || {});
+    window.fbq('track', eventName, params || {}, { eventID: metaEventId() });
   }
 
   function fbqCustom(eventName, params) {
     if (!cfg.pixelEnabled || typeof window.fbq !== 'function') {
       return;
     }
-    window.fbq('trackCustom', eventName, params || {});
+    window.fbq('trackCustom', eventName, params || {}, { eventID: metaEventId() });
   }
 
   function metaBaseParams(content) {
@@ -96,6 +185,8 @@
   }
 
   function trackWhatsappClick(el) {
+    captureMetaClickId();
+
     var content = el.getAttribute('data-guru-utm-content') || 'whatsapp';
     var groupSlug = el.getAttribute('data-guru-group') || '';
     var payload = {
