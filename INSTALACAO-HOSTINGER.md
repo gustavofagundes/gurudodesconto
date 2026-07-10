@@ -243,9 +243,24 @@ GURU_META_PIXEL_ID=1757914428796151
 
 > Admins logados não disparam eventos do tema por padrão. Desmarque *“Não rastrear admins logados”* no Personalizar para testar logado.
 
+### Microsoft Clarity
+
+Heatmaps e gravações de sessão — útil para ver onde o visitante trava antes de entrar no grupo.
+
+1. Crie um projeto em [clarity.microsoft.com](https://clarity.microsoft.com/)
+2. **Project ID do site:** `xkd09nsyqn` (já no `.env` como `GURU_CLARITY_ID`)
+3. No WordPress: **Aparência → Personalizar → Guru do Desconto** → confirme o **Microsoft Clarity Project ID**
+4. Ou no `.env`:
+```env
+GURU_CLARITY_ID=xkd09nsyqn
+```
+
+O tema também envia eventos customizados `whatsapp_click` e `affiliate_click` para o Clarity (filtros no painel).
+
 ---
 
 - **Site Kit by Google** — Analytics, Search Console, AdSense (já no projeto)
 - **PixelYourSite** — Meta Pixel + CAPI (+ GA4/GTM opcional no plugin)
+- **Microsoft Clarity** — heatmaps e gravações (via tema)
 - **LiteSpeed Cache** (Hostinger LiteSpeed) — recomendado na produção
 - **Really Simple SSL** — recomendado na produção

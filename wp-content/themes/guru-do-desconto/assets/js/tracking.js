@@ -124,6 +124,17 @@
     window.gtag('event', name, params);
   }
 
+  function clarityEvent(name) {
+    if (typeof window.clarity !== 'function') {
+      return;
+    }
+    try {
+      window.clarity('event', name);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
   function fbqTrack(eventName, params) {
     if (!cfg.pixelEnabled || typeof window.fbq !== 'function') {
       return;
@@ -169,6 +180,7 @@
     if (cfg.gaId) {
       gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
     }
+    clarityEvent('affiliate_click');
 
     var metaParams = Object.assign(metaBaseParams(content), {
       content_type: 'product',
@@ -204,6 +216,7 @@
     if (cfg.gaId) {
       gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
     }
+    clarityEvent('whatsapp_click');
 
     var metaParams = Object.assign(metaBaseParams(content), {
       content_name: groupSlug ? 'grupo_' + groupSlug : 'whatsapp_' + content.replace(/^whatsapp_/, ''),

@@ -111,6 +111,42 @@ function guru_customize_register( $wp_customize ) {
 		'type'        => 'checkbox',
 	) );
 
+	$wp_customize->add_setting( 'guru_clarity_enabled', array(
+		'default'           => true,
+		'sanitize_callback' => 'wp_validate_boolean',
+	) );
+
+	$wp_customize->add_control( 'guru_clarity_enabled', array(
+		'label'       => __( 'Ativar Microsoft Clarity', 'guru-do-desconto' ),
+		'description' => __( 'Heatmaps e gravações de sessão. Crie o projeto em clarity.microsoft.com.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'checkbox',
+	) );
+
+	$wp_customize->add_setting( 'guru_clarity_id', array(
+		'default'           => 'xkd09nsyqn',
+		'sanitize_callback' => 'guru_sanitize_clarity_id',
+	) );
+
+	$wp_customize->add_control( 'guru_clarity_id', array(
+		'label'       => __( 'Microsoft Clarity Project ID', 'guru-do-desconto' ),
+		'description' => __( 'ID do projeto (ex.: abcdefghij). Alternativa: GURU_CLARITY_ID no .env', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'guru_clarity_skip_admins', array(
+		'default'           => true,
+		'sanitize_callback' => 'wp_validate_boolean',
+	) );
+
+	$wp_customize->add_control( 'guru_clarity_skip_admins', array(
+		'label'       => __( 'Clarity: não rastrear admins logados', 'guru-do-desconto' ),
+		'description' => __( 'Evita gravar suas próprias sessões no painel do Clarity.', 'guru-do-desconto' ),
+		'section'     => 'guru_settings',
+		'type'        => 'checkbox',
+	) );
+
 	$wp_customize->add_setting( 'guru_utm_source', array(
 		'default'           => 'gurudodesconto',
 		'sanitize_callback' => 'sanitize_text_field',
