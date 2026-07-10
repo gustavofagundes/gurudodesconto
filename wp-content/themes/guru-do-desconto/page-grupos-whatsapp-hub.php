@@ -30,8 +30,9 @@ get_header();
 				<div class="whatsapp-hub-card__body">
 					<h2><a href="<?php echo esc_url( $landing ); ?>"><?php echo esc_html( $group['name'] ); ?></a></h2>
 					<p><?php echo esc_html( $group['tagline'] ); ?></p>
-					<a href="<?php echo esc_url( $landing ); ?>" class="btn btn-outline btn-sm">
-						<?php esc_html_e( 'Ver grupo', 'guru-do-desconto' ); ?>
+					<a href="<?php echo esc_url( $landing ); ?>" class="btn btn-whatsapp btn-sm">
+						<?php echo guru_whatsapp_icon_svg( 18 ); ?>
+						<?php esc_html_e( 'Quero Entrar no Grupo', 'guru-do-desconto' ); ?>
 					</a>
 				</div>
 			</article>

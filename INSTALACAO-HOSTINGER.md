@@ -214,10 +214,12 @@ Reviews gerados pelo n8n também incluem UTMs no HTML commitado no GitHub.
 
 O plugin **PixelYourSite** (já incluído no projeto) gerencia o Pixel, PageView e CAPI.
 
+**Pixel ID do site:** `1757914428796151` (já no `.env` como `GURU_META_PIXEL_ID` e nos defaults do plugin).
+
 1. **Plugins → PixelYourSite** → ative se ainda não estiver
-2. **PixelYourSite → Dashboard** → **Facebook Pixel** → cole o **Pixel ID** (15–16 dígitos do Events Manager)
-3. Ative **Conversions API** (recomendado para tráfego pago Meta)
-4. No WordPress: **Aparência → Personalizar → Guru do Desconto** → **desmarque** *Ativar Meta Pixel (tema)*
+2. **PixelYourSite → Dashboard** → confirme o **Meta Pixel ID** `1757914428796151`
+3. Ative **Conversions API** e cole o **Access Token** do Events Manager (obrigatório para CAPI server-side)
+4. No WordPress: **Aparência → Personalizar → Guru do Desconto** → **desmarque** *Ativar Meta Pixel (tema)* (o PYS injeta o código base)
 
 **Eventos extras do tema** (via `tracking.js`, sem duplicar o Pixel base):
 
@@ -232,7 +234,7 @@ Configure `ViewContent` e `PageView` no painel do **PixelYourSite** conforme sua
 
 **Fallback (sem PYS):** use **Aparência → Personalizar → Meta Pixel ID** ou `.env`:
 ```env
-GURU_META_PIXEL_ID=1234567890123456
+GURU_META_PIXEL_ID=1757914428796151
 ```
 
 **Validar:** extensão [Meta Pixel Helper](https://chromewebstore.google.com/detail/meta-pixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc) no Chrome.
