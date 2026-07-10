@@ -216,10 +216,96 @@ function guru_whatsapp_group_faq_items( $group ) {
 }
 
 /**
+ * Mapa de slugs antigos → novos (renomeação de landings).
+ *
+ * @return array<string, string> new_slug => old_slug
+ */
+function guru_whatsapp_group_slug_renames() {
+	return array(
+		'moda-beleza' => 'mulher',
+	);
+}
+
+/**
+ * Garante renomeação mulher → moda-beleza (e similares) mesmo se a migração por versão já rodou.
+ */
+function guru_whatsapp_fix_renamed_slugs() {
+	$hub_id = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
+	if ( ! $hub_id ) {
+		return;
+	}
+
+	$page_ids = (array) get_option( 'guru_whatsapp_group_page_ids', array() );
+	$changed  = false;
+
+	foreach ( guru_whatsapp_group_slug_renames() as $new_slug => $old_slug ) {
+		// Já existe a URL nova?
+		$new_page = get_page_by_path( guru_whatsapp_groups_hub_slug() . '/' . $new_slug, OBJECT, 'page' );
+		if ( $new_page && 'publish' === $new_page->post_status ) {
+			$page_ids[ $new_slug ] = (int) $new_page->ID;
+			unset( $page_ids[ $old_slug ] );
+			update_post_meta( (int) $new_page->ID, '_guru_whatsapp_group_slug', $new_slug );
+			continue;
+		}
+
+		$old_page = get_page_by_path( guru_whatsapp_groups_hub_slug() . '/' . $old_slug, OBJECT, 'page' );
+		if ( ! $old_page && ! empty( $page_ids[ $old_slug ] ) ) {
+			$old_page = get_post( (int) $page_ids[ $old_slug ] );
+		}
+		if ( ! $old_page ) {
+			// Busca por meta do grupo antigo.
+			$found = get_posts(
+				array(
+					'post_type'      => 'page',
+					'post_status'    => array( 'publish', 'draft', 'private' ),
+					'posts_per_page' => 1,
+					'post_parent'    => $hub_id,
+					'meta_key'       => '_guru_whatsapp_group_slug',
+					'meta_value'     => $old_slug,
+				)
+			);
+			$old_page = $found[0] ?? null;
+		}
+
+		if ( ! $old_page ) {
+			continue;
+		}
+
+		$result = wp_update_post(
+			array(
+				'ID'          => (int) $old_page->ID,
+				'post_name'   => $new_slug,
+				'post_parent' => $hub_id,
+				'post_status' => 'publish',
+			),
+			true
+		);
+
+		if ( is_wp_error( $result ) ) {
+			continue;
+		}
+
+		update_post_meta( (int) $old_page->ID, '_guru_whatsapp_group_slug', $new_slug );
+		$page_ids[ $new_slug ] = (int) $old_page->ID;
+		unset( $page_ids[ $old_slug ] );
+		$changed = true;
+	}
+
+	if ( $changed || $page_ids !== (array) get_option( 'guru_whatsapp_group_page_ids', array() ) ) {
+		update_option( 'guru_whatsapp_group_page_ids', $page_ids, false );
+	}
+
+	if ( $changed ) {
+		flush_rewrite_rules( false );
+	}
+}
+add_action( 'init', 'guru_whatsapp_fix_renamed_slugs', 7 );
+
+/**
  * Cria ou atualiza páginas /grupos-whatsapp/{slug}/.
  */
 function guru_ensure_whatsapp_group_pages() {
-	$version = 6;
+	$version = 7;
 	if ( (int) get_option( 'guru_whatsapp_group_pages_version', 0 ) >= $version ) {
 		return;
 	}
@@ -278,9 +364,7 @@ function guru_ensure_whatsapp_group_pages() {
 		$existing       = get_page_by_path( $child_path, OBJECT, 'page' );
 
 		// Renomeações de slug (ex.: mulher → moda-beleza).
-		$slug_aliases = array(
-			'moda-beleza' => 'mulher',
-		);
+		$slug_aliases = guru_whatsapp_group_slug_renames();
 		if ( ! $existing && ! empty( $slug_aliases[ $group['slug'] ] ) ) {
 			$old_slug = $slug_aliases[ $group['slug'] ];
 			$old_path = $hub_slug . '/' . $old_slug;
