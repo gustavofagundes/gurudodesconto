@@ -278,8 +278,8 @@ function guru_schema_home_whatsapp() {
 			array(
 				array(
 					'@type'       => 'WebPage',
-					'@id'         => home_url( '/#grupos-whatsapp' ),
-					'url'         => home_url( '/' ),
+					'@id'         => guru_whatsapp_groups_hub_url(),
+					'url'         => guru_whatsapp_groups_hub_url(),
 					'name'        => __( 'Grupos de Promoções no WhatsApp por Nicho — Guru do Desconto', 'guru-do-desconto' ),
 					'description' => guru_default_seo_description(),
 					'inLanguage'  => 'pt-BR',

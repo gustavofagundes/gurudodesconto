@@ -14,8 +14,8 @@ if ( ! $groups ) {
 <section class="section whatsapp-groups whatsapp-groups--conversion" id="grupos-whatsapp">
 	<div class="container">
 		<header class="section-header">
-			<h2><?php esc_html_e( 'Qual achadinho você não quer perder?', 'guru-do-desconto' ); ?></h2>
-			<p><?php esc_html_e( 'Escolha seu nicho, toque no botão verde e confirme "Participar do grupo" no WhatsApp.', 'guru-do-desconto' ); ?></p>
+			<h2><?php esc_html_e( 'Escolha seu grupo e entre grátis', 'guru-do-desconto' ); ?></h2>
+			<p><?php esc_html_e( 'Toque no botão verde e confirme "Participar do grupo" no WhatsApp.', 'guru-do-desconto' ); ?></p>
 		</header>
 
 		<div class="whatsapp-groups-grid whatsapp-groups-grid--conversion">
@@ -41,7 +41,7 @@ if ( ! $groups ) {
 				</div>
 				<div class="whatsapp-group-card__body">
 					<h3><?php echo esc_html( $group['name'] ); ?></h3>
-					<p class="whatsapp-group-card__hook"><?php echo esc_html( guru_whatsapp_group_hook( $group ) ); ?></p>
+					<p class="whatsapp-group-card__tagline"><?php echo esc_html( $group['tagline'] ); ?></p>
 					<?php if ( $teaser ) : ?>
 						<ul class="whatsapp-group-card__teaser">
 							<?php foreach ( array_slice( $teaser, 0, 2 ) as $item ) : ?>
@@ -51,11 +51,10 @@ if ( ! $groups ) {
 					<?php endif; ?>
 				</div>
 				<div class="whatsapp-group-card__footer">
-					<a <?php echo guru_whatsapp_group_link_attrs( $group, 'card' ); ?> class="btn btn-whatsapp btn-sm btn-cta-primary">
+					<a <?php echo guru_whatsapp_group_link_attrs( $group, 'card' ); ?> class="btn btn-whatsapp btn-sm">
 						<?php echo guru_whatsapp_icon_svg( 18 ); ?>
 						<?php echo esc_html( guru_whatsapp_cta_label( $group, 'card' ) ); ?>
 					</a>
-					<p class="whatsapp-group-card__hint"><?php echo esc_html( guru_whatsapp_join_hint() ); ?></p>
 				</div>
 			</article>
 			<?php endforeach; ?>

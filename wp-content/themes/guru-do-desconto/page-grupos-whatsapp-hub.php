@@ -40,7 +40,7 @@ get_header();
 		</div>
 
 		<p class="whatsapp-hub-back">
-			<a href="<?php echo esc_url( home_url( '/#grupos-whatsapp' ) ); ?>"><?php esc_html_e( '← Voltar para a página inicial', 'guru-do-desconto' ); ?></a>
+			<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( '← Voltar para a página inicial', 'guru-do-desconto' ); ?></a>
 		</p>
 	</div>
 </section>

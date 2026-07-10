@@ -2664,3 +2664,82 @@ body.landing-sticky-visible .floating-whatsapp {
     text-align: center;
   }
 }
+
+/* Hero v3 na home */
+.wa-hero-v3--home .wa-hero-v3__title {
+  max-width: 640px;
+}
+
+.wa-hero-v3__title-highlight {
+  display: block;
+  color: var(--guru-yellow);
+}
+
+.wa-hero-v3__secondary-link {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wa-hero-v3__secondary-link:hover {
+  color: var(--guru-white);
+}
+
+/* Cards de grupo — versão limpa */
+.whatsapp-group-card--v2 .whatsapp-group-card__body {
+  padding-bottom: 0.75rem;
+}
+
+.whatsapp-group-card--v2 .whatsapp-group-card__body h3 {
+  margin-bottom: 0.15rem;
+}
+
+.whatsapp-group-card--v2 .whatsapp-group-card__teaser {
+  margin-top: 0.5rem;
+}
+
+.whatsapp-group-card--featured {
+  border: 3px solid var(--guru-success);
+  box-shadow: 0 8px 32px rgba(37, 211, 102, 0.25);
+}
+
+/* Mobile: cards compactos — mais grupos visíveis por tela */
+@media (max-width: 560px) {
+  .whatsapp-group-card--v2 {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    column-gap: 0.9rem;
+    align-items: center;
+    padding: 0.85rem;
+  }
+
+  .whatsapp-group-card--v2 .whatsapp-group-card__media {
+    width: 92px;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .whatsapp-group-card--v2 .whatsapp-group-card__body {
+    padding: 0;
+  }
+
+  .whatsapp-group-card--v2 .whatsapp-group-card__teaser {
+    display: none;
+  }
+
+  .whatsapp-group-card--v2 .whatsapp-group-card__footer {
+    grid-column: 1 / -1;
+    padding: 0.75rem 0 0;
+  }
+
+  .whatsapp-group-card--v2 .whatsapp-group-badge {
+    top: 8px;
+    right: 8px;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+  }
+}

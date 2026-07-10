@@ -15,12 +15,27 @@ function guru_whatsapp_groups_hub_slug() {
 }
 
 /**
+ * URL limpa (sem #) da página hub com todos os grupos.
+ */
+function guru_whatsapp_groups_hub_url() {
+	$hub_id = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
+	if ( $hub_id ) {
+		$url = get_permalink( $hub_id );
+		if ( $url ) {
+			return $url;
+		}
+	}
+
+	return home_url( '/' . guru_whatsapp_groups_hub_slug() . '/' );
+}
+
+/**
  * URL da landing de um grupo.
  */
 function guru_whatsapp_group_landing_url( $group ) {
 	$slug = is_array( $group ) ? ( $group['slug'] ?? '' ) : (string) $group;
 	if ( ! $slug ) {
-		return home_url( '/#grupos-whatsapp' );
+		return guru_whatsapp_groups_hub_url();
 	}
 
 	$page_ids = get_option( 'guru_whatsapp_group_page_ids', array() );

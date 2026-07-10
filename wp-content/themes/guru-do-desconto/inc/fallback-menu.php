@@ -26,7 +26,7 @@ function guru_fallback_menu() {
 			$wa_page_id = (int) get_option( 'guru_whatsapp_page_id', 0 );
 			$wa_page    = $wa_page_id ? get_permalink( $wa_page_id ) : home_url( '/grupo-promocoes-whatsapp/' );
 			?>
-			<li><a href="<?php echo esc_url( home_url( '/#grupos-whatsapp' ) ); ?>"><?php esc_html_e( 'Grupos WhatsApp', 'guru-do-desconto' ); ?></a></li>
+			<li><a href="<?php echo esc_url( guru_whatsapp_groups_hub_url() ); ?>"><?php esc_html_e( 'Grupos WhatsApp', 'guru-do-desconto' ); ?></a></li>
 			<li><a href="<?php echo esc_url( $wa_page ); ?>"><?php esc_html_e( 'Promoções WhatsApp', 'guru-do-desconto' ); ?></a></li>
 			<?php
 			$geral = function_exists( 'guru_get_whatsapp_group' ) ? guru_get_whatsapp_group( 'geral' ) : null;

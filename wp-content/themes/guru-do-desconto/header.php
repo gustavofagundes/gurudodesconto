@@ -15,7 +15,7 @@ $conversion   = function_exists( 'guru_is_conversion_page' ) && guru_is_conversi
 $group        = function_exists( 'guru_get_whatsapp_group_from_page' ) ? guru_get_whatsapp_group_from_page() : null;
 $header_cta   = $group
 	? guru_whatsapp_group_link_attrs( $group, 'header' )
-	: 'href="' . esc_url( home_url( '/#grupos-whatsapp' ) ) . '"';
+	: 'href="' . esc_url( is_front_page() ? '#grupos-whatsapp' : guru_whatsapp_groups_hub_url() ) . '"';
 $header_label = $group
 	? guru_whatsapp_cta_label( $group, 'sticky' )
 	: __( 'Participar do Grupo Grátis', 'guru-do-desconto' );

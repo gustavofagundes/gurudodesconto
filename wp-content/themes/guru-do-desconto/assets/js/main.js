@@ -19,3 +19,20 @@
     }
   });
 })();
+
+/**
+ * Âncoras internas: rola suave e mantém a URL limpa (sem #secao).
+ */
+(function () {
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+
+    var target = document.getElementById(link.getAttribute('href').slice(1));
+    if (!target) return;
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth' });
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  });
+})();

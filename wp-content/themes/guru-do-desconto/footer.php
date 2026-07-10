@@ -19,7 +19,7 @@
 					<?php if ( function_exists( 'guru_has_achadinhos_page' ) && guru_has_achadinhos_page() ) : ?>
 					<li><a href="<?php echo esc_url( guru_achadinhos_page_url() ); ?>"><?php esc_html_e( 'Achadinhos Amazon', 'guru-do-desconto' ); ?></a></li>
 					<?php endif; ?>
-					<li><a href="<?php echo esc_url( home_url( '/#grupos-whatsapp' ) ); ?>"><?php esc_html_e( 'Grupos WhatsApp', 'guru-do-desconto' ); ?></a></li>
+					<li><a href="<?php echo esc_url( guru_whatsapp_groups_hub_url() ); ?>"><?php esc_html_e( 'Grupos WhatsApp', 'guru-do-desconto' ); ?></a></li>
 					<?php
 					$hub_id = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
 					if ( $hub_id ) :
