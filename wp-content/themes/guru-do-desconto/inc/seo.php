@@ -49,7 +49,7 @@ function guru_get_meta_description() {
 	}
 
 	if ( function_exists( 'guru_is_whatsapp_groups_hub_page' ) && guru_is_whatsapp_groups_hub_page() ) {
-		return __( '8 grupos de promoções no WhatsApp por nicho — Shopee, Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Grátis!', 'guru-do-desconto' );
+		return __( '6 grupos de achadinhos no WhatsApp: Mega Achadinhos, Shô, Casa e Decoração, Moda e Beleza, Maternidade e Tecnologia. Ofertas grátis todo dia!', 'guru-do-desconto' );
 	}
 
 	if ( is_post_type_archive( 'review' ) ) {

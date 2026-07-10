@@ -30,7 +30,7 @@ $geral = guru_get_whatsapp_group( 'geral' );
 		</h1>
 
 		<p class="wa-hero-v3__subtitle">
-			<?php esc_html_e( 'Achadinhos selecionados do Mercado Livre, Shopee e Amazon — direto no seu WhatsApp, sem pagar nada.', 'guru-do-desconto' ); ?>
+			<?php esc_html_e( 'Mega Achadinhos, Shô, Casa, Moda, Maternidade e Tech — direto no WhatsApp, sem pagar nada.', 'guru-do-desconto' ); ?>
 		</p>
 
 		<div class="wa-cta-block">

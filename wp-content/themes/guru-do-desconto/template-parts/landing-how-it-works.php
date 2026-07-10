@@ -43,7 +43,7 @@ $steps = array(
 
 		<p class="landing-steps__cta">
 			<a href="#grupos-whatsapp" class="btn btn-whatsapp">
-				<?php esc_html_e( 'Ver os 8 grupos', 'guru-do-desconto' ); ?>
+				<?php esc_html_e( 'Ver os 6 grupos', 'guru-do-desconto' ); ?>
 			</a>
 		</p>
 	</div>

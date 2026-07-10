@@ -17,7 +17,7 @@
 			<div class="whatsapp-seo-content review-prose">
 				<p>
 					<?php esc_html_e( 'O Guru do Desconto organiza', 'guru-do-desconto' ); ?>
-					<strong><?php esc_html_e( '8 grupos de promoção no WhatsApp', 'guru-do-desconto' ); ?></strong>
+					<strong><?php esc_html_e( '6 grupos de achadinhos no WhatsApp', 'guru-do-desconto' ); ?></strong>
 					<?php esc_html_e( 'por nicho. Você recebe ofertas do Mercado Livre, Shopee e Amazon sem pagar nada — só o que importa para você.', 'guru-do-desconto' ); ?>
 				</p>
 				<ul>

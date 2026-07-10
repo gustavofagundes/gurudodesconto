@@ -1,6 +1,6 @@
 <?php
 /**
- * Landing de um grupo WhatsApp — conversão otimizada (v3: visual limpo, CTA de alto contraste).
+ * Landing de um grupo WhatsApp — conversão limpa (v3).
  *
  * @package GuruDoDesconto
  *
@@ -19,7 +19,7 @@ if ( ! $group ) {
 	<section class="wa-hero-v3">
 		<div class="container wa-hero-v3__inner">
 			<img src="<?php echo esc_url( $group['image'] ); ?>"
-			     alt="<?php echo esc_attr( $group['name'] ); ?>"
+			     alt="<?php echo esc_attr( $group['name'] . ' — Guru do Desconto' ); ?>"
 			     width="112"
 			     height="112"
 			     loading="eager"
@@ -28,6 +28,7 @@ if ( ! $group ) {
 			     itemprop="image"
 			     class="wa-hero-v3__avatar">
 
+			<p class="wa-hero-v3__brand"><?php echo esc_html( $group['name'] ); ?></p>
 			<span class="wa-hero-v3__badge"><?php esc_html_e( '100% grátis · Sem spam', 'guru-do-desconto' ); ?></span>
 
 			<h1 class="wa-hero-v3__title" itemprop="name">
@@ -54,7 +55,7 @@ if ( ! $group ) {
 			<ul class="wa-hero-v3__trust">
 				<li><?php esc_html_e( 'Sem cadastro', 'guru-do-desconto' ); ?></li>
 				<li><?php esc_html_e( 'Saia quando quiser', 'guru-do-desconto' ); ?></li>
-				<li><?php esc_html_e( 'ML, Shopee e Amazon', 'guru-do-desconto' ); ?></li>
+				<li><?php echo esc_html( $group['tagline'] ); ?></li>
 			</ul>
 		</div>
 	</section>

@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * Descrição SEO padrão com foco em grupo WhatsApp.
  */
 function guru_default_seo_description() {
-	return 'Grupos de promoções no WhatsApp por nicho: Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Ofertas grátis do Mercado Livre, Shopee e Amazon.';
+	return 'Grupos de achadinhos no WhatsApp: Mega Achadinhos, Shô, Casa e Decoração, Moda e Beleza, Maternidade e Tecnologia. Ofertas grátis da Amazon, Mercado Livre e Shopee.';
 }
 
 /**
@@ -85,7 +85,7 @@ function guru_whatsapp_faq_items() {
 		),
 		array(
 			'question' => __( 'Quantos grupos de promoções existem?', 'guru-do-desconto' ),
-			'answer'   => __( 'São 8 grupos gratuitos no WhatsApp: Geral, Shopee, Casa, Mulher, Kids, Tech & Games, Até R$ 50 e Homem. Cada um envia ofertas do Mercado Livre, Shopee e Amazon no seu nicho.', 'guru-do-desconto' ),
+			'answer'   => __( 'São 6 grupos gratuitos no WhatsApp: Mega Achadinhos, Achadinhos da Shô, Casa e Decoração, Moda e Beleza, Achadinhos Maternidade e Tecnologia e Games. Cada um envia ofertas selecionadas do seu nicho.', 'guru-do-desconto' ),
 		),
 		array(
 			'question' => __( 'Posso entrar em mais de um grupo?', 'guru-do-desconto' ),

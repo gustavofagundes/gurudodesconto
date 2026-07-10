@@ -11,8 +11,8 @@ get_header();
 <section class="section whatsapp-hub">
 	<div class="container">
 		<header class="section-header">
-			<h1><?php esc_html_e( 'Grupos de Promoções no WhatsApp', 'guru-do-desconto' ); ?></h1>
-			<p><?php esc_html_e( '8 grupos gratuitos por nicho — escolha o seu e entre em menos de 1 minuto.', 'guru-do-desconto' ); ?></p>
+			<h1><?php esc_html_e( 'Grupos de Achadinhos no WhatsApp', 'guru-do-desconto' ); ?></h1>
+			<p><?php esc_html_e( '6 grupos gratuitos por nicho — escolha o seu e entre em menos de 1 minuto.', 'guru-do-desconto' ); ?></p>
 		</header>
 
 		<div class="whatsapp-hub-grid">

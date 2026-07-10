@@ -2508,6 +2508,15 @@ body.landing-sticky-visible .floating-whatsapp {
   margin-bottom: 1rem;
 }
 
+.wa-hero-v3__brand {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--guru-yellow);
+}
+
 .wa-hero-v3__title {
   margin: 0 0 0.75rem;
   font-size: clamp(1.6rem, 5vw, 2.4rem);

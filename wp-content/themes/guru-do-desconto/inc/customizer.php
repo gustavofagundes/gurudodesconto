@@ -41,7 +41,7 @@ function guru_customize_register( $wp_customize ) {
 	) );
 
 	$wp_customize->add_setting( 'guru_site_description', array(
-		'default'           => '8 grupos de promoções no WhatsApp: Shopee, Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Ofertas grátis do Mercado Livre, Shopee e Amazon todos os dias.',
+		'default'           => '6 grupos de achadinhos no WhatsApp: Mega Achadinhos, Shô, Casa e Decoração, Moda e Beleza, Maternidade e Tecnologia. Ofertas grátis da Amazon, Mercado Livre e Shopee todos os dias.',
 		'sanitize_callback' => 'sanitize_textarea_field',
 	) );
 

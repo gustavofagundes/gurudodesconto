@@ -45,13 +45,49 @@ function guru_whatsapp_hub_redirect_aliases() {
 		exit;
 	}
 
+	// Slug antigo mulher → moda-beleza
+	$slug_redirects = array(
+		$hub . '/mulher'           => 'moda-beleza',
+		'grupo-whatsapp/mulher'    => 'moda-beleza',
+		$hub . '/moda-e-beleza'    => 'moda-beleza',
+		'moda-e-beleza'            => 'moda-beleza',
+	);
+	if ( isset( $slug_redirects[ $path ] ) ) {
+		wp_safe_redirect( home_url( '/' . $hub . '/' . $slug_redirects[ $path ] . '/' ), 301 );
+		exit;
+	}
+
+	// Grupos removidos (Até R$50 / Homem) → hub
+	$retired = array(
+		$hub . '/ate-50',
+		$hub . '/homem',
+		'grupo-whatsapp/ate-50',
+		'grupo-whatsapp/homem',
+	);
+	if ( in_array( $path, $retired, true ) ) {
+		wp_safe_redirect( guru_whatsapp_groups_hub_url(), 301 );
+		exit;
+	}
+
 	$aliases = array(
 		'grupos-de-whatsapp',
 		'grupo-de-whatsapp',
 		'grupos',
+		'mega-achadinhos',
+		'achadinhos-da-sho',
+		'maternidade',
 	);
 
 	if ( in_array( $path, $aliases, true ) ) {
+		$map = array(
+			'mega-achadinhos'   => 'geral',
+			'achadinhos-da-sho' => 'shopee',
+			'maternidade'       => 'kids',
+		);
+		if ( isset( $map[ $path ] ) ) {
+			wp_safe_redirect( home_url( '/' . $hub . '/' . $map[ $path ] . '/' ), 301 );
+			exit;
+		}
 		wp_safe_redirect( guru_whatsapp_groups_hub_url(), 301 );
 		exit;
 	}
@@ -172,7 +208,7 @@ function guru_whatsapp_group_faq_items( $group ) {
 			'question' => __( 'Existem outros grupos além deste?', 'guru-do-desconto' ),
 			'answer'   => sprintf(
 				/* translators: %s: group tagline */
-				__( 'Sim! O Guru do Desconto tem 8 grupos por nicho (%s e mais). Você pode entrar em quantos quiser.', 'guru-do-desconto' ),
+				__( 'Sim! O Guru do Desconto tem 6 grupos por nicho (%s e mais). Você pode entrar em quantos quiser.', 'guru-do-desconto' ),
 				$tag
 			),
 		),
@@ -183,7 +219,7 @@ function guru_whatsapp_group_faq_items( $group ) {
  * Cria ou atualiza páginas /grupos-whatsapp/{slug}/.
  */
 function guru_ensure_whatsapp_group_pages() {
-	$version = 3;
+	$version = 6;
 	if ( (int) get_option( 'guru_whatsapp_group_pages_version', 0 ) >= $version ) {
 		return;
 	}
@@ -230,18 +266,37 @@ function guru_ensure_whatsapp_group_pages() {
 	update_post_meta(
 		$hub_id,
 		'_guru_meta_description',
-		__( '8 grupos de promoções no WhatsApp por nicho — Shopee, Casa, Mulher, Kids, Tech, Até R$50, Homem e Geral. Grátis!', 'guru-do-desconto' )
+		__( '6 grupos de achadinhos no WhatsApp: Mega Achadinhos, Shô, Casa e Decoração, Moda e Beleza, Maternidade e Tecnologia. Grátis!', 'guru-do-desconto' )
 	);
 
 	$page_ids = array();
+	$active_slugs = array();
 
 	foreach ( guru_whatsapp_groups() as $group ) {
-		$child_path = $hub_slug . '/' . $group['slug'];
-		$existing   = get_page_by_path( $child_path, OBJECT, 'page' );
+		$active_slugs[] = $group['slug'];
+		$child_path     = $hub_slug . '/' . $group['slug'];
+		$existing       = get_page_by_path( $child_path, OBJECT, 'page' );
+
+		// Renomeações de slug (ex.: mulher → moda-beleza).
+		$slug_aliases = array(
+			'moda-beleza' => 'mulher',
+		);
+		if ( ! $existing && ! empty( $slug_aliases[ $group['slug'] ] ) ) {
+			$old_slug = $slug_aliases[ $group['slug'] ];
+			$old_path = $hub_slug . '/' . $old_slug;
+			$existing = get_page_by_path( $old_path, OBJECT, 'page' );
+
+			if ( ! $existing ) {
+				$old_ids = (array) get_option( 'guru_whatsapp_group_page_ids', array() );
+				if ( ! empty( $old_ids[ $old_slug ] ) ) {
+					$existing = get_post( (int) $old_ids[ $old_slug ] );
+				}
+			}
+		}
 
 		$title   = sprintf(
 			/* translators: %s: group name */
-			__( 'Grupo %s no WhatsApp', 'guru-do-desconto' ),
+			__( '%s no WhatsApp — Grupo Grátis de Promoções', 'guru-do-desconto' ),
 			$group['name']
 		);
 		$content = '<p>' . esc_html( $group['description'] ) . '</p>';
@@ -250,11 +305,12 @@ function guru_ensure_whatsapp_group_pages() {
 			$page_id = (int) $existing->ID;
 			wp_update_post(
 				array(
-					'ID'            => $page_id,
-					'post_title'    => $title,
-					'post_content'  => $content,
-					'post_parent'   => $hub_id,
-					'post_status'   => 'publish',
+					'ID'           => $page_id,
+					'post_title'   => $title,
+					'post_name'    => $group['slug'],
+					'post_content' => $content,
+					'post_parent'  => $hub_id,
+					'post_status'  => 'publish',
 				)
 			);
 		} else {
@@ -279,6 +335,20 @@ function guru_ensure_whatsapp_group_pages() {
 		update_post_meta( $page_id, '_guru_meta_description', guru_whatsapp_group_meta_description( $group ) );
 
 		$page_ids[ $group['slug'] ] = $page_id;
+	}
+
+	// Despublica landings de grupos removidos (Até R$50 / Homem).
+	$old_ids = (array) get_option( 'guru_whatsapp_group_page_ids', array() );
+	foreach ( $old_ids as $old_slug => $old_page_id ) {
+		if ( in_array( $old_slug, $active_slugs, true ) || ! $old_page_id ) {
+			continue;
+		}
+		wp_update_post(
+			array(
+				'ID'          => (int) $old_page_id,
+				'post_status' => 'trash',
+			)
+		);
 	}
 
 	update_option( 'guru_whatsapp_group_page_ids', $page_ids );
