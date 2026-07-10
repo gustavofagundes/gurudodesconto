@@ -8,11 +8,56 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Slug da página-pai dos grupos.
+ * Slug da página-pai dos grupos (URL canônica: /grupos-whatsapp/).
  */
 function guru_whatsapp_groups_hub_slug() {
-	return 'grupo-whatsapp';
+	return 'grupos-whatsapp';
 }
+
+/**
+ * Path da requisição atual (sem barra inicial/final).
+ */
+function guru_request_path() {
+	$uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+	return trim( (string) wp_parse_url( $uri, PHP_URL_PATH ), '/' );
+}
+
+/**
+ * Redireciona URLs antigas (singular) e aliases para /grupos-whatsapp/.
+ */
+function guru_whatsapp_hub_redirect_aliases() {
+	if ( is_admin() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+		return;
+	}
+
+	$path = strtolower( guru_request_path() );
+	$hub  = guru_whatsapp_groups_hub_slug();
+
+	if ( $path === $hub ) {
+		return;
+	}
+
+	// Slug antigo (singular) e filhos: /grupo-whatsapp/ → /grupos-whatsapp/
+	if ( $path === 'grupo-whatsapp' || str_starts_with( $path, 'grupo-whatsapp/' ) ) {
+		$suffix = $path === 'grupo-whatsapp' ? '' : substr( $path, strlen( 'grupo-whatsapp/' ) );
+		$target = $suffix ? home_url( '/' . $hub . '/' . $suffix . '/' ) : guru_whatsapp_groups_hub_url();
+		wp_safe_redirect( $target, 301 );
+		exit;
+	}
+
+	$aliases = array(
+		'grupos-de-whatsapp',
+		'grupo-de-whatsapp',
+		'grupos',
+	);
+
+	if ( in_array( $path, $aliases, true ) ) {
+		wp_safe_redirect( guru_whatsapp_groups_hub_url(), 301 );
+		exit;
+	}
+}
+add_action( 'init', 'guru_whatsapp_hub_redirect_aliases', 1 );
+add_action( 'template_redirect', 'guru_whatsapp_hub_redirect_aliases', 1 );
 
 /**
  * URL limpa (sem #) da página hub com todos os grupos.
@@ -135,16 +180,25 @@ function guru_whatsapp_group_faq_items( $group ) {
 }
 
 /**
- * Cria ou atualiza páginas /grupo-whatsapp/{slug}/.
+ * Cria ou atualiza páginas /grupos-whatsapp/{slug}/.
  */
 function guru_ensure_whatsapp_group_pages() {
-	$version = 2;
+	$version = 3;
 	if ( (int) get_option( 'guru_whatsapp_group_pages_version', 0 ) >= $version ) {
 		return;
 	}
 
 	$hub_slug = guru_whatsapp_groups_hub_slug();
-	$hub      = get_page_by_path( $hub_slug, OBJECT, 'page' );
+	$hub_id   = (int) get_option( 'guru_whatsapp_groups_hub_id', 0 );
+	$hub      = $hub_id ? get_post( $hub_id ) : null;
+
+	if ( ! $hub || 'page' !== $hub->post_type ) {
+		$hub = get_page_by_path( $hub_slug, OBJECT, 'page' );
+	}
+
+	if ( ! $hub ) {
+		$hub = get_page_by_path( 'grupo-whatsapp', OBJECT, 'page' );
+	}
 
 	if ( ! $hub ) {
 		$hub_id = wp_insert_post(
@@ -158,14 +212,13 @@ function guru_ensure_whatsapp_group_pages() {
 		);
 	} else {
 		$hub_id = (int) $hub->ID;
-		if ( 'publish' !== $hub->post_status ) {
-			wp_update_post(
-				array(
-					'ID'          => $hub_id,
-					'post_status' => 'publish',
-				)
-			);
-		}
+		wp_update_post(
+			array(
+				'ID'          => $hub_id,
+				'post_name'   => $hub_slug,
+				'post_status' => 'publish',
+			)
+		);
 	}
 
 	if ( ! $hub_id || is_wp_error( $hub_id ) ) {
