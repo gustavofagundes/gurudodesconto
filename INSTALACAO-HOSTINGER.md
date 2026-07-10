@@ -247,20 +247,23 @@ GURU_META_PIXEL_ID=1757914428796151
 
 Heatmaps e gravações de sessão — útil para ver onde o visitante trava antes de entrar no grupo.
 
-1. Crie um projeto em [clarity.microsoft.com](https://clarity.microsoft.com/)
-2. **Project ID do site:** `xkd09nsyqn` (já no `.env` como `GURU_CLARITY_ID`)
-3. No WordPress: **Aparência → Personalizar → Guru do Desconto** → confirme o **Microsoft Clarity Project ID**
-4. Ou no `.env`:
+O plugin oficial **Microsoft Clarity** já está em `wp-content/plugins/microsoft-clarity/`.
+
+1. **Plugins → Microsoft Clarity** → ative se ainda não estiver
+2. No menu **Clarity** do wp-admin, conecte o projeto **ou** use o Project ID já configurado
+3. **Project ID do site:** `xkd09nsyqn` (também em `GURU_CLARITY_ID` no `.env`)
+4. Fallback sem o plugin: **Aparência → Personalizar → Guru do Desconto** → Microsoft Clarity Project ID
+
 ```env
 GURU_CLARITY_ID=xkd09nsyqn
 ```
 
-O tema também envia eventos customizados `whatsapp_click` e `affiliate_click` para o Clarity (filtros no painel).
+Com o plugin ativo, o tema **não** injeta o script de novo (evita duplicar). O tema ainda envia eventos `whatsapp_click` e `affiliate_click` via `clarity('event', ...)`.
 
 ---
 
 - **Site Kit by Google** — Analytics, Search Console, AdSense (já no projeto)
 - **PixelYourSite** — Meta Pixel + CAPI (+ GA4/GTM opcional no plugin)
-- **Microsoft Clarity** — heatmaps e gravações (via tema)
+- **Microsoft Clarity** — heatmaps e gravações (plugin oficial + fallback do tema)
 - **LiteSpeed Cache** (Hostinger LiteSpeed) — recomendado na produção
 - **Really Simple SSL** — recomendado na produção

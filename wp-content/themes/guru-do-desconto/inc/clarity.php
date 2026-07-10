@@ -58,6 +58,11 @@ function guru_clarity_should_load() {
 		return false;
 	}
 
+	// Plugin oficial injeta o script — evita duplicar.
+	if ( guru_clarity_plugin_active() ) {
+		return false;
+	}
+
 	if ( ! guru_clarity_enabled() ) {
 		return false;
 	}
@@ -68,6 +73,44 @@ function guru_clarity_should_load() {
 
 	return true;
 }
+
+/**
+ * Plugin Microsoft Clarity instalado e ativo?
+ */
+function guru_clarity_plugin_active() {
+	if ( ! function_exists( 'is_plugin_active' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	return is_plugin_active( 'microsoft-clarity/clarity.php' );
+}
+
+/**
+ * Sincroniza o Project ID com o plugin oficial (option clarity_project_id).
+ */
+function guru_clarity_sync_plugin_id() {
+	if ( ! guru_clarity_plugin_active() ) {
+		return;
+	}
+
+	$project_id = guru_clarity_id();
+	if ( ! $project_id ) {
+		return;
+	}
+
+	$current = (string) get_option( 'clarity_project_id', '' );
+	if ( $current === $project_id ) {
+		return;
+	}
+
+	// Não sobrescreve se o admin já configurou outro projeto no plugin.
+	if ( $current !== '' ) {
+		return;
+	}
+
+	update_option( 'clarity_project_id', $project_id, false );
+}
+add_action( 'init', 'guru_clarity_sync_plugin_id', 20 );
 
 /**
  * Código base do Microsoft Clarity no <head>.
