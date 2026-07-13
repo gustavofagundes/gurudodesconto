@@ -68,13 +68,29 @@
     }
   }
 
+  var BTN_IDS = {
+    geral: 'btn-mega-achadinhos',
+    shopee: 'btn-shopee',
+    casa: 'btn-casa',
+    kids: 'btn-maternidade',
+    'moda-beleza': 'btn-moda',
+    'tech-games': 'btn-tecnologia'
+  };
+
+  function btnIdForSlug(slug) {
+    return BTN_IDS[slug] || (slug ? 'btn-' + slug : 'btn-whatsapp');
+  }
+
   function trackGroup(cb) {
     if (typeof window.guruTrackWhatsappClick !== 'function') {
       return;
     }
+    var slug = cb.getAttribute('data-slug') || '';
     var el = document.createElement('a');
     el.setAttribute('data-guru-utm-content', cb.getAttribute('data-utm-content') || 'whatsapp_bulk');
-    el.setAttribute('data-guru-group', cb.getAttribute('data-slug') || '');
+    el.setAttribute('data-guru-group', slug);
+    el.setAttribute('data-guru-btn-id', btnIdForSlug(slug));
+    el.id = btnIdForSlug(slug);
     window.guruTrackWhatsappClick(el);
   }
 
@@ -87,14 +103,17 @@
     items.forEach(function (item) {
       var li = document.createElement('li');
       var link = document.createElement('a');
+      var bid = btnIdForSlug(item.slug);
       link.href = item.url;
       link.target = '_blank';
       link.rel = 'noopener';
-      link.className = 'btn btn-whatsapp btn-sm';
+      link.id = bid;
+      link.className = 'btn btn-whatsapp btn-sm ' + bid;
       link.textContent = item.name;
       link.setAttribute('data-guru-track', 'whatsapp');
       link.setAttribute('data-guru-utm-content', item.utm);
       link.setAttribute('data-guru-group', item.slug);
+      link.setAttribute('data-guru-btn-id', bid);
       li.appendChild(link);
       fallbackList.appendChild(li);
     });

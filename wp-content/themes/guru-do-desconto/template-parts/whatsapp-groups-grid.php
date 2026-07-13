@@ -51,7 +51,7 @@ if ( ! $groups ) {
 					<?php endif; ?>
 				</div>
 				<div class="whatsapp-group-card__footer">
-					<a <?php echo guru_whatsapp_group_link_attrs( $group, 'card' ); ?> class="btn btn-whatsapp btn-sm">
+					<a <?php echo guru_whatsapp_group_link_attrs( $group, 'card' ); ?> class="btn btn-whatsapp btn-sm <?php echo esc_attr( guru_whatsapp_btn_id( $group ) ); ?>">
 						<?php echo guru_whatsapp_icon_svg( 18 ); ?>
 						<?php echo esc_html( guru_whatsapp_cta_label( $group, 'card' ) ); ?>
 					</a>

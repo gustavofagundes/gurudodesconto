@@ -98,7 +98,7 @@ if ( ! $group ) {
 
 <div class="landing-sticky-cta landing-sticky-cta--always wa-group-sticky">
 	<div class="landing-sticky-cta__inner">
-		<a <?php echo guru_whatsapp_group_link_attrs( $group, 'sticky' ); ?> class="btn btn-whatsapp">
+		<a <?php echo guru_whatsapp_group_link_attrs( $group, 'sticky' ); ?> class="btn btn-whatsapp <?php echo esc_attr( guru_whatsapp_btn_id( $group ) ); ?>">
 			<?php echo guru_whatsapp_icon_svg( 20 ); ?>
 			<?php echo esc_html( guru_whatsapp_cta_label( $group, 'sticky' ) ); ?>
 		</a>

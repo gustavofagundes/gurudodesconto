@@ -19,6 +19,7 @@ $header_cta   = $group
 $header_label = $group
 	? guru_whatsapp_cta_label( $group, 'sticky' )
 	: __( 'Participar do Grupo Grátis', 'guru-do-desconto' );
+$header_btn_class = 'btn btn-whatsapp header-cta' . ( $group ? ' ' . guru_whatsapp_btn_id( $group ) : '' );
 ?>
 
 <header class="site-header<?php echo $conversion ? ' site-header--conversion' : ''; ?>" role="banner">
@@ -40,7 +41,7 @@ $header_label = $group
 					<?php esc_html_e( 'Reviews', 'guru-do-desconto' ); ?>
 				</a>
 				<?php endif; ?>
-				<a <?php echo $header_cta; ?> class="btn btn-whatsapp header-cta">
+				<a <?php echo $header_cta; ?> class="<?php echo esc_attr( $header_btn_class ); ?>">
 					<?php echo esc_html( $header_label ); ?>
 				</a>
 			</div>

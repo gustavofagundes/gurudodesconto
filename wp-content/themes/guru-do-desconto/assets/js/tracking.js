@@ -201,6 +201,7 @@
 
     var content = el.getAttribute('data-guru-utm-content') || 'whatsapp';
     var groupSlug = el.getAttribute('data-guru-group') || '';
+    var btnId = el.getAttribute('data-guru-btn-id') || el.id || '';
     var payload = {
       event_category: 'conversion',
       event_label: content,
@@ -209,6 +210,8 @@
       utm_medium: storedUtm('utm_medium') || cfg.utmMedium || '',
       utm_campaign: storedUtm('utm_campaign') || cfg.utmCampaign || '',
       utm_content: content,
+      button_id: btnId,
+      group: groupSlug,
       value: 1,
     };
 
@@ -216,15 +219,27 @@
     if (cfg.gaId) {
       gtagEvent('conversion', Object.assign({ send_to: cfg.gaId }, payload));
     }
-    clarityEvent('whatsapp_click');
+    clarityEvent(btnId || 'whatsapp_click');
 
     var metaParams = Object.assign(metaBaseParams(content), {
-      content_name: groupSlug ? 'grupo_' + groupSlug : 'whatsapp_' + content.replace(/^whatsapp_/, ''),
+      content_name: btnId || (groupSlug ? 'grupo_' + groupSlug : 'whatsapp_' + content.replace(/^whatsapp_/, '')),
       content_category: groupSlug || 'whatsapp',
+      content_ids: btnId ? [btnId] : undefined,
+      button_id: btnId,
+      group: groupSlug,
     });
 
+    if (!metaParams.content_ids) {
+      delete metaParams.content_ids;
+    }
+
+    // Lead com parâmetro distinto por botão/grupo (útil no Events Manager / CAPI).
+    fbqTrack('Lead', metaParams);
     fbqTrack('Contact', metaParams);
     fbqCustom('WhatsAppClick', metaParams);
+    if (btnId) {
+      fbqCustom(btnId, metaParams);
+    }
   }
 
   window.guruTrackWhatsappClick = trackWhatsappClick;

@@ -207,6 +207,32 @@ function guru_get_whatsapp_group( $slug ) {
 }
 
 /**
+ * ID canônico do botão CTA por grupo (Meta Pixel / Event Setup Tool).
+ *
+ * @param string|array $group Grupo ou slug.
+ * @return string Ex.: btn-mega-achadinhos
+ */
+function guru_whatsapp_btn_id( $group ) {
+	$slug = is_array( $group ) ? ( $group['slug'] ?? '' ) : (string) $group;
+
+	$map = array(
+		'geral'         => 'btn-mega-achadinhos',
+		'shopee'        => 'btn-shopee',
+		'casa'          => 'btn-casa',
+		'kids'          => 'btn-maternidade',
+		'moda-beleza'   => 'btn-moda',
+		'tech-games'    => 'btn-tecnologia',
+	);
+
+	if ( isset( $map[ $slug ] ) ) {
+		return $map[ $slug ];
+	}
+
+	$safe = preg_replace( '/[^a-z0-9\-]+/', '-', strtolower( $slug ) );
+	return $safe ? 'btn-' . $safe : 'btn-whatsapp';
+}
+
+/**
  * URL do grupo com UTMs.
  */
 function guru_whatsapp_group_url( $group, $placement = 'card' ) {
@@ -220,17 +246,27 @@ function guru_whatsapp_group_url( $group, $placement = 'card' ) {
 }
 
 /**
- * Atributos HTML do link de um grupo.
+ * Atributos HTML do link de um grupo (id + data attrs para Meta Pixel).
+ *
+ * @param array|string $group     Grupo.
+ * @param string       $placement landing|sticky|card|mid|header|floating|nav.
  */
 function guru_whatsapp_group_link_attrs( $group, $placement = 'card' ) {
-	$url  = guru_whatsapp_group_url( $group, $placement );
-	$slug = is_array( $group ) ? ( $group['slug'] ?? 'grupo' ) : 'grupo';
+	$url    = guru_whatsapp_group_url( $group, $placement );
+	$slug   = is_array( $group ) ? ( $group['slug'] ?? 'grupo' ) : 'grupo';
+	$btn_id = guru_whatsapp_btn_id( $group );
+	// ID único por posição (HTML válido). Classe base vai no template via guru_whatsapp_btn_id().
+	$html_id = in_array( $placement, array( 'landing', 'primary', 'card' ), true )
+		? $btn_id
+		: $btn_id . '-' . sanitize_html_class( $placement );
 
 	return sprintf(
-		'href="%s" target="_blank" rel="noopener" data-guru-track="whatsapp" data-guru-utm-content="%s" data-guru-group="%s"',
+		'id="%s" href="%s" target="_blank" rel="noopener" data-guru-track="whatsapp" data-guru-utm-content="%s" data-guru-group="%s" data-guru-btn-id="%s"',
+		esc_attr( $html_id ),
 		esc_url( $url ),
 		esc_attr( 'whatsapp_' . $placement . '_' . $slug ),
-		esc_attr( $slug )
+		esc_attr( $slug ),
+		esc_attr( $btn_id )
 	);
 }
 

@@ -17,6 +17,9 @@ $show_hint = ! empty( $args['show_hint'] );
 if ( ! $group ) {
 	return;
 }
+
+$btn_id = guru_whatsapp_btn_id( $group );
+$class  = trim( $class . ' ' . $btn_id );
 ?>
 
 <div class="wa-cta-block">
