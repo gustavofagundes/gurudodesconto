@@ -29,7 +29,7 @@ if ( ! $group ) {
 			     class="wa-hero-v3__avatar">
 
 			<p class="wa-hero-v3__brand"><?php echo esc_html( $group['name'] ); ?></p>
-			<span class="wa-hero-v3__badge"><?php esc_html_e( '100% grátis · Sem spam', 'guru-do-desconto' ); ?></span>
+			<span class="wa-hero-v3__badge"><?php echo esc_html( '100%' ); ?> <?php esc_html_e( 'grátis · Sem spam', 'guru-do-desconto' ); ?></span>
 
 			<h1 class="wa-hero-v3__title" itemprop="name">
 				<?php echo esc_html( guru_whatsapp_group_hook( $group ) ); ?>
