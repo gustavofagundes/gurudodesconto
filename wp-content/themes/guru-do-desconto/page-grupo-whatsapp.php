@@ -7,8 +7,12 @@
 
 get_header();
 
-$whatsapp = guru_whatsapp_link();
+$geral    = function_exists( 'guru_get_whatsapp_group' ) ? guru_get_whatsapp_group( 'geral' ) : null;
 $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Promoções', 'guru-do-desconto' ) );
+$btn_id   = $geral ? guru_whatsapp_btn_id( $geral ) : 'btn-geral';
+$btn_attrs = $geral
+	? guru_whatsapp_group_link_attrs( $geral, 'landing' )
+	: guru_whatsapp_link_attrs( 'landing' );
 ?>
 
 <section class="section whatsapp-landing">
@@ -28,7 +32,7 @@ $wa_msg   = get_theme_mod( 'guru_whatsapp_message', __( 'Entrar no Grupo de Prom
 		</div>
 
 		<div class="hero-actions" style="justify-content:center; margin: 2rem 0;">
-			<a <?php echo guru_whatsapp_link_attrs( 'landing' ); ?> class="btn btn-whatsapp">
+			<a <?php echo $btn_attrs; ?> class="btn btn-whatsapp <?php echo esc_attr( $btn_id ); ?>">
 				<?php echo esc_html( $wa_msg ); ?>
 			</a>
 		</div>

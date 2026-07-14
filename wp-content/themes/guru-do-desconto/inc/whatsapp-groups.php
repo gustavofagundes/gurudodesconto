@@ -210,13 +210,13 @@ function guru_get_whatsapp_group( $slug ) {
  * ID canônico do botão CTA por grupo (Meta Pixel / Event Setup Tool).
  *
  * @param string|array $group Grupo ou slug.
- * @return string Ex.: btn-mega-achadinhos
+ * @return string Ex.: btn-geral
  */
 function guru_whatsapp_btn_id( $group ) {
 	$slug = is_array( $group ) ? ( $group['slug'] ?? '' ) : (string) $group;
 
 	$map = array(
-		'geral'         => 'btn-mega-achadinhos',
+		'geral'         => 'btn-geral',
 		'shopee'        => 'btn-shopee',
 		'casa'          => 'btn-casa',
 		'kids'          => 'btn-maternidade',
@@ -278,3 +278,42 @@ function guru_whatsapp_group_page_link( $group ) {
 		? guru_whatsapp_group_landing_url( $group )
 		: home_url( '/#grupo-' . ( is_array( $group ) ? ( $group['slug'] ?? '' ) : $group ) );
 }
+
+/**
+ * Garante id/data attrs Meta nos links WhatsApp do conteúdo da landing SEO.
+ */
+function guru_whatsapp_landing_content_btn_attrs( $content ) {
+	if ( ! function_exists( 'guru_is_whatsapp_landing_page' ) || ! guru_is_whatsapp_landing_page() ) {
+		return $content;
+	}
+
+	$geral = guru_get_whatsapp_group( 'geral' );
+	if ( ! $geral ) {
+		return $content;
+	}
+
+	$btn_id = guru_whatsapp_btn_id( $geral );
+
+	return preg_replace_callback(
+		'/<a\s+([^>]*?)href=(["\'])(https?:\/\/chat\.whatsapp\.com\/[^"\']+)\2([^>]*)>/i',
+		function ( $matches ) use ( $geral, $btn_id ) {
+			$before = $matches[1];
+			$after  = $matches[4];
+			$full   = $before . $after;
+
+			if ( false !== stripos( $full, 'data-guru-btn-id' ) ) {
+				return $matches[0];
+			}
+
+			$attrs = guru_whatsapp_group_link_attrs( $geral, 'content' );
+			$class = 'btn btn-whatsapp ' . $btn_id;
+			if ( preg_match( '/\bclass=(["\'])([^"\']*)\1/i', $full, $class_match ) ) {
+				$class = trim( $class_match[2] . ' ' . $btn_id );
+			}
+
+			return '<a ' . $attrs . ' class="' . esc_attr( $class ) . '">';
+		},
+		$content
+	);
+}
+add_filter( 'the_content', 'guru_whatsapp_landing_content_btn_attrs', 25 );

@@ -69,7 +69,7 @@
   }
 
   var BTN_IDS = {
-    geral: 'btn-mega-achadinhos',
+    geral: 'btn-geral',
     shopee: 'btn-shopee',
     casa: 'btn-casa',
     kids: 'btn-maternidade',
